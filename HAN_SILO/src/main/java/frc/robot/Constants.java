@@ -75,7 +75,7 @@ public final class Constants {
 
     public static final double kMaxSpeedMetersPerSecond = 3;   //tune
 
-    public static final double kTurnP = 0.05;
+    public static final double kTurnP = 0.1;  // was 0.05
     public static final double kTurnI = 0;
     public static final double kTurnD = 0;
 
@@ -129,7 +129,7 @@ public final class Constants {
 
     public static final double kPXController = 10.0;
     public static final double kPYController = 10.0;
-    public static final double kPThetaController = 1.5;
+    public static final double kPThetaController = 3;
 
     //Constraint for the motion profilied robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =

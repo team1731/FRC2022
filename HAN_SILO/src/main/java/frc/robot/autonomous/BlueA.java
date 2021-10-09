@@ -7,9 +7,9 @@ public class BlueA extends GalacticConfiguration {
     @Override
     public Translation2d[] getBallPositions(){
         return new Translation2d[] {
-            new Translation2d(0.10625, -0.23750),
-            new Translation2d(-0.7156, -0.18333),
-            new Translation2d(-0.3250, -0.12083)
+            new Translation2d(0.0437, -0.01),
+            new Translation2d(-0.949, 0.075),
+            new Translation2d(-0.474, 0.158)
         };
     }
 

@@ -12,6 +12,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -72,6 +73,9 @@ public class SwerveModule {
      // m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10);
                
       m_driveMotor.setSmartCurrentLimit(40, 40);
+      m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 5);  // Velocity is in Kstatus1, 
+      m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+      m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
       //m_driveMotor.setSmartCurrentLimit(stallLimit, freeLimit, limitRPM);
       m_drivePIDController = m_driveMotor.getPIDController();
       m_driveEncoder = m_driveMotor.getEncoder();
@@ -80,20 +84,24 @@ public class SwerveModule {
       m_drivePIDController.setD(0);
       m_drivePIDController.setFF(0.0002); //156);
       m_drivePIDController.setOutputRange(-1, 1);
-      m_drivePIDController.setSmartMotionMaxVelocity(2000, smartMotionSlot); //RPM
+      m_drivePIDController.setSmartMotionMaxVelocity(4000, smartMotionSlot); //RPM
       m_drivePIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
-      m_drivePIDController.setSmartMotionMaxAccel(1500, smartMotionSlot); //RPM per second
+      m_drivePIDController.setSmartMotionMaxAccel(3 * (39.37*60*5.5)/Math.PI*3, smartMotionSlot); //RPM per second first number is meters/sec2
       m_drivePIDController.setSmartMotionAllowedClosedLoopError(50, smartMotionSlot);
+      
 
   
       m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
       m_turningMotor.restoreFactoryDefaults();
+      m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 5); //kstatus2 has the position
+      m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+      m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+
       m_turningMotor.setSmartCurrentLimit(40, 40);
-   //   m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 5);
-    //  m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 5);
-    //  m_turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 10);
+
       m_turningPIDController = m_turningMotor.getPIDController();
       m_turningEncoder = m_turningMotor.getEncoder();
+
       m_turningMotor.setInverted(true);
       m_turningPIDController.setP(5e-5);
       m_turningPIDController.setI(0);
@@ -236,7 +244,7 @@ public double getDriveEncoderPosition(){
     if(RobotBase.isReal()){
       double turningMotorOutput = azimuthPosition + azimuthError;
       m_turningPIDController.setReference(turningMotorOutput, ControlType.kSmartMotion);
-      m_drivePIDController.setReference(drive, ControlType.kVelocity);
+      m_drivePIDController.setReference(drive, ControlType.kSmartVelocity);
       if(System.currentTimeMillis() % 100 == 0){
         SmartDashboard.putNumber("turningMotorOutput-" + id,  turningMotorOutput);
         SmartDashboard.putNumber("driveVelocityOutput-" + id,  drive);

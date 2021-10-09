@@ -7,9 +7,9 @@ public class RedB extends GalacticConfiguration {
     @Override
     public Translation2d[] getBallPositions(){
         return new Translation2d[] {
-            new Translation2d(0.20962, -0.74840),
-            new Translation2d(0.13750, -0.64167),
-            new Translation2d(0.96250, -0.34583)
+            new Translation2d(0.05, -0.79),
+            new Translation2d(0.94, -0.087),
+            new Translation2d(-0.056, 0.095)
         };
     }
 

@@ -53,6 +53,10 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
   private Consumer<SwerveModuleState[]> m_outputModuleStates;
   private ReflectingCSVWriter<AutoSwerveDebug> csvWriter;
   private Double endingHeading;
+  private Double lastXVelocity = 0.0;
+  private Double lastYVelocity = 0.0;
+  private Double lastXPosition = 0.0;
+  private Double lastYPosition = 0.0;
   /**
    * Constructs a new SwerveControllerCommand that when executed will follow the provided
    * trajectory. This command will not return output voltages but rather raw module states from the
@@ -169,14 +173,7 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 
     //Pose2d poseError = desiredPose.relativeTo(m_pose.get());
 
-    csvWriter.add(new AutoSwerveDebug(curTime, 
-                                   desiredPose.getTranslation().getX(),
-                                   desiredPose.getTranslation().getY(),
-                                   desiredPose.getRotation().getDegrees(),
-                                   m_pose.get().getTranslation().getX(),
-                                   m_pose.get().getTranslation().getY(),
-                                   m_pose.get().getRotation().getDegrees(),
-                                   m_drive.getAngle().getDegrees()));
+
 
  //  var feedForwardX = desiredState.poseMeters.getRotation().getSin()*desiredState.velocityMetersPerSecond;                              
 
@@ -200,12 +197,38 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 
     //targetXVel += vRef * poseError.getRotation().getCos();
    // targetYVel += vRef * poseError.getRotation().getSin();
-
+    double errorXvel = targetXVel;
+    double errorYvel = targetYVel;
     targetXVel += vRef * desiredState.poseMeters.getRotation().getCos();
     targetYVel += vRef * desiredState.poseMeters.getRotation().getSin();
 
-    
-  
+
+
+    csvWriter.add(new AutoSwerveDebug(curTime, 
+        desiredPose.getTranslation().getX(),
+        desiredPose.getTranslation().getY(),
+        desiredPose.getRotation().getDegrees(),
+        m_pose.get().getTranslation().getX(),
+        m_pose.get().getTranslation().getY(),       
+        m_pose.get().getRotation().getDegrees(),
+        m_drive.getAngle().getDegrees(),
+        m_drive.getXaccel(),
+        m_drive.getYaccel(),
+        (targetXVel - lastXVelocity/0.02),
+        (targetYVel - lastYVelocity/0.02),
+        targetXVel,
+        targetYVel,
+        errorXvel,
+        errorYvel,
+        m_pose.get().getTranslation().getX() - lastXPosition,
+        m_pose.get().getTranslation().getY() - lastYPosition
+        )
+        
+        );
+        lastXVelocity = targetXVel;
+        lastYVelocity = targetYVel;
+        lastXPosition =  m_pose.get().getTranslation().getX();
+        lastYPosition = m_pose.get().getTranslation().getY();
 
     var targetChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(targetXVel, targetYVel, targetAngularVel,m_pose.get().getRotation());
 

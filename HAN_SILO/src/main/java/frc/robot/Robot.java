@@ -58,7 +58,7 @@ public class Robot extends TimedRobot {
   public Robot() {
      addPeriodic(() -> {
        if(m_robotDrive != null) m_robotDrive.updateOdometry();
-     }, 0.005, 0.0);
+     }, 0.020, 0.0);  // was 0.005
   }
 
 
@@ -142,8 +142,7 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putBoolean("Vis_HasTarget", false);
     SmartDashboard.putNumber("Vis_TargetAngle", 0);
-    
-    //Report Build Information to the SmartDashboard
+
     try {
       File branchInfo = new File(Filesystem.getDeployDirectory() + "/DeployedBranchInfo~.txt");
       Scanner reader = new Scanner(branchInfo);
