@@ -1,3 +1,6 @@
+# Mark files as ignored by ending in ~
+*~
+
 # Compiled class file
 *.class
 
