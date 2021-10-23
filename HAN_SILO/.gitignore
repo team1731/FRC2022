@@ -148,8 +148,8 @@ gradle-app.setting
 .gradletasknamecache
 
 # Deployment information
-src/main/deploy/DeployedBranchInfo.txt
-src/main/deploy/DeployedBranchInfo~.txt
+DeployedBranchInfo.txt
+DeployedBranchInfo~.txt
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
