@@ -1,6 +1,0 @@
-ref: refs/heads/stephen
-Commit hash:
-172cc0176221cbf03ae2a72d2187e1df84d50f71
----
-Deployed on:
-Sat Oct  9 02:27:32 PM EDT 2021
