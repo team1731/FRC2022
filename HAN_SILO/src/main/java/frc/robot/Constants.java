@@ -31,7 +31,7 @@ public final class Constants {
     return new DoubleSolenoid(pcmChannel, forward_solenoidId, reverse_solenoidId);
   }
 	
-  public static final int kTICKS = 16;
+  public static final int kTICKS = 33024; //16.125 * 2048;
 
   public static final double kFlywheelVelocityTolerance = 5/100; // percent
 

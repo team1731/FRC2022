@@ -421,10 +421,10 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
     SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
     if(RobotBase.isReal()){
-      SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningEncoder.getPosition());
-      SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningEncoder.getPosition());
-      SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningEncoder.getPosition());
-      SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningEncoder.getPosition());
+      SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
+      SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
+      SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
+      SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
     }
   }
 
