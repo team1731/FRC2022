@@ -39,7 +39,9 @@ public class ShootClimbCommand extends CommandBase {
     activate = false;
     last = activate;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shootClimbSubsystem, seqSubsystem);
+    if(shootClimbSubsystem != null && seqSubsystem != null){
+      addRequirements(shootClimbSubsystem, seqSubsystem);
+    }
   }
 
   // Called when the command is initially scheduled.

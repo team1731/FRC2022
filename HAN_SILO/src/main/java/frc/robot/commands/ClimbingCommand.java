@@ -40,7 +40,9 @@ public class ClimbingCommand extends CommandBase {
     m_ShootClimbSubsystem = shootClimbSubsystem;  
     this.climb = climb;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shootClimbSubsystem);
+    if(shootClimbSubsystem != null){
+      addRequirements(shootClimbSubsystem);
+    }
   }
 
   // Called when the command is initially scheduled.

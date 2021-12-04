@@ -16,7 +16,9 @@ public class ShootSeqCommandAuto extends ShootSeqCommand {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        seqSubsystem.stop();
+        if(seqSubsystem != null){
+            seqSubsystem.stop();
+        }
         //shootSubsystem.stopShooting();
         //shootSubsystem.hoodRetract();
     }

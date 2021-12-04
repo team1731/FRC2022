@@ -33,7 +33,11 @@ public class SeqEjectCommand extends CommandBase {
    // mTimer = new Timer();
   
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(seqSubsystem,intakeSubsystem);
+    if(seqSubsystem != null && intakeSubsystem != null){
+      if(intakeSubsystem != null && seqSubsystem != null){
+        addRequirements(seqSubsystem, intakeSubsystem);
+      }
+    }
   }
 
   // Called when the command is initially scheduled.

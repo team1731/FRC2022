@@ -25,7 +25,9 @@ public class IntakeEject extends CommandBase {
   public IntakeEject(IntakeSubsystem subsystem) {
     m_intakeSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    if(subsystem != null){
+      addRequirements(subsystem);
+    }
   }
 
   // Called when the command is initially scheduled.

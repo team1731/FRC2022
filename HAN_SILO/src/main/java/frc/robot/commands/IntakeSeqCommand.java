@@ -44,7 +44,9 @@ public class IntakeSeqCommand extends CommandBase {
     m_IntakeSubsystem = intakeSubsystem;
     m_SeqSubsystem = seqSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, seqSubsystem);
+    if(intakeSubsystem != null && seqSubsystem != null){
+      addRequirements(intakeSubsystem, seqSubsystem);
+    }
     //this.interruptible = autonomous;
 
   }

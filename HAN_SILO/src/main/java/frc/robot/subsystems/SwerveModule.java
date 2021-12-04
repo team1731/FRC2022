@@ -45,6 +45,8 @@ public class SwerveModule {
       m_driveMotor = new TalonFX(driveMotorChannel);
       m_driveMotor.configFactoryDefault();
 
+      m_driveMotor.setInverted(true);
+
       SupplyCurrentLimitConfiguration limit = new SupplyCurrentLimitConfiguration(true, 40, 50, 5);
       m_driveMotor.configGetSupplyCurrentLimit(limit);
 
@@ -83,7 +85,7 @@ public class SwerveModule {
        * sensor to have positive increment when driving Talon Forward (Green LED)
        */
       m_turningMotor.setSensorPhase(false);
-      m_turningMotor.setInverted(false);
+      m_turningMotor.setInverted(true);
       /*
        * Talon FX does not need sensor phase set for its integrated sensor This is
        * because it will always be correct if the selected feedback device is
@@ -222,6 +224,7 @@ public class SwerveModule {
       m_driveMotor.setSelectedSensorPosition(0, 0, 30);
       // m_driveEncoder.setPosition(0);
       // m_turningEncoder.setPosition(absoluteEncoderVoltage * 16/3.26);
+      //absoluteEncoderVoltage = 0;
       m_turningMotor.setSelectedSensorPosition(absoluteEncoderVoltage * kTICKS / 3.26, 0, 30);
     }
   }

@@ -65,9 +65,15 @@ public class Robot extends TimedRobot {
   private void initSubsystems() {
     // initial SubSystems to at rest states
     m_robotDrive.resetEncoders();
-    m_intake.retract();
-    m_sequencer.stop();
-    m_shootclimb.stopShooting();
+    if(m_intake != null){
+      m_intake.retract();
+    }
+    if(m_sequencer != null){
+      m_sequencer.stop();
+    }
+    if(m_shootclimb != null){
+      m_shootclimb.stopShooting();
+    }
     // m_colorwheel.init();
     // LEDs are not attached currently
     // m_ledstring.init();
@@ -77,10 +83,14 @@ public class Robot extends TimedRobot {
     System.out.println("autoInitPreload: Start");
     m_autonomousCommand = null;
     m_robotDrive.resetOdometry(new Pose2d());
-    m_ledstring.option(LedOption.RAINBOW);
+    if(m_ledstring != null){
+      m_ledstring.option(LedOption.RAINBOW);
+    }
 
     m_robotDrive.resumeCSVWriter();
-    m_sequencer.setPowerCellCount((int) SmartDashboard.getNumber("INIT CELL COUNT", 3));
+    if(m_sequencer != null){
+      m_sequencer.setPowerCellCount((int) SmartDashboard.getNumber("INIT CELL COUNT", 3));
+    }
 
     if (RobotBase.isReal()) {
       autoCode = SmartDashboard.getString("AUTO CODE", autoCode);
@@ -114,12 +124,12 @@ public class Robot extends TimedRobot {
     CameraServer camServer = CameraServer.getInstance();
     camServer.startAutomaticCapture();
 
-    m_ledstring = new LedStringSubsystem();
-    m_vision = new LimeLightSubsystem();
+    m_ledstring = null; //new LedStringSubsystem();
+    m_vision = null; //new LimeLightSubsystem();
     m_robotDrive = new DriveSubsystem(m_vision);
-    m_intake = new IntakeSubsystem(/*m_ledstring*/);
-    m_sequencer = new SequencerSubsystem(m_ledstring);
-    m_shootclimb = new ShootClimbSubsystem(m_ledstring);
+    m_intake = null; //new IntakeSubsystem(/*m_ledstring*/);
+    m_sequencer = null; //new SequencerSubsystem(m_ledstring);
+    m_shootclimb = null; //new ShootClimbSubsystem(m_ledstring);
     m_colorwheel = null; // new ColorWheelSubsystem();
 
     m_robotDrive.zeroHeading();
@@ -192,12 +202,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    m_ledstring.option(LedOption.TEAM);
+    if(m_ledstring != null){
+      m_ledstring.option(LedOption.TEAM);
+    }
     m_robotDrive.resetEncoders();
     if (System.currentTimeMillis() % 100 == 0) {
-      SmartDashboard.putBoolean("LowSensor", m_sequencer.lowSensorHasBall());
-      SmartDashboard.putBoolean("MidSensor", m_sequencer.midSensorHasBall());
-      SmartDashboard.putBoolean("HighSensor", m_sequencer.highSensorHasBall());
+      //SmartDashboard.putBoolean("LowSensor", m_sequencer.lowSensorHasBall());
+      //SmartDashboard.putBoolean("MidSensor", m_sequencer.midSensorHasBall());
+      //SmartDashboard.putBoolean("HighSensor", m_sequencer.highSensorHasBall());
     }
 
     if (RobotBase.isReal()) {
@@ -228,9 +240,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_ledstring.option(LedOption.RAINBOW);
+    if(m_ledstring != null){
+      m_ledstring.option(LedOption.RAINBOW);
+    }
     m_robotDrive.resumeCSVWriter();
-    m_sequencer.setPowerCellCount((int) SmartDashboard.getNumber("INIT CELL COUNT", 3));
+    if(m_sequencer != null){
+      m_sequencer.setPowerCellCount((int) SmartDashboard.getNumber("INIT CELL COUNT", 3));
+    }
 
     CommandScheduler.getInstance().cancelAll();
 
@@ -260,7 +276,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     CommandScheduler.getInstance().cancelAll();
-    m_sequencer.setPowerCellCount((int) SmartDashboard.getNumber("INIT CELL COUNT", 3));
+    if(m_sequencer != null){
+      m_sequencer.setPowerCellCount((int) SmartDashboard.getNumber("INIT CELL COUNT", 3));
+    }
     m_robotDrive.resumeCSVWriter();
 
     initSubsystems();
@@ -292,11 +310,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(doSD()){
-      SmartDashboard.putBoolean("LowSensor",  m_sequencer.lowSensorHasBall());
-      SmartDashboard.putBoolean("MidSensor",  m_sequencer.midSensorHasBall());
-      SmartDashboard.putBoolean("HighSensor",  m_sequencer.highSensorHasBall());
-      SmartDashboard.putNumber("PowerCellCount",  (int)m_sequencer.getPowerCellCount());
-      SmartDashboard.putString("Intake State",  m_intake.getIntakeState());
+      //SmartDashboard.putBoolean("LowSensor",  m_sequencer.lowSensorHasBall());
+      //SmartDashboard.putBoolean("MidSensor",  m_sequencer.midSensorHasBall());
+      //SmartDashboard.putBoolean("HighSensor",  m_sequencer.highSensorHasBall());
+      //SmartDashboard.putNumber("PowerCellCount",  (int)m_sequencer.getPowerCellCount());
+      //SmartDashboard.putString("Intake State",  m_intake.getIntakeState());
       //SmartDashboard.putNumber("Climb Encoder", m_shootclimb.getClimbEncoderValue());
 
     // switch((int)m_sequencer.getPowerCellCount()){
@@ -322,8 +340,10 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     double shootMotorPercent_0_to_1 = SmartDashboard.getNumber("Shoot Motor % (0-1)", 0.5);
-    m_shootclimb.hoodExtend();
-    m_shootclimb.spinShooter(shootMotorPercent_0_to_1);
+    if(m_shootclimb != null){
+      m_shootclimb.hoodExtend();
+      m_shootclimb.spinShooter(shootMotorPercent_0_to_1);
+    }
     //SmartDashboard.putNumber("Shoot Motor 1 Vel", m_shootclimb.getShootMotor1Velocity());
   }
 }

@@ -30,7 +30,11 @@ public class ShootSeqCommand extends CommandBase {
     shootSubsystem = shoot;
     seqSubsystem = seq;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(seqSubsystem);
+    if(seqSubsystem != null){
+      if(seqSubsystem != null){
+        addRequirements(seqSubsystem);
+      }
+    }
   }
 
   // Called when the command is initially scheduled.

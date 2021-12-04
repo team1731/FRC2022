@@ -33,7 +33,9 @@ public class SeqResetCommand extends CommandBase {
     mTimer = new Timer();
   
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(seqSubsystem);
+    if(seqSubsystem != null){
+      addRequirements(seqSubsystem);
+    }
   }
 
   // Called when the command is initially scheduled.

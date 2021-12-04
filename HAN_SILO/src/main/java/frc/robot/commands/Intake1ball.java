@@ -41,7 +41,9 @@ public class Intake1ball extends CommandBase {
   public Intake1ball(SequencerSubsystem seqSubsystem) {
     m_SeqSubsystem = seqSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(seqSubsystem);
+    if(seqSubsystem != null){
+      addRequirements(seqSubsystem);
+    }
   }
 
   // Called when the command is initially scheduled.

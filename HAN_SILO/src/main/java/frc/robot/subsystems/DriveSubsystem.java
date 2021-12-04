@@ -286,11 +286,11 @@ public class DriveSubsystem extends SubsystemBase {
     }
     */
 
-    if(visionDistanceOverride){
+    if(visionDistanceOverride && m_vision != null){
       //This allows the driver to still have forward/backward control of the robot while getting to optimal shooting in case something is in the way
       xSpeedAdjusted = Utils.Clamp(xSpeedAdjusted + visionDistanceController.calculate(m_vision.getLastPortPos().getZ()), 0, 1);
       SmartDashboard.putNumber("distanceController Output", ySpeedAdjusted);
-    } else {
+    } else if(m_vision != null){
       visionDistanceController.reset(m_vision.getLastPortPos().getZ());
     }
     
