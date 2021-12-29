@@ -332,6 +332,7 @@ public class DriveSubsystem extends SubsystemBase {
    // m_rightFront.resetEncoders(0);// had taken out but it started working again 7mar2020. // took this one out -- bad hardware encoder!!!
     m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage());
     m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage());
+    resetOdometry(new Pose2d());
   }
 
   /**
