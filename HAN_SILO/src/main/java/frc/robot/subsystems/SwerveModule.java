@@ -143,7 +143,7 @@ public class SwerveModule {
     double velocity = 0;
     double azimuth = 0;
     if (RobotBase.isReal()) { // RPM/60 is RPS *PI*D is inches/s * 39.37 is meter/s but it's 5.5 ticks/rev
-      velocity = (m_driveMotor.getSelectedSensorVelocity(0)/20480 * Math.PI * 3.0) / (39.37 * 60.0 * 9557.3333333);
+      velocity = (m_driveMotor.getSelectedSensorVelocity(0)/20480 * Math.PI * 3.0) / (39.37 * 4.6666666666);
       azimuth = -m_turningMotor.getSelectedSensorPosition(0)/2048;
     }
     double azimuthPercent = Math.IEEEremainder(azimuth, kTICKS) / kTICKS;
@@ -169,7 +169,7 @@ public class SwerveModule {
     // SmartDashboard.putNumber("SpeedMPS-"+id, speedMetersPerSecond);
     // meters per sec * 39.37 is inches/s * 60 is inches per min / PI*D is RPM * 5.5
     // is ticks
-    double drive = (speedMetersPerSecond * 9557.333333 * 39.37 * 60.0) / (3.0 * Math.PI);
+    double drive = (speedMetersPerSecond * 9557.333333 * 39.37 ) / (3.0 * Math.PI);  // ticks per second 
     // wheel.set(-angleDegrees/360, speedMetersPerSecond * 16.0 * 39.37 * 60.0 / 3.0
     // / Math.PI);
     double azimuthPosition = 0;
@@ -196,7 +196,7 @@ public class SwerveModule {
       // ControlType.kSmartMotion);
       m_turningMotor.set(TalonFXControlMode.MotionMagic, turningMotorOutput);
       // m_drivePIDController.setReference(drive, ControlType.kSmartVelocity);
-      double targetVelocity_UnitsPer100ms = drive / 600; // TODO not sure this is right
+      double targetVelocity_UnitsPer100ms = drive / 10; // ticks per 100 ms
       /* 500 RPM in either direction */
       m_driveMotor.set(TalonFXControlMode.Velocity, targetVelocity_UnitsPer100ms);
 
@@ -221,11 +221,11 @@ public class SwerveModule {
   public void resetEncoders(double absoluteEncoderVoltage) {
     // synchronized(isInverted){
     if (RobotBase.isReal()) {
-      m_driveMotor.setSelectedSensorPosition(0, 0, 30);
+      m_driveMotor.setSelectedSensorPosition(0, 0, 0);
       // m_driveEncoder.setPosition(0);
       // m_turningEncoder.setPosition(absoluteEncoderVoltage * 16/3.26);
       absoluteEncoderVoltage = 0;
-      m_turningMotor.setSelectedSensorPosition(absoluteEncoderVoltage * kTICKS / 3.29, 0, 30);
+      m_turningMotor.setSelectedSensorPosition(absoluteEncoderVoltage * kTICKS / 3.29, 0, 0);
     }
   }
   // }

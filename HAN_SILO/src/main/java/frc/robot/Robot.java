@@ -206,13 +206,13 @@ public class Robot extends TimedRobot {
     if(m_ledstring != null){
       m_ledstring.option(LedOption.TEAM);
     } */
-   // m_robotDrive.resetEncoders();
+    m_robotDrive.resetEncoders();
     if (System.currentTimeMillis() % 100 == 0) {
       //SmartDashboard.putBoolean("LowSensor", m_sequencer.lowSensorHasBall());
       //SmartDashboard.putBoolean("MidSensor", m_sequencer.midSensorHasBall());
       //SmartDashboard.putBoolean("HighSensor", m_sequencer.highSensorHasBall());
     }
-    /*
+    
     if (RobotBase.isReal()) {
       String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
       if (!newCode.equals(autoCode)) {
@@ -232,7 +232,7 @@ public class Robot extends TimedRobot {
           }
         }
       }
-    } */
+    } 
   }
 
   /**
