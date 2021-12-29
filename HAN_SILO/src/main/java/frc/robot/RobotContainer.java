@@ -53,7 +53,7 @@ public class RobotContainer {
 
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   //XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
-  Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
+  //Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
 
   //private LedStringSubsystem m_ledstring;
   private DriveSubsystem m_robotDrive;
@@ -133,42 +133,42 @@ public class RobotContainer {
     new HanTrigger(HanTriggers.DR_TRIG_RIGHT).whileActiveContinuous(new ShootSeqCommand(m_shootclimb ,m_sequencer), true);
     // Activate Intake via Operator Left Front Top - Up is Intaking, Down is Reset 
     //new JoystickButton(m_operatorController, 3).whileActiveContinuous(new IntakeSeqCommand(m_intake, m_sequencer));
-    new JoystickButton(m_operatorController, 14).whileActiveContinuous(new SeqEjectCommand(m_intake, m_sequencer), true);
+  //  new JoystickButton(m_operatorController, 14).whileActiveContinuous(new SeqEjectCommand(m_intake, m_sequencer), true);
 
     //Map right bumper to rotation lock to power port
     new JoystickButton(m_driverController, XboxConstants.kRBumper)
       .whenActive(new VisionRotateCommand(m_vision, m_robotDrive, m_driverController));
 
     //Shoot far command
-    new JoystickButton(m_operatorController, 8) // convert -1 to +1 TO 0 to 1
-      .whileActiveContinuous(() -> m_shootclimb.spinShooter((m_operatorController.getRawAxis(4)+1)/2))
-      .whenInactive(() -> m_shootclimb.stopShooting());
+ //   new JoystickButton(m_operatorController, 8) // convert -1 to +1 TO 0 to 1
+ //     .whileActiveContinuous(() -> m_shootclimb.spinShooter((m_operatorController.getRawAxis(4)+1)/2))
+ //     .whenInactive(() -> m_shootclimb.stopShooting());
       //.whenActive(new InstantCommand(m_shootclimb::enableShooting, m_shootclimb))
       //.whileActiveContinuous(new JoystickShooter(m_shootclimb, () -> m_operatorController.getRawAxis(4)), false
       //.whileActiveContinuous(new ShootSeqCommand(m_shootclimb, m_sequencer, () -> m_operatorController.getRawAxis(4)), false
     //);
 
     // scale drive speed according to axis 5 (but only when switch 12 is UP)
-    new JoystickButton(m_driverController, XboxConstants.kLBumper)
-      .whileActiveContinuous(() -> m_robotDrive.setDriveSpeedScaler(1))
-      .whenInactive(() -> m_robotDrive.setDriveSpeedScaler(m_operatorController.getRawAxis(5)));
+ //   new JoystickButton(m_driverController, XboxConstants.kLBumper)
+ //     .whileActiveContinuous(() -> m_robotDrive.setDriveSpeedScaler(1))
+ //     .whenInactive(() -> m_robotDrive.setDriveSpeedScaler(m_operatorController.getRawAxis(5)));
 
 
 
-    new JoystickButton(m_operatorController, 15).whileActiveContinuous(
-      new IntakeSeqCommand(m_intake, m_sequencer)
-    );
+ //   new JoystickButton(m_operatorController, 15).whileActiveContinuous(
+ //     new IntakeSeqCommand(m_intake, m_sequencer)
+ //   );
 
     //Shoot close command
-    new JoystickButton(m_operatorController, 10) // convert -1 to +1 TO 0 to 1
-      .whileActiveContinuous(() -> m_shootclimb.hoodExtend())
-      .whenInactive(() -> m_shootclimb.hoodRetract());
+//    new JoystickButton(m_operatorController, 10) // convert -1 to +1 TO 0 to 1
+//      .whileActiveContinuous(() -> m_shootclimb.hoodExtend())
+//      .whenInactive(() -> m_shootclimb.hoodRetract());
     
 
     // Climbing Command - CURRENT
-    new JoystickButton(m_operatorController, 9).whileActiveContinuous(
-       new ClimbingCommand(m_shootclimb, () -> m_operatorController.getRawAxis(1)), true
-    );
+ //   new JoystickButton(m_operatorController, 9).whileActiveContinuous(
+ //      new ClimbingCommand(m_shootclimb, () -> m_operatorController.getRawAxis(1)), true
+ //   );
 
 
     // Climber Extend
@@ -306,15 +306,15 @@ public class RobotContainer {
     }
   }
     
-  public class StickTrigger extends Trigger {
-    public boolean get() {
+ // public class StickTrigger extends Trigger {
+  //  public boolean get() {
       //double v = operatorController.getY(Hand.kRight);
       //v = operatorController.getX(Hand.kRight);
       //x = operatorController.getRawAxis(0);
-      double y = m_operatorController.getRawAxis(1);
-      return Math.abs(y) < 0.2 ? false : true; 
-    }
-  }
+  //    double y = m_operatorController.getRawAxis(1);
+  //    return Math.abs(y) < 0.2 ? false : true; 
+  //  }
+ // }
 
   // Enables Use of controller axis/trigger by creating a Custom Trigger
   public class HanTrigger extends Trigger {
@@ -345,7 +345,7 @@ public class RobotContainer {
     }
   }
 
-  public class ModeTrigger extends Trigger {
+/*  public class ModeTrigger extends Trigger {
     HanMode mode;
     boolean result;
     public ModeTrigger (HanMode mode) {
@@ -367,5 +367,5 @@ public class RobotContainer {
       return result; 
     }
   }
-
+*/
 }

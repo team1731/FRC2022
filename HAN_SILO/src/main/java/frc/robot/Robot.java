@@ -121,8 +121,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
 
-    CameraServer camServer = CameraServer.getInstance();
-    camServer.startAutomaticCapture();
+   // CameraServer camServer = CameraServer.getInstance();
+   // camServer.startAutomaticCapture();
 
     m_ledstring = null; //new LedStringSubsystem();
     m_vision = null; //new LimeLightSubsystem();
@@ -202,16 +202,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+   /*
     if(m_ledstring != null){
       m_ledstring.option(LedOption.TEAM);
-    }
-    m_robotDrive.resetEncoders();
+    } */
+   // m_robotDrive.resetEncoders();
     if (System.currentTimeMillis() % 100 == 0) {
       //SmartDashboard.putBoolean("LowSensor", m_sequencer.lowSensorHasBall());
       //SmartDashboard.putBoolean("MidSensor", m_sequencer.midSensorHasBall());
       //SmartDashboard.putBoolean("HighSensor", m_sequencer.highSensorHasBall());
     }
-
+    /*
     if (RobotBase.isReal()) {
       String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
       if (!newCode.equals(autoCode)) {
@@ -231,7 +232,7 @@ public class Robot extends TimedRobot {
           }
         }
       }
-    }
+    } */
   }
 
   /**
@@ -309,7 +310,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if(doSD()){
+    //if(doSD()){
       //SmartDashboard.putBoolean("LowSensor",  m_sequencer.lowSensorHasBall());
       //SmartDashboard.putBoolean("MidSensor",  m_sequencer.midSensorHasBall());
       //SmartDashboard.putBoolean("HighSensor",  m_sequencer.highSensorHasBall());
@@ -324,7 +325,7 @@ public class Robot extends TimedRobot {
     //   case 4: m_ledstring.option(LedOption.BALLFOUR); break;
     //   case 5: m_ledstring.option(LedOption.GREEN); break;
     // }
-    }
+   // }
   }
 
   @Override

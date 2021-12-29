@@ -174,6 +174,7 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));    
       SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
       SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
+      SmartDashboard.putNumber("Heading", m_heading);
     }
 
     mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(),
