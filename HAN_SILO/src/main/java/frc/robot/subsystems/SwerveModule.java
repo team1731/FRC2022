@@ -65,6 +65,9 @@ public class SwerveModule {
       m_driveMotor.configPeakOutputForward(1, 30);
       m_driveMotor.configPeakOutputReverse(-1, 30);
 
+
+      m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 30);
+
       m_turningMotor = new TalonFX(turningMotorChannel);
       m_turningMotor.configFactoryDefault();
 
@@ -100,6 +103,8 @@ public class SwerveModule {
       /* Set relevant frame periods to be at least as fast as periodic rate */
       m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 30);
       m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 10, 30);
+      m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 30);
+      
 
       /* Set the peak and nominal outputs */
       m_turningMotor.configNominalOutputForward(0, 30);
@@ -144,7 +149,7 @@ public class SwerveModule {
     double azimuth = 0;
     if (RobotBase.isReal()) { // RPM/60 is RPS *PI*D is inches/s * 39.37 is meter/s but it's 5.5 ticks/rev
       velocity = -(m_driveMotor.getSelectedSensorVelocity(0)/204.8 * Math.PI * 3.0) / (39.37 * 4.6666666666);
-      azimuth = m_turningMotor.getSelectedSensorPosition(0)/2048.0;
+      azimuth = m_turningMotor.getSelectedSensorPosition(0);
     }
     double azimuthPercent = Math.IEEEremainder(azimuth, kTICKS) / kTICKS;
 
@@ -152,7 +157,7 @@ public class SwerveModule {
       // SmartDashboard.putNumber("Module"+id+" Drive Encoder Tick",
       // m_driveEncoder.getPosition());
     }
-
+    
     return new SwerveModuleState(velocity, new Rotation2d(azimuthPercent * 2.0 * Math.PI));
 
   }

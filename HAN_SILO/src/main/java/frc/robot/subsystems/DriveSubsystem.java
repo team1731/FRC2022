@@ -175,6 +175,17 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
       SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
       SmartDashboard.putNumber("Heading", m_heading);
+      SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
+      SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
+      SmartDashboard.putNumber("LF turn Position", m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
+      SmartDashboard.putNumber("LF turn Velocity", m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
+      SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
+      SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
+
+
+
+
+
     }
 
     mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(),
