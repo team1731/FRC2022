@@ -120,8 +120,9 @@ public class SwerveModule {
       m_turningMotor.config_kD(0, 0, 30);
 
       /* Set acceleration and vcruise velocity - see documentation */
-      m_turningMotor.configMotionCruiseVelocity(15000, 30);
-      m_turningMotor.configMotionAcceleration(10000, 30);
+      m_turningMotor.configMotionCruiseVelocity(18000, 0);
+      m_turningMotor.configMotionAcceleration(18000, 0);
+      m_turningMotor.configMotionSCurveStrength(2);
 
       /* Zero the sensor once on robot boot up */
       m_turningMotor.setSelectedSensorPosition(0, 0, 30);
@@ -148,8 +149,8 @@ public class SwerveModule {
     double velocity = 0;
     double azimuth = 0;
     if (RobotBase.isReal()) { // RPM/60 is RPS *PI*D is inches/s * 39.37 is meter/s but it's 5.5 ticks/rev
-      velocity = -(m_driveMotor.getSelectedSensorVelocity(0)/204.8 * Math.PI * 3.0) / (39.37 * 4.6666666666);
-      azimuth = m_turningMotor.getSelectedSensorPosition(0);
+      velocity = (m_driveMotor.getSelectedSensorVelocity(0)/204.8 * Math.PI * 3.0) / (39.37 * 4.6666666666);
+      azimuth = -m_turningMotor.getSelectedSensorPosition(0);
     }
     double azimuthPercent = Math.IEEEremainder(azimuth, kTICKS) / kTICKS;
 
@@ -230,7 +231,7 @@ public class SwerveModule {
       // m_driveEncoder.setPosition(0);
       // m_turningEncoder.setPosition(absoluteEncoderVoltage * 16/3.26);
       //absoluteEncoderVoltage = 0;
-      m_turningMotor.setSelectedSensorPosition(absoluteEncoderVoltage * kTICKS / 3.29, 0, 0);
+      m_turningMotor.setSelectedSensorPosition(absoluteEncoderVoltage * kTICKS , 0, 0);
     }
   }
   // }

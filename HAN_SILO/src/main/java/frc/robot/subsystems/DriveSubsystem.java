@@ -117,6 +117,8 @@ public class DriveSubsystem extends SubsystemBase {
     leftRearAbsEncoder = new AnalogInput(2);
     rightRearAbsEncoder = new AnalogInput(3);
 
+   
+
     if(RobotBase.isReal()){
       if(leftFrontAbsEncoder == null || rightFrontAbsEncoder == null || leftRearAbsEncoder == null || rightRearAbsEncoder == null){
         System.err.println("\n\nAt least one absolute encoder (AnalogInput(0)--AnalogInput(3) is NULL!!!\n\n");
@@ -181,6 +183,9 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("LF turn Velocity", m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
       SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
       SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
+      SmartDashboard.putNumber("RF turn Position", m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
+      SmartDashboard.putNumber("LR turn Position", m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
+      SmartDashboard.putNumber("RR turn Position", m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
 
 
 
@@ -297,7 +302,7 @@ public class DriveSubsystem extends SubsystemBase {
       rotationalOutput = 0;
     }
     */
-
+    
     if(visionDistanceOverride && m_vision != null){
       //This allows the driver to still have forward/backward control of the robot while getting to optimal shooting in case something is in the way
       xSpeedAdjusted = Utils.Clamp(xSpeedAdjusted + visionDistanceController.calculate(m_vision.getLastPortPos().getZ()), 0, 1);
@@ -338,11 +343,11 @@ public class DriveSubsystem extends SubsystemBase {
    * Resets the drive encoders to currently read a position of 0.
    */
   public void resetEncoders() {
-    m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage());     // leftFront, rightFront, leftRear, rightRear
-    m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage());//nope! took it back out!// had taken out but it started working again 7mar2020. // took this one out -- bad hardware encoder!!!
+    m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage()/3.269);     // leftFront, rightFront, leftRear, rightRear
+    m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage()/3.275);//nope! took it back out!// had taken out but it started working again 7mar2020. // took this one out -- bad hardware encoder!!!
    // m_rightFront.resetEncoders(0);// had taken out but it started working again 7mar2020. // took this one out -- bad hardware encoder!!!
-    m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage());
-    m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage());
+    m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage()/3.265);
+    m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage()/3.289);
     resetOdometry(new Pose2d());
   }
 

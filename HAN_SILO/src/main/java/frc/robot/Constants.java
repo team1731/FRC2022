@@ -73,7 +73,7 @@ public final class Constants {
     public static final double kvVoltSecondsPerMeter = 0.8;
     public static final double kaVoltSecondsSquaredPerMeter = 0.15;
 
-    public static final double kMaxSpeedMetersPerSecond = 3;   //tune
+    public static final double kMaxSpeedMetersPerSecond = 4.0;   //tune
 
     public static final double kTurnP = 0.1;  // was 0.05
     public static final double kTurnI = 0;
