@@ -35,432 +35,421 @@ import frc.robot.util.Utils;;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
-  private final Timer m_timer = new Timer();
+	private final Timer m_timer = new Timer();
 
-  private final ReflectingCSVWriter<AutoSwerveDebug> mCSVWriter1;
-  private final ReflectingCSVWriter<SwerveModuleDebug> mCSVWriter2;
+	private final ReflectingCSVWriter<AutoSwerveDebug> mCSVWriter1;
+	private final ReflectingCSVWriter<SwerveModuleDebug> mCSVWriter2;
 
-  private LimeLightSubsystem m_vision;
-  
-  private double desiredHeading;
+	private LimeLightSubsystem m_vision;
 
-  private final ProfiledPIDController headingController
-     = new ProfiledPIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD,
-       new TrapezoidProfile.Constraints(VisionConstants.kMaxTurnVelocity, VisionConstants.kMaxTurnAcceleration));
+	private double desiredHeading;
 
-  private final ProfiledPIDController visionDistanceController
-     = new ProfiledPIDController(VisionConstants.kDriveP, VisionConstants.kDriveI, VisionConstants.kDriveD,
-       new TrapezoidProfile.Constraints(VisionConstants.kDriveMaxSpeed, VisionConstants.kDriveMaxAcceleration));
+	private final ProfiledPIDController headingController = new ProfiledPIDController(DriveConstants.kTurnP,
+			DriveConstants.kTurnI, DriveConstants.kTurnD,
+			new TrapezoidProfile.Constraints(VisionConstants.kMaxTurnVelocity, VisionConstants.kMaxTurnAcceleration));
 
-  //After looking inside the ProfiledPIDController class, I suspect that a standard PIDController will work better as ProfiledPID seems to primarily use the
-  //trapezoid profiler to calculate the next output rather than the PID. Since trapezoid profiler doesn't have continuous input it just ignores it.
-  //private final PIDController headingControllerPID = new PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI, DriveConstants.kTurnD);
+	private final ProfiledPIDController visionDistanceController = new ProfiledPIDController(VisionConstants.kDriveP,
+			VisionConstants.kDriveI, VisionConstants.kDriveD,
+			new TrapezoidProfile.Constraints(VisionConstants.kDriveMaxSpeed, VisionConstants.kDriveMaxAcceleration));
 
-  private boolean headingOverride = true;
-  private boolean visionHeadingOverride = false;
-  private boolean visionDistanceOverride = false;
-  
-  private final AnalogInput leftFrontAbsEncoder;
-  private final AnalogInput rightFrontAbsEncoder;
-  private final AnalogInput leftRearAbsEncoder;
-  private final AnalogInput rightRearAbsEncoder;
-  
-  private double driveSpeedScaler = 1.0;
+	// After looking inside the ProfiledPIDController class, I suspect that a
+	// standard PIDController will work better as ProfiledPID seems to primarily use
+	// the
+	// trapezoid profiler to calculate the next output rather than the PID. Since
+	// trapezoid profiler doesn't have continuous input it just ignores it.
+	// private final PIDController headingControllerPID = new
+	// PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI,
+	// DriveConstants.kTurnD);
 
-  private Double lockedHeading = null;
-  private double m_heading;
+	private boolean headingOverride = true;
+	private boolean visionHeadingOverride = false;
+	private boolean visionDistanceOverride = false;
 
-  //Robot swerve modules
-  private final SwerveModule m_leftFront = 
-      new SwerveModule(DriveConstants.kLeftFrontDriveMotorPort,
-                        DriveConstants.kLeftFrontTurningMotorPort);
+	private final AnalogInput leftFrontAbsEncoder;
+	private final AnalogInput rightFrontAbsEncoder;
+	private final AnalogInput leftRearAbsEncoder;
+	private final AnalogInput rightRearAbsEncoder;
 
-  private final SwerveModule m_rightFront =
-      new SwerveModule(DriveConstants.kRightFrontDriveMotorPort,
-                       DriveConstants.kRightFrontTurningMotorPort);
+	private double driveSpeedScaler = 1.0;
 
-  private final SwerveModule m_leftRear =
-      new SwerveModule(DriveConstants.kLeftRearDriveMotorPort,
-                       DriveConstants.kLeftRearTurningMotorPort);
-  
+	private Double lockedHeading = null;
+	private double m_heading;
 
-  private final SwerveModule m_rightRear =
-      new SwerveModule(DriveConstants.kRightRearDriveMotorPort,
-                       DriveConstants.kRightRearTurningMotorPort);
+	// Robot swerve modules
+	private final SwerveModule m_leftFront = new SwerveModule(DriveConstants.kLeftFrontDriveMotorPort,
+			DriveConstants.kLeftFrontTurningMotorPort);
 
-  // The gyro sensor
-  //private final Gyro a_gyro = new ADXRS450_Gyro();
-  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+	private final SwerveModule m_rightFront = new SwerveModule(DriveConstants.kRightFrontDriveMotorPort,
+			DriveConstants.kRightFrontTurningMotorPort);
 
-  // Odometry class for tracking robot pose
-  private SwerveDriveOdometry m_odometry =
-      new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getAngle());
+	private final SwerveModule m_leftRear = new SwerveModule(DriveConstants.kLeftRearDriveMotorPort,
+			DriveConstants.kLeftRearTurningMotorPort);
 
-  public void updateOdometry(){
-    if(m_odometry != null){
-      m_odometry.update(
-        new Rotation2d(Math.toRadians(getHeading())),
-        m_leftFront.getState(),              // leftFront, rightFront, leftRear, rightRear
-        m_rightFront.getState(),
-        m_leftRear.getState(),
-        m_rightRear.getState());
-    }
-  }
+	private final SwerveModule m_rightRear = new SwerveModule(DriveConstants.kRightRearDriveMotorPort,
+			DriveConstants.kRightRearTurningMotorPort);
 
-  /**
-   * Creates a new DriveSubsystem.
-   */
-  public DriveSubsystem(LimeLightSubsystem m_vision) {
+	// The gyro sensor
+	// private final Gyro a_gyro = new ADXRS450_Gyro();
+	private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
-    leftFrontAbsEncoder = new AnalogInput(0);
-    rightFrontAbsEncoder = new AnalogInput(1);
-    leftRearAbsEncoder = new AnalogInput(2);
-    rightRearAbsEncoder = new AnalogInput(3);
+	// Odometry class for tracking robot pose
+	private SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getAngle());
 
-   
+	public void updateOdometry() {
+		if (m_odometry != null) {
+			m_odometry.update(new Rotation2d(Math.toRadians(getHeading())), m_leftFront.getState(), // leftFront,
+																									// rightFront,
+																									// leftRear,
+																									// rightRear
+					m_rightFront.getState(), m_leftRear.getState(), m_rightRear.getState());
+		}
+	}
 
-    if(RobotBase.isReal()){
-      if(leftFrontAbsEncoder == null || rightFrontAbsEncoder == null || leftRearAbsEncoder == null || rightRearAbsEncoder == null){
-        System.err.println("\n\nAt least one absolute encoder (AnalogInput(0)--AnalogInput(3) is NULL!!!\n\n");
-      }
-    }
-    headingController.setTolerance(VisionConstants.kTurnToleranceDeg, VisionConstants.kTurnRateToleranceDegPerS);
-    visionDistanceController.setTolerance(VisionConstants.kDriveTolerance, VisionConstants.kDriveAccelerationTolerance);
-    visionDistanceController.setGoal(0);
-    headingController.enableContinuousInput(-180, 180);
+	/**
+	 * Creates a new DriveSubsystem.
+	 */
+	public DriveSubsystem(LimeLightSubsystem m_vision) {
 
-    mCSVWriter1 = new ReflectingCSVWriter<>(AutoSwerveDebug.class);
-    mCSVWriter2 = new ReflectingCSVWriter<>(SwerveModuleDebug.class);
-    m_timer.reset();
-    m_timer.start();
+		leftFrontAbsEncoder = new AnalogInput(0);
+		rightFrontAbsEncoder = new AnalogInput(1);
+		leftRearAbsEncoder = new AnalogInput(2);
+		rightRearAbsEncoder = new AnalogInput(3);
 
-    //PID tuning
-    /*
-    SmartDashboard.putNumber("VisionP", VisionConstants.kTurnP);
-    SmartDashboard.putNumber("VisionI", VisionConstants.kTurnI);
-    SmartDashboard.putNumber("VisionD", VisionConstants.kTurnD);
-    */
+		if (RobotBase.isReal()) {
+			if (leftFrontAbsEncoder == null || rightFrontAbsEncoder == null || leftRearAbsEncoder == null
+					|| rightRearAbsEncoder == null) {
+				System.err.println("\n\nAt least one absolute encoder (AnalogInput(0)--AnalogInput(3) is NULL!!!\n\n");
+			}
+		}
+		headingController.setTolerance(VisionConstants.kTurnToleranceDeg, VisionConstants.kTurnRateToleranceDegPerS);
+		visionDistanceController.setTolerance(VisionConstants.kDriveTolerance,
+				VisionConstants.kDriveAccelerationTolerance);
+		visionDistanceController.setGoal(0);
+		headingController.enableContinuousInput(-180, 180);
 
-    this.m_vision = m_vision;
-  }
+		mCSVWriter1 = new ReflectingCSVWriter<>(AutoSwerveDebug.class);
+		mCSVWriter2 = new ReflectingCSVWriter<>(SwerveModuleDebug.class);
+		m_timer.reset();
+		m_timer.start();
 
-  public void setDriveSpeedScaler(double axis){
-    this.driveSpeedScaler = 0.5 * (axis + 1);
-  }
+		// PID tuning
+		/*
+		 * SmartDashboard.putNumber("VisionP", VisionConstants.kTurnP);
+		 * SmartDashboard.putNumber("VisionI", VisionConstants.kTurnI);
+		 * SmartDashboard.putNumber("VisionD", VisionConstants.kTurnD);
+		 */
 
-  public ReflectingCSVWriter<AutoSwerveDebug> getCSVWriter() {
-    return mCSVWriter1;
-  }
+		this.m_vision = m_vision;
+	}
 
-/**
-   * Returns the angle of the robot as a Rotation2d.
-   *
-   * @return The angle of the robot.
-   */
-  public Rotation2d getAngle() {
-    // Negating the angle because WPILib gyros are CW positive.
-    return Rotation2d.fromDegrees(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0));
-  }
+	public void setDriveSpeedScaler(double axis) {
+		this.driveSpeedScaler = 0.5 * (axis + 1);
+	}
 
-  @Override
-  public void periodic() {
-    resumeCSVWriter();
-    
-    // Update the odometry in the periodic block
-   // updateOdometry();
+	public ReflectingCSVWriter<AutoSwerveDebug> getCSVWriter() {
+		return mCSVWriter1;
+	}
 
-    if(Robot.doSD()){
-      SmartDashboard.putNumber("pose x", m_odometry.getPoseMeters().getTranslation().getX());
-      SmartDashboard.putNumber("pose y", m_odometry.getPoseMeters().getTranslation().getY());
-      SmartDashboard.putNumber("rot deg", m_odometry.getPoseMeters().getRotation().getDegrees());
-      SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));    
-      SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
-      SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
-      SmartDashboard.putNumber("Heading", m_heading);
-      SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
-      SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
-      SmartDashboard.putNumber("LF turn Position", m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
-      SmartDashboard.putNumber("LF turn Velocity", m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
-      SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
-      SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
-      SmartDashboard.putNumber("RF turn Position", m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
-      SmartDashboard.putNumber("LR turn Position", m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
-      SmartDashboard.putNumber("RR turn Position", m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
+	/**
+	 * Returns the angle of the robot as a Rotation2d.
+	 *
+	 * @return The angle of the robot.
+	 */
+	public Rotation2d getAngle() {
+		// Negating the angle because WPILib gyros are CW positive.
+		return Rotation2d.fromDegrees(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0));
+	}
 
+	@Override
+	public void periodic() {
+		resumeCSVWriter();
 
+		// Update the odometry in the periodic block
+		// updateOdometry();
 
+		if (Robot.doSD()) {
+			SmartDashboard.putNumber("pose x", m_odometry.getPoseMeters().getTranslation().getX());
+			SmartDashboard.putNumber("pose y", m_odometry.getPoseMeters().getTranslation().getY());
+			SmartDashboard.putNumber("rot deg", m_odometry.getPoseMeters().getRotation().getDegrees());
+			SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));
+			SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
+			SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
+			SmartDashboard.putNumber("Heading", m_heading);
+			SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
+			SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
+			SmartDashboard.putNumber("LF turn Position", m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
+			SmartDashboard.putNumber("LF turn Velocity", m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
+			SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
+			SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
+			SmartDashboard.putNumber("RF turn Position", m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
+			SmartDashboard.putNumber("LR turn Position", m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
+			SmartDashboard.putNumber("RR turn Position", m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
 
+		}
 
-    }
+		mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
+				m_rightFront.getDebugValues(), m_leftRear.getDebugValues(), m_rightRear.getDebugValues()));
+	}
 
-    mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(),
-                                          m_leftFront.getDebugValues(),
-                                          m_rightFront.getDebugValues(),
-                                          m_leftRear.getDebugValues(),
-                                          m_rightRear.getDebugValues()));
-  }
+	/**
+	 * Returns the currently-estimated pose of the robot.
+	 *
+	 * @return The pose.
+	 */
+	public Pose2d getPose() {
+		return m_odometry.getPoseMeters();
+	}
 
-  /**
-   * Returns the currently-estimated pose of the robot.
-   *
-   * @return The pose.
-   */
-  public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
-  }
+	/**
+	 * Resets the odometry to the specified pose.
+	 *
+	 * @param pose The pose to which to set the odometry.
+	 */
+	public void resetOdometry(Pose2d pose) {
+		m_odometry.resetPosition(pose, getAngle());
+	}
 
-  /**
-   * Resets the odometry to the specified pose.
-   *
-   * @param pose The pose to which to set the odometry.
-   */
-  public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(pose, getAngle());
-  }
+	/**
+	 * Method to drive the robot using joystick info.
+	 *
+	 * @param xSpeed        Speed of the robot in the x direction (forward).
+	 * @param ySpeed        Speed of the robot in the y direction (sideways).
+	 * @param rot           Angular rate of the robot.
+	 * @param fieldRelative Whether the provided x and y speeds are relative to the
+	 *                      field.
+	 */
+	@SuppressWarnings("ParameterName")
+	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+		drive(xSpeed, ySpeed, 0, 0, fieldRelative);
+	}
 
-  /**
-   * Method to drive the robot using joystick info.
-   *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-   */
-  @SuppressWarnings("ParameterName")
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative){
-    drive(xSpeed, ySpeed, 0, 0, fieldRelative);
-  }
-  
-  /**
-   * Method to drive the robot using joystick info.
-   *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-   */
-  @SuppressWarnings("ParameterName")
-  public void drive(double xSpeed, double ySpeed, double rightX, double rightY, boolean fieldRelative) {
-    double xSpeedAdjusted = xSpeed;
-    double ySpeedAdjusted = ySpeed;
-    //double rotAdjusted = rightX;
-    double rotationalOutput = rightX;
+	/**
+	 * Method to drive the robot using joystick info.
+	 *
+	 * @param xSpeed        Speed of the robot in the x direction (forward).
+	 * @param ySpeed        Speed of the robot in the y direction (sideways).
+	 * @param rot           Angular rate of the robot.
+	 * @param fieldRelative Whether the provided x and y speeds are relative to the
+	 *                      field.
+	 */
+	@SuppressWarnings("ParameterName")
+	public void drive(double xSpeed, double ySpeed, double rightX, double rightY, boolean fieldRelative) {
+		double xSpeedAdjusted = xSpeed;
+		double ySpeedAdjusted = ySpeed;
+		// double rotAdjusted = rightX;
+		double rotationalOutput = rightX;
 
-    // DEADBAND
-    if(Math.abs(xSpeedAdjusted) < 0.1){
-      xSpeedAdjusted = 0;
-    }
-    if(Math.abs(ySpeedAdjusted) < 0.1){
-      ySpeedAdjusted = 0;
-    }
-    /*
-    if(Math.abs(rotAdjusted) < 0.3){
-      rotAdjusted = 0;
-    }
-*/
-    xSpeedAdjusted *= this.driveSpeedScaler;
-    ySpeedAdjusted *= this.driveSpeedScaler;
+		// DEADBAND
+		if (Math.abs(xSpeedAdjusted) < 0.1) {
+			xSpeedAdjusted = 0;
+		}
+		if (Math.abs(ySpeedAdjusted) < 0.1) {
+			ySpeedAdjusted = 0;
+		}
+		/*
+		 * if(Math.abs(rotAdjusted) < 0.3){ rotAdjusted = 0; }
+		 */
+		xSpeedAdjusted *= this.driveSpeedScaler;
+		ySpeedAdjusted *= this.driveSpeedScaler;
 
-    //If the right stick is neutral - this code should lock on the last known heading 
-    if(Math.abs(rotationalOutput) < 0.11){
-      headingOverride = true;
-      if (lockedHeading == null) {
-        headingController.reset(getHeading());
-        desiredHeading = getHeading();
-        lockedHeading = desiredHeading;
-      }
-      else {
-        desiredHeading = lockedHeading;
-      }
-    }
-    else {
-        headingOverride = false;
-        lockedHeading = null;
-        rotationalOutput *= Math.PI;
-    }
+		// If the right stick is neutral - this code should lock on the last known
+		// heading
+		if (Math.abs(rotationalOutput) < 0.11) {
+			headingOverride = true;
+			if (lockedHeading == null) {
+				headingController.reset(getHeading());
+				desiredHeading = getHeading();
+				lockedHeading = desiredHeading;
+			} else {
+				desiredHeading = lockedHeading;
+			}
+		} else {
+			headingOverride = false;
+			lockedHeading = null;
+			rotationalOutput *= Math.PI;
+		}
 
+		if (visionHeadingOverride || headingOverride) {
 
-    if (visionHeadingOverride || headingOverride) {
+			if (visionHeadingOverride) {
+				rotationalOutput = headingController.calculate(getHeading());
+				desiredHeading = getHeading();
+				lockedHeading = getHeading();
+				SmartDashboard.putNumber("headingController Output", rotationalOutput);
+			} else {
+				// headingController.reset(getHeading());
+				// desiredHeading += rotationalOutput*2.5;
+				rotationalOutput = headingController.calculate(getHeading(), desiredHeading);
+				SmartDashboard.putNumber("desiredHeading", desiredHeading);
+				SmartDashboard.putNumber("headingController Output", rotationalOutput);
+			}
+		}
 
-    
-      if(visionHeadingOverride){
-        rotationalOutput = headingController.calculate(getHeading());
-        desiredHeading = getHeading();
-        lockedHeading = getHeading();
-        SmartDashboard.putNumber("headingController Output", rotationalOutput);
-      } else {
-        //headingController.reset(getHeading());
-        //desiredHeading += rotationalOutput*2.5;
-        rotationalOutput = headingController.calculate(getHeading(), desiredHeading);
-        SmartDashboard.putNumber("desiredHeading", desiredHeading);
-        SmartDashboard.putNumber("headingController Output", rotationalOutput);
-      }
-    }
+		/*
+		 * if(Math.abs(rotationalOutput) < 0.1){ rotationalOutput = 0; }
+		 */
 
-    /*
-    if(Math.abs(rotationalOutput) < 0.1){
-      rotationalOutput = 0;
-    }
-    */
-    
-    if(visionDistanceOverride && m_vision != null){
-      //This allows the driver to still have forward/backward control of the robot while getting to optimal shooting in case something is in the way
-      xSpeedAdjusted = Utils.Clamp(xSpeedAdjusted + visionDistanceController.calculate(m_vision.getLastPortPos().getZ()), 0, 1);
-      SmartDashboard.putNumber("distanceController Output", ySpeedAdjusted);
-    } else if(m_vision != null){
-      visionDistanceController.reset(m_vision.getLastPortPos().getZ());
-    }
-    
+		if (visionDistanceOverride && m_vision != null) {
+			// This allows the driver to still have forward/backward control of the robot
+			// while getting to optimal shooting in case something is in the way
+			xSpeedAdjusted = Utils
+					.Clamp(xSpeedAdjusted + visionDistanceController.calculate(m_vision.getLastPortPos().getZ()), 0, 1);
+			SmartDashboard.putNumber("distanceController Output", ySpeedAdjusted);
+		} else if (m_vision != null) {
+			visionDistanceController.reset(m_vision.getLastPortPos().getZ());
+		}
 
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
-          xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle())
-            : new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput)
-    );
-    SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    SmartDashboard.putNumber("SwerveModuleAzimuthState", swerveModuleStates[0].angle.getDegrees());
-    m_leftFront.setDesiredState(swerveModuleStates[0]);    // leftFront, rightFront, leftRear, rightRear
-    m_rightFront.setDesiredState(swerveModuleStates[1]);
-    m_leftRear.setDesiredState(swerveModuleStates[2]);
-    m_rightRear.setDesiredState(swerveModuleStates[3]);
-  }
+		var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(fieldRelative
+				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle())
+				: new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput));
+		SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+		SmartDashboard.putNumber("SwerveModuleAzimuthState", swerveModuleStates[0].angle.getDegrees());
+		m_leftFront.setDesiredState(swerveModuleStates[0]); // leftFront, rightFront, leftRear, rightRear
+		m_rightFront.setDesiredState(swerveModuleStates[1]);
+		m_leftRear.setDesiredState(swerveModuleStates[2]);
+		m_rightRear.setDesiredState(swerveModuleStates[3]);
+	}
 
-  /**
-   * Sets the swerve ModuleStates.
-   *
-   * @param desiredStates The desired SwerveModule states.
-   */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates,
-                                               DriveConstants.kMaxSpeedMetersPerSecond);
-    m_leftFront.setDesiredState(desiredStates[0]); // leftFront, rightFront, leftRear, rightRear
-    m_rightFront.setDesiredState(desiredStates[1]);
-    m_leftRear.setDesiredState(desiredStates[2]);
-    m_rightRear.setDesiredState(desiredStates[3]);
-  }
+	/**
+	 * Sets the swerve ModuleStates.
+	 *
+	 * @param desiredStates The desired SwerveModule states.
+	 */
+	public void setModuleStates(SwerveModuleState[] desiredStates) {
+		SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
+		m_leftFront.setDesiredState(desiredStates[0]); // leftFront, rightFront, leftRear, rightRear
+		m_rightFront.setDesiredState(desiredStates[1]);
+		m_leftRear.setDesiredState(desiredStates[2]);
+		m_rightRear.setDesiredState(desiredStates[3]);
+	}
 
-  /**
-   * Resets the drive encoders to currently read a position of 0.
-   */
-  public void resetEncoders() {
-    m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage()/3.269);     // leftFront, rightFront, leftRear, rightRear
-    m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage()/3.275);//nope! took it back out!// had taken out but it started working again 7mar2020. // took this one out -- bad hardware encoder!!!
-   // m_rightFront.resetEncoders(0);// had taken out but it started working again 7mar2020. // took this one out -- bad hardware encoder!!!
-    m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage()/3.265);
-    m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage()/3.289);
-    resetOdometry(new Pose2d());
-  }
+	/**
+	 * Resets the drive encoders to currently read a position of 0.
+	 */
+	public void resetEncoders() {
+		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.269); // leftFront, rightFront, leftRear,
+																				// rightRear
+		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.275);// nope! took it back out!// had taken out
+																				// but it started working again
+																				// 7mar2020. // took this one out -- bad
+																				// hardware encoder!!!
+		// m_rightFront.resetEncoders(0);// had taken out but it started working again
+		// 7mar2020. // took this one out -- bad hardware encoder!!!
+		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.265);
+		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.289);
+		resetOdometry(new Pose2d());
+	}
 
-  /**
-   * Zeroes the heading of the robot.
-   */
-  public void zeroHeading() {
-    m_gyro.reset(); // RDB2020 - I replace this call with the below 5 lines...
+	/**
+	 * Zeroes the heading of the robot.
+	 */
+	public void zeroHeading() {
+		m_gyro.reset(); // RDB2020 - I replace this call with the below 5 lines...
 
-    //logger.info("<b>DriveSubsystem</b>: zeroGyro started");
-    //m_gyro.setAngleAdjustment(0);
-    //double adj = m_gyro.getAngle() % 360;
-    //m_gyro.setAngleAdjustment(-adj);
-    //logger.info("<b>DriveSubsystem</b>: zeroGyro finished");
-  }
+		// logger.info("<b>DriveSubsystem</b>: zeroGyro started");
+		// m_gyro.setAngleAdjustment(0);
+		// double adj = m_gyro.getAngle() % 360;
+		// m_gyro.setAngleAdjustment(-adj);
+		// logger.info("<b>DriveSubsystem</b>: zeroGyro finished");
+	}
 
-  /**
-   * Returns the heading of the robot.
-   *
-   * @return the robot's heading in degrees, from -180 to 180
-   */
-  public double getHeading() {
-    if(m_gyro != null){
-      m_heading = Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-      if(System.currentTimeMillis() % 100 == 0){  
-        SmartDashboard.putNumber("Heading", m_heading);
-      }
-    }
-    return m_heading;
-  }
+	/**
+	 * Returns the heading of the robot.
+	 *
+	 * @return the robot's heading in degrees, from -180 to 180
+	 */
+	public double getHeading() {
+		if (m_gyro != null) {
+			m_heading = Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+			if (System.currentTimeMillis() % 100 == 0) {
+				SmartDashboard.putNumber("Heading", m_heading);
+			}
+		}
+		return m_heading;
+	}
 
-  public double getXaccel() {
-    return m_gyro.getWorldLinearAccelX()/9.8066;
-  }
+	public double getXaccel() {
+		return m_gyro.getWorldLinearAccelX() / 9.8066;
+	}
 
-  public double getYaccel() {
-    return m_gyro.getWorldLinearAccelY()/9.8066;
-  }
-  /**
-   * Returns the turn rate of the robot.
-   *
-   * @return The turn rate of the robot, in degrees per second
-   */
-  public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-  }
+	public double getYaccel() {
+		return m_gyro.getWorldLinearAccelY() / 9.8066;
+	}
 
-  public void suspendCSVWriter() {
-    if(!mCSVWriter1.isSuspended()){
-      mCSVWriter1.suspend();
-    }
-    if(!mCSVWriter2.isSuspended()){
-      mCSVWriter2.suspend();
-    }
-  }
+	/**
+	 * Returns the turn rate of the robot.
+	 *
+	 * @return The turn rate of the robot, in degrees per second
+	 */
+	public double getTurnRate() {
+		return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+	}
 
-  public void resumeCSVWriter() {
-    if(mCSVWriter1.isSuspended()){
-      mCSVWriter1.resume();
-    }
-    if(mCSVWriter2.isSuspended()){
-      mCSVWriter2.resume();
-    }
-  }
+	public void suspendCSVWriter() {
+		if (!mCSVWriter1.isSuspended()) {
+			mCSVWriter1.suspend();
+		}
+		if (!mCSVWriter2.isSuspended()) {
+			mCSVWriter2.suspend();
+		}
+	}
 
-  /**
-   * Determines if the right thumbstick on the driver controller can control the robot's orientation.
-   * Set to false if you want another subsystem to control the orientation in teleop (e.x. vision)
-   */
-  public void setVisionHeadingOverride(boolean visionOverride){
-    visionHeadingOverride = visionOverride;
-    headingController.setP(visionOverride ? VisionConstants.kTurnP : DriveConstants.kTurnP);
-    headingController.setI(visionOverride ? VisionConstants.kTurnI : DriveConstants.kTurnI);
-    headingController.setD(visionOverride ? VisionConstants.kTurnD : DriveConstants.kTurnD);
-  }
+	public void resumeCSVWriter() {
+		if (mCSVWriter1.isSuspended()) {
+			mCSVWriter1.resume();
+		}
+		if (mCSVWriter2.isSuspended()) {
+			mCSVWriter2.resume();
+		}
+	}
 
-  public void setVisionDistanceOverride(boolean visionOverride){
-    visionDistanceOverride = visionOverride;
-  }
+	/**
+	 * Determines if the right thumbstick on the driver controller can control the
+	 * robot's orientation. Set to false if you want another subsystem to control
+	 * the orientation in teleop (e.x. vision)
+	 */
+	public void setVisionHeadingOverride(boolean visionOverride) {
+		visionHeadingOverride = visionOverride;
+		headingController.setP(visionOverride ? VisionConstants.kTurnP : DriveConstants.kTurnP);
+		headingController.setI(visionOverride ? VisionConstants.kTurnI : DriveConstants.kTurnI);
+		headingController.setD(visionOverride ? VisionConstants.kTurnD : DriveConstants.kTurnD);
+	}
 
-  public void setVisionHeadingGoal(double newGoal){
-    headingController.setGoal(newGoal);
-  }
+	public void setVisionDistanceOverride(boolean visionOverride) {
+		visionDistanceOverride = visionOverride;
+	}
 
+	public void setVisionHeadingGoal(double newGoal) {
+		headingController.setGoal(newGoal);
+	}
 
-  public void displayEncoders() {
-    SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-    SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-    SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-    SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-    if(RobotBase.isReal()){
-      SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
-      SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
-      SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
-      SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
-    }
-  }
+	public void displayEncoders() {
+		SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		if (RobotBase.isReal()) {
+			SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
+			SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
+			SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
+			SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
+		}
+	}
 
+	public void resetGyro() {
+		if (m_gyro != null) {
+			desiredHeading = 0;
+			lockedHeading = null;
+			m_gyro.reset();
+		}
+	}
 
-  public void resetGyro() {
-    if(m_gyro != null){
-      desiredHeading = 0;
-      lockedHeading = null;
-      m_gyro.reset();
-    }
-  }
+	public double getXVelocity() {
+		return 0;
+	}
 
-public double getXVelocity() {
-return 0;
-}
-
-public double getYVelocity() {
-	return 0;
-}
+	public double getYVelocity() {
+		return 0;
+	}
 
 }

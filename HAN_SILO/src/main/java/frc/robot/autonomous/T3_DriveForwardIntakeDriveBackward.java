@@ -10,39 +10,35 @@ import frc.robot.subsystems.ShootClimbSubsystem;
 import frc.robot.commands.IntakeSeqCommand;
 
 public class T3_DriveForwardIntakeDriveBackward extends _DelayableStrafingAutoMode {
-    public T3_DriveForwardIntakeDriveBackward(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake,
-            SequencerSubsystem m_sequence, ShootClimbSubsystem m_shootclimb) {
+	public T3_DriveForwardIntakeDriveBackward(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake,
+			SequencerSubsystem m_sequence, ShootClimbSubsystem m_shootclimb) {
 
-        SequentialCommandGroup commandGroup = new SequentialCommandGroup(
-            new WaitCommand(getInitialDelaySeconds()),
+		SequentialCommandGroup commandGroup = new SequentialCommandGroup(new WaitCommand(getInitialDelaySeconds()),
 
-            new ParallelCommandGroup(
-                createSwerveCommand(m_robotDrive, "FORWARD 1 METER", TrajectoryDirection.FWD, 
-                                TrajectoryHeading.DO_NOTHING, 0, new double[][]
-                    {{0, 0, 0},    // initial pose
-                    {0.5, 0},     // waypoint(s)
-                    {1, 0, 0}}    // final pose
-                ),
+				new ParallelCommandGroup(createSwerveCommand(m_robotDrive, "FORWARD 1 METER", TrajectoryDirection.FWD,
+						TrajectoryHeading.DO_NOTHING, 0, new double[][] { { 0, 0, 0 }, // initial pose
+								{ 0.5, 0 }, // waypoint(s)
+								{ 1, 0, 0 } } // final pose
+				),
 
-                new IntakeSeqCommand(m_intake, m_sequence, true).withTimeout(4)
-            ),
-            // SHOOT 3
-            //new InstantCommand(m_shootclimb::enableShooting, m_shootclimb).withTimeout(4),
+						new IntakeSeqCommand(m_intake, m_sequence, true).withTimeout(4)),
+				// SHOOT 3
+				// new InstantCommand(m_shootclimb::enableShooting,
+				// m_shootclimb).withTimeout(4),
 
-            //new WaitCommand(3),
+				// new WaitCommand(3),
 
-            //new ShootSeqCommandAuto(m_shootclimb, m_sequence).withTimeout(2),
+				// new ShootSeqCommandAuto(m_shootclimb, m_sequence).withTimeout(2),
 
-            //new WaitCommand(getSecondaryDelaySeconds()),
+				// new WaitCommand(getSecondaryDelaySeconds()),
 
-            createSwerveCommand(m_robotDrive, "BACKWARD 1 METER", TrajectoryDirection.REV, 
-                                TrajectoryHeading.DO_NOTHING, 0, new double[][]
-                {{1, 0, 0},    // initial pose
-                {0.5, 0},     // waypoint(s)
-                {0, 0, 0}}    // final pose
-            )
-        );
+				createSwerveCommand(m_robotDrive, "BACKWARD 1 METER", TrajectoryDirection.REV,
+						TrajectoryHeading.DO_NOTHING, 0, new double[][] { { 1, 0, 0 }, // initial pose
+								{ 0.5, 0 }, // waypoint(s)
+								{ 0, 0, 0 } } // final pose
+				));
 
-        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0, false)).andThen(() -> m_shootclimb.stopShooting());
-    }
+		command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0, false))
+				.andThen(() -> m_shootclimb.stopShooting());
+	}
 }
