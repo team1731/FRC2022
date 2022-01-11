@@ -13,45 +13,47 @@ import frc.robot.subsystems.LimeLightSubsystem.DetectionMode;
  */
 public class VisionRotateCommand extends CommandBase {
 
-    private final LimeLightSubsystem m_vision;
-    private final DriveSubsystem m_drive;
-    private final XboxController m_driverController;
+	private final LimeLightSubsystem m_vision;
+	private final DriveSubsystem m_drive;
+	private final XboxController m_driverController;
 
-    public VisionRotateCommand(LimeLightSubsystem visionSubsystem, DriveSubsystem driveSubsystem, XboxController driveController){
-        m_vision = visionSubsystem;
-        m_drive = driveSubsystem;
-        m_driverController = driveController;
-    }
+	public VisionRotateCommand(LimeLightSubsystem visionSubsystem, DriveSubsystem driveSubsystem,
+			XboxController driveController) {
+		m_vision = visionSubsystem;
+		m_drive = driveSubsystem;
+		m_driverController = driveController;
+	}
 
-    @Override
-    public void initialize(){
-        //Turn on LED and tell the DriveSubsystem to take turning control away from driver
-        m_drive.setVisionHeadingOverride(true);
-        m_vision.enableLED();
-        m_vision.SetDetectionMode(DetectionMode.PowerPort);
-    }
+	@Override
+	public void initialize() {
+		// Turn on LED and tell the DriveSubsystem to take turning control away from
+		// driver
+		m_drive.setVisionHeadingOverride(true);
+		m_vision.enableLED();
+		m_vision.SetDetectionMode(DetectionMode.PowerPort);
+	}
 
-    @Override
-    public void execute(){
-        //Update the turning PID goal if a valid target exists
-        if(m_vision.hasTarget()){
-            double targetAngle = m_drive.getHeading() - m_vision.getLastPortPos().getY();
-            SmartDashboard.putNumber("Vis_TargetAngle", targetAngle);
-            m_drive.setVisionHeadingGoal(targetAngle);
-        }
-    }
+	@Override
+	public void execute() {
+		// Update the turning PID goal if a valid target exists
+		if (m_vision.hasTarget()) {
+			double targetAngle = m_drive.getHeading() - m_vision.getLastPortPos().getY();
+			SmartDashboard.putNumber("Vis_TargetAngle", targetAngle);
+			m_drive.setVisionHeadingGoal(targetAngle);
+		}
+	}
 
-    @Override
-    public void end(boolean interrupted){
-        //Turn off LED and give control back to driver
-        m_drive.setVisionHeadingOverride(false);
-        m_vision.disableLED();
-    }
+	@Override
+	public void end(boolean interrupted) {
+		// Turn off LED and give control back to driver
+		m_drive.setVisionHeadingOverride(false);
+		m_vision.disableLED();
+	}
 
-    @Override
-    public boolean isFinished(){
-        //When the right bumper is released, stop the command
-        return !m_driverController.getRawButton(XboxConstants.kRBumper);
-    } 
+	@Override
+	public boolean isFinished() {
+		// When the right bumper is released, stop the command
+		return !m_driverController.getRawButton(XboxConstants.kRBumper);
+	}
 
 }
