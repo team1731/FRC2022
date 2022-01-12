@@ -15,13 +15,17 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * This subsystem stores the last target coordinates and allows for easy control
  * over the LED
  */
-public class LimeLightSubsystem extends SubsystemBase {
+public class LimeLightSubsystem extends ToggleableSubsystem {
+
+	@Override
+	protected boolean getEnabled(){
+		return true;
+	}
 
 	/**
 	 * The table that contains all controls and outputs for the Limelight
@@ -79,6 +83,10 @@ public class LimeLightSubsystem extends SubsystemBase {
 	private int ledQueries = 0;
 
 	public LimeLightSubsystem() {
+		if(isDisabled()){
+			return;
+		}
+
 		// Set tables for easy getting
 		limeTable = NetworkTableInstance.getDefault().getTable("limelight");
 		limePipeline = limeTable.getEntry("pipeline");
@@ -103,6 +111,10 @@ public class LimeLightSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
+		if(isDisabled()){
+			return;
+		}
+
 		// Report target when one is valid
 		if (hasTarget()) {
 			lastTarget = new LimeTargetInfo(limeTX.getDouble(0), limeTY.getDouble(0), limeArea.getDouble(0),
@@ -116,6 +128,10 @@ public class LimeLightSubsystem extends SubsystemBase {
 	 * Updates the Vis_HasTarget and Vis_TargetPos SmartDashboard entries
 	 */
 	private void UpdateSmartDashboard() {
+		if(isDisabled()){
+			return;
+		}
+
 		SmartDashboard.putBoolean("Vis_HasTarget", hasTarget());
 		SmartDashboard.putString("Vis_TargetPos",
 				hasTarget() ? lastTarget.getY() + ", " + lastTarget.getZ() : "N/A");
@@ -127,6 +143,10 @@ public class LimeLightSubsystem extends SubsystemBase {
 	 * @return The last target reported by the Limelight
 	 */
 	public LimeTargetInfo getLastPortPos() {
+		if(isDisabled()){
+			return LimeTargetInfo.empty;
+		}
+
 		return lastTarget;
 	}
 
@@ -136,6 +156,10 @@ public class LimeLightSubsystem extends SubsystemBase {
 	 * @return Whether or not the Limelight has any valid targets
 	 */
 	public boolean hasTarget() {
+		if(isDisabled()){
+			return false;
+		}
+
 		return limeValidTargets.getDouble(0) > 0;
 	}
 
@@ -143,6 +167,10 @@ public class LimeLightSubsystem extends SubsystemBase {
 	 * Turns on the LED
 	 */
 	public void enableLED() {
+		if(isDisabled()){
+			return;
+		}
+
 		limeLED.setNumber(3);
 		ledQueries++;
 	}
@@ -152,6 +180,10 @@ public class LimeLightSubsystem extends SubsystemBase {
 	 * LED, it is turned off
 	 */
 	public void disableLED() {
+		if(isDisabled()){
+			return;
+		}
+
 		disableLED(true);
 	}
 
@@ -165,6 +197,10 @@ public class LimeLightSubsystem extends SubsystemBase {
 	 *                   turn off.
 	 */
 	private void disableLED(boolean trackQuery) {
+		if(isDisabled()){
+			return;
+		}
+
 		if (trackQuery) {
 			ledQueries--;
 		}
@@ -175,10 +211,18 @@ public class LimeLightSubsystem extends SubsystemBase {
 	}
 
 	private double getDistance(Translation2d pos1, Translation2d pos2) {
+		if(isDisabled()){
+			return 0;
+		}
+
 		return Math.sqrt(Math.pow(pos2.getX() - pos1.getX(), 2) + Math.pow(pos2.getY() - pos1.getY(), 2));
 	}
 
 	private double getDistance(Translation2d pos1, LimeTargetInfo targetPos) {
+		if(isDisabled()){
+			return 0;
+		}
+
 		Translation2d pos2 = new Translation2d(targetPos.getY(), targetPos.getZ());
 		return getDistance(pos1, pos2);
 	}
