@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 import frc.robot.Constants.DriveConstantsOrig;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 /**
  * A command that will turn the robot to the specified angle using a motion

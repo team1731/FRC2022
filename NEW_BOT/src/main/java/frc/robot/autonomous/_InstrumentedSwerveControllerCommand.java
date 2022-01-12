@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.util.ReflectingCSVWriter;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.util.AutoSwerveDebug;
 
 import static edu.wpi.first.wpilibj.util.ErrorMessages.requireNonNullParam;

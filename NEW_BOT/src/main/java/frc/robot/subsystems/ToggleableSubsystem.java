@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public abstract class ToggleableSubsystem extends SubsystemBase {
 
-	abstract boolean getEnabled();
+	protected abstract boolean getEnabled();
 
 	public boolean isEnabled() {
 		return getEnabled();
