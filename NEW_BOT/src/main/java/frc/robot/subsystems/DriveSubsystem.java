@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
@@ -34,7 +33,13 @@ import frc.robot.util.SwerveModuleDebug;
 import frc.robot.util.Utils;;
 
 @SuppressWarnings("PMD.ExcessiveImports")
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends ToggleableSubsystem {
+
+	@Override
+	protected boolean getEnabled(){
+		return true;
+	}
+
 	private final Timer m_timer = new Timer();
 
 	private final ReflectingCSVWriter<AutoSwerveDebug> mCSVWriter1;
@@ -109,6 +114,15 @@ public class DriveSubsystem extends SubsystemBase {
 	 * Creates a new DriveSubsystem.
 	 */
 	public DriveSubsystem(LimeLightSubsystem m_vision) {
+		if(isDisabled()){
+			leftFrontAbsEncoder = null;
+			rightFrontAbsEncoder = null;
+			leftRearAbsEncoder = null;
+			rightRearAbsEncoder = null;
+			mCSVWriter1 = null;
+			mCSVWriter2 = null;
+			return;
+		}
 
 		leftFrontAbsEncoder = new AnalogInput(0);
 		rightFrontAbsEncoder = new AnalogInput(1);
@@ -143,10 +157,18 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void setDriveSpeedScaler(double axis) {
+		if(isDisabled()){
+			return;
+		}
+
 		this.driveSpeedScaler = 0.5 * (axis + 1);
 	}
 
 	public ReflectingCSVWriter<AutoSwerveDebug> getCSVWriter() {
+		if(isDisabled()){
+			return null;
+		}
+		
 		return mCSVWriter1;
 	}
 
@@ -156,12 +178,20 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @return The angle of the robot.
 	 */
 	public Rotation2d getAngle() {
+		if(isDisabled()){
+			return Rotation2d.fromDegrees(0);
+		}
+		
 		// Negating the angle because WPILib gyros are CW positive.
 		return Rotation2d.fromDegrees(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0));
 	}
 
 	@Override
 	public void periodic() {
+		if(isDisabled()){
+			return;
+		}
+
 		resumeCSVWriter();
 
 		// Update the odometry in the periodic block
@@ -197,6 +227,10 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @return The pose.
 	 */
 	public Pose2d getPose() {
+		if(isDisabled()){
+			return new Pose2d();
+		}
+		
 		return m_odometry.getPoseMeters();
 	}
 
@@ -206,6 +240,10 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @param pose The pose to which to set the odometry.
 	 */
 	public void resetOdometry(Pose2d pose) {
+		if(isDisabled()){
+			return;
+		}
+		
 		m_odometry.resetPosition(pose, getAngle());
 	}
 
@@ -220,6 +258,10 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	@SuppressWarnings("ParameterName")
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+		if(isDisabled()){
+			return;
+		}
+		
 		drive(xSpeed, ySpeed, 0, 0, fieldRelative);
 	}
 
@@ -234,6 +276,10 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	@SuppressWarnings("ParameterName")
 	public void drive(double xSpeed, double ySpeed, double rightX, double rightY, boolean fieldRelative) {
+		if(isDisabled()){
+			return;
+		}
+		
 		double xSpeedAdjusted = xSpeed;
 		double ySpeedAdjusted = ySpeed;
 		// double rotAdjusted = rightX;
@@ -316,6 +362,10 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @param desiredStates The desired SwerveModule states.
 	 */
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
+		if(isDisabled()){
+			return;
+		}
+		
 		SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
 		m_leftFront.setDesiredState(desiredStates[0]); // leftFront, rightFront, leftRear, rightRear
 		m_rightFront.setDesiredState(desiredStates[1]);
@@ -327,6 +377,10 @@ public class DriveSubsystem extends SubsystemBase {
 	 * Resets the drive encoders to currently read a position of 0.
 	 */
 	public void resetEncoders() {
+		if(isDisabled()){
+			return;
+		}
+		
 		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.269); // leftFront, rightFront, leftRear,
 																				// rightRear
 		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.275);// nope! took it back out!// had taken out
@@ -344,13 +398,11 @@ public class DriveSubsystem extends SubsystemBase {
 	 * Zeroes the heading of the robot.
 	 */
 	public void zeroHeading() {
+		if(isDisabled()){
+			return;
+		}
+		
 		m_gyro.reset(); // RDB2020 - I replace this call with the below 5 lines...
-
-		// logger.info("<b>DriveSubsystem</b>: zeroGyro started");
-		// m_gyro.setAngleAdjustment(0);
-		// double adj = m_gyro.getAngle() % 360;
-		// m_gyro.setAngleAdjustment(-adj);
-		// logger.info("<b>DriveSubsystem</b>: zeroGyro finished");
 	}
 
 	/**
@@ -359,6 +411,10 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @return the robot's heading in degrees, from -180 to 180
 	 */
 	public double getHeading() {
+		if(isDisabled()){
+			return 0;
+		}
+		
 		if (m_gyro != null) {
 			m_heading = Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
 			if (System.currentTimeMillis() % 100 == 0) {
@@ -369,10 +425,18 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public double getXaccel() {
+		if(isDisabled()){
+			return 0;
+		}
+		
 		return m_gyro.getWorldLinearAccelX() / 9.8066;
 	}
 
 	public double getYaccel() {
+		if(isDisabled()){
+			return 0;
+		}
+		
 		return m_gyro.getWorldLinearAccelY() / 9.8066;
 	}
 
@@ -382,10 +446,18 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @return The turn rate of the robot, in degrees per second
 	 */
 	public double getTurnRate() {
+		if(isDisabled()){
+			return 0;
+		}
+		
 		return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
 	}
 
 	public void suspendCSVWriter() {
+		if(isDisabled()){
+			return;
+		}
+		
 		if (!mCSVWriter1.isSuspended()) {
 			mCSVWriter1.suspend();
 		}
@@ -395,6 +467,10 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void resumeCSVWriter() {
+		if(isDisabled()){
+			return;
+		}
+		
 		if (mCSVWriter1.isSuspended()) {
 			mCSVWriter1.resume();
 		}
@@ -409,6 +485,10 @@ public class DriveSubsystem extends SubsystemBase {
 	 * the orientation in teleop (e.x. vision)
 	 */
 	public void setVisionHeadingOverride(boolean visionOverride) {
+		if(isDisabled()){
+			return;
+		}
+		
 		visionHeadingOverride = visionOverride;
 		headingController.setP(visionOverride ? VisionConstants.kTurnP : DriveConstants.kTurnP);
 		headingController.setI(visionOverride ? VisionConstants.kTurnI : DriveConstants.kTurnI);
@@ -416,14 +496,26 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void setVisionDistanceOverride(boolean visionOverride) {
+		if(isDisabled()){
+			return;
+		}
+		
 		visionDistanceOverride = visionOverride;
 	}
 
 	public void setVisionHeadingGoal(double newGoal) {
+		if(isDisabled()){
+			return;
+		}
+		
 		headingController.setGoal(newGoal);
 	}
 
 	public void displayEncoders() {
+		if(isDisabled()){
+			return;
+		}
+		
 		SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
 		SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
 		SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
@@ -437,6 +529,10 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void resetGyro() {
+		if(isDisabled()){
+			return;
+		}
+		
 		if (m_gyro != null) {
 			desiredHeading = 0;
 			lockedHeading = null;
