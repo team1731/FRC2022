@@ -150,19 +150,19 @@ public final class Constants {
 		// Intake
 		public static final int kMotorPWMIntake = 0; // Intake
 		public static final int kMotorSeq = 9; // Sequencer
-		public static final int kMotorPWMLaunch1 = 2; // Launcher Motor One
-		public static final int kMotorPWMLaunch2 = 3; // Launcher Motor Two
-		public static final int kMotorCANLaunch1 = 7;
-		public static final int kMotorCANLaunch2 = 8;
+		public static final int kMotorPWMShoot1 = 2; // Shooter Motor One
+		public static final int kMotorPWMShoot2 = 3; // Shooter Motor Two
+		public static final int kMotorCANShoot1 = 7;
+		public static final int kMotorCANShoot2 = 8;
 		public static final double kMotorSeqFwdIntakeSpeed = -0.4; // -0.3 // forward or backward
 		public static final double kMotorSeqRevIntakeSpeed = 0.4; // forward or backward
-		public static final double kMotorSeqFwdLaunchSpeed = -0.4; // -0.5 // forward or backward
-		public static final double kMotorSeqRevLaunchSpeed = 0.4; // forward or backward
+		public static final double kMotorSeqFwdShootSpeed = -0.4; // -0.5 // forward or backward
+		public static final double kMotorSeqRevShootSpeed = 0.4; // forward or backward
 		public static final double kMotorIntakeFwdSpeed = 1.0; // forward or backward
 		public static final double kMotorIntakeRevSpeed = -1.0; // forward or backward
-		public static final double kMotorLaunchSpeed1 = -0.3; // forward or backward
-		public static final double kMotorLaunchSpeed2 = 0.3;
-		public static final double kMotorLaunchPercent = 0.50; // check shooting motor percent
+		public static final double kMotorShootSpeed1 = -0.3; // forward or backward
+		public static final double kMotorShootSpeed2 = 0.3;
+		public static final double kMotorShootPercent = 0.50; // check shooting motor percent
 		public static final double kMotorClimbPercent = 0.3;
 		public static final int kMaxPowerCells = 5;
 		public static final double kSeqEjectDelay = 2.0;
@@ -171,9 +171,9 @@ public final class Constants {
 		// ColorWheel
 		public static final int kColorWheelTalonFX = 8;
 
-		// Launcher
-		public static final int kLauncherVictor = 3;
-		public static final int kLaunchMinVelocity = 500;
+		// Shooter
+		public static final int kShooterVictor = 3;
+		public static final int kShootMinVelocity = 500;
 
 		public static final double kClimbMaxPercent = 0.5;
 		public static final double kJoystickDeadband = 0.3;
@@ -222,7 +222,7 @@ public final class Constants {
 		// PCM 0 SOLENOIDS
 		// public static final int k0SpareLeft = 6;
 		// public static final int k0SpareRight = 7;
-		public static final int k0Launching = 4; // ok
+		public static final int k0Shooting = 4; // ok
 		public static final int k0Climbing = 5; // ok
 		public static final int k0BrakeOn = 2;
 		public static final int k0BrakeOff = 1;
