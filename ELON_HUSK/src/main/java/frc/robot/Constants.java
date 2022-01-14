@@ -8,12 +8,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.util.Color;
-import com.revrobotics.ColorMatch;
-//import frc.robot.Gains;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -31,7 +29,8 @@ public final class Constants {
 			int reverse_solenoidId) {
 		// System.out.println("creating solenoid ids " + forward_solenoidId + "-" +
 		// reverse_solenoidId + " PCM " + pcmChannel + " CHAN ");
-		return new DoubleSolenoid(pcmChannel, forward_solenoidId, reverse_solenoidId);
+		//return new DoubleSolenoid(pcmChannel, moduleType, forward_solenoidId, reverse_solenoidId);
+		return new DoubleSolenoid(pcmChannel, PneumaticsModuleType.CTREPCM, forward_solenoidId, reverse_solenoidId);
 	}
 
 	public static final int kTICKS = 33024; // 16.125 * 2048;
@@ -236,14 +235,6 @@ public final class Constants {
 		public static final int k1HoodRetract = 5;
 		public static final int k1IntakeExtend = 6; // ok
 		public static final int k1IntakeRetract = 7; // ok
-
-		// ColorWheel
-		// Note: Any example colors should be calibrated as the user needs, these are
-		// here as a basic example.
-		public static Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
-		public static Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
-		public static Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
-		public static Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
 		public static final int kWheelUnknown = 0;
 		public static final int kWheelGreen = 1;
