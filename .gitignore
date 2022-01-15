@@ -29,4 +29,6 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-HAN_SILO/src/main/deploy/DeployedBranchInfo~.txt
+
+# Branch information file. This is generated during deployment.
+**/deploy/DeployedBranchInfo.txt
