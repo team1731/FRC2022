@@ -70,6 +70,36 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+// Create text file with branch information
+tasks.register("writeBranchInfo") {
+    def branchStream = new ByteArrayOutputStream()
+    exec {
+        commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
+        standardOutput = branchStream
+    }
+    def branch = branchStream.toString().trim()
+
+    def hashStream = new ByteArrayOutputStream()
+    exec {
+        commandLine "git", "rev-parse", "--short", "HEAD"
+        standardOutput = hashStream
+    }
+    def hash = hashStream.toString().trim()
+
+    def dateStream = new ByteArrayOutputStream()
+    exec {
+        commandLine "date"
+        standardOutput = dateStream
+    }
+    def date = dateStream.toString().trim()
+
+    new File(
+        projectDir.toString() + "/src/main/deploy",
+        "DeployedBranchInfo.txt"
+    ).text = branch + "\n" + hash + "\n" + date
+}
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(writeBranchInfo)
+
 // Simulation configuration (e.g. environment variables).
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()
