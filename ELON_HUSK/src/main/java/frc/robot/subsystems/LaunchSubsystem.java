@@ -26,7 +26,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 
 	private DoubleSolenoid mLaunchClimbSolenoid;
