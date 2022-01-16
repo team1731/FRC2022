@@ -1,4 +1,5 @@
 import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
+import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id "java"
@@ -72,26 +73,26 @@ dependencies {
 
 // Create text file with branch information
 tasks.register("writeBranchInfo") {
+    def gitCmd = "git"
+    if(Os.isFamily(Os.FAMILY_WINDOWS)) {
+        gitCmd = "C:\\Program Files\\Git\\bin\\git.exe"
+    }
+
     def branchStream = new ByteArrayOutputStream()
     exec {
-        commandLine "git", "rev-parse", "--abbrev-ref", "HEAD"
+        commandLine gitCmd, "rev-parse", "--abbrev-ref", "HEAD"
         standardOutput = branchStream
     }
     def branch = branchStream.toString().trim()
 
     def hashStream = new ByteArrayOutputStream()
     exec {
-        commandLine "git", "rev-parse", "--short", "HEAD"
+        commandLine gitCmd, "rev-parse", "--short", "HEAD"
         standardOutput = hashStream
     }
     def hash = hashStream.toString().trim()
 
-    def dateStream = new ByteArrayOutputStream()
-    exec {
-        commandLine "date"
-        standardOutput = dateStream
-    }
-    def date = dateStream.toString().trim()
+    def date = new Date().format("MM/dd/yyyy HH:mm:ss")
 
     new File(
         projectDir.toString() + "/src/main/deploy",
