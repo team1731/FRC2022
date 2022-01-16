@@ -1,6 +1,0 @@
-ref: refs/heads/shooter
-Commit hash:
-7dea3d1e352d3f256db1d7b983747f25463d3149
----
-Deployed on:
-Wed Jan 12 21:03:42 EST 2022

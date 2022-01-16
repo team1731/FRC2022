@@ -123,18 +123,27 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Vis_HasTarget", false);
 		SmartDashboard.putNumber("Vis_TargetAngle", 0);
 
+		SmartDashboard.putString("Build Info - Branch", "N/A");
+		SmartDashboard.putString("Build Info - Commit Hash", "N/A");
+		SmartDashboard.putString("Build Info - Date", "N/A");
 		try {
-			File branchInfo = new File(Filesystem.getDeployDirectory() + "/DeployedBranchInfo~.txt");
-			Scanner reader = new Scanner(branchInfo);
-			String fullText = "";
-			while (reader.hasNext()) {
-				fullText += reader.nextLine();
+			File buildInfoFile = new File(Filesystem.getDeployDirectory(), "DeployedBranchInfo.txt");
+			Scanner reader = new Scanner(buildInfoFile);
+			int i = 0;
+			while(reader.hasNext()){
+				if(i == 0){
+					SmartDashboard.putString("Build Info - Branch", reader.nextLine());
+				} else if(i == 1){
+					SmartDashboard.putString("Build Info - Commit Hash", reader.nextLine());
+				} else {
+					SmartDashboard.putString("Build Info - Date", reader.nextLine());
+				}
+				i++;
 			}
-			SmartDashboard.putString("Build Info", fullText);
+			
 			reader.close();
 		} catch (FileNotFoundException fnf) {
-			SmartDashboard.putString("Build Info", "N/A");
-			System.err.println("DeployedBranchInfo~.txt not found");
+			System.err.println("DeployedBranchInfo.txt not found");
 			fnf.printStackTrace();
 		}
 	}
