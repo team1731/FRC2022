@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.F1_Move_Forward;
 import frc.robot.autonomous.T1_Move_Test;
+import frc.robot.autonomous.T2_PathWeaver_Test;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.VisionRotateCommand;
@@ -164,6 +165,8 @@ public class RobotContainer {
 				return new _NamedAutoMode(new F1_Move_Forward(m_robotDrive));
 			case "T1":
 				return new _NamedAutoMode(new T1_Move_Test(m_robotDrive));
+			case "T2":
+				return new _NamedAutoMode(new T2_PathWeaver_Test(m_robotDrive));
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");
 				return null;
