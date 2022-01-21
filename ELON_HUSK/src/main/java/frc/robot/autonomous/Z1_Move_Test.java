@@ -5,8 +5,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import frc.robot.subsystems.drive.DriveSubsystem;
 
-public class T1_Move_Test extends _DelayableStrafingAutoMode {
-	public T1_Move_Test(DriveSubsystem m_robotDrive) {
+/**
+ * AUTONOMOUS TEST
+ */
+public class Z1_Move_Test extends _DelayableStrafingAutoMode {
+	public Z1_Move_Test(DriveSubsystem m_robotDrive) {
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(new WaitCommand(getInitialDelaySeconds()),
 

@@ -14,7 +14,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
-public class T2_PathWeaver_Test extends _DelayableStrafingAutoMode {
+/**
+ * AUTONOMOUS TEST
+ */
+public class Z2_PathWeaver_Test extends _DelayableStrafingAutoMode {
 
 	private final String trajectory1JSON = AutoConstants.kPATH + "test-trajectory1.wpilib.json";
 	private final String trajectory2JSON = AutoConstants.kPATH + "test-trajectory2.wpilib.json";
@@ -26,7 +29,7 @@ public class T2_PathWeaver_Test extends _DelayableStrafingAutoMode {
 		return this._initPose;
 	}
 
-	public T2_PathWeaver_Test(DriveSubsystem m_robotDrive) {
+	public Z2_PathWeaver_Test(DriveSubsystem m_robotDrive) {
 
 		//Resolve trajectories
 		Trajectory trajectory1 = new Trajectory();

@@ -5,8 +5,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import frc.robot.subsystems.drive.DriveSubsystem;
 
-public class F1_Move_Forward extends _DelayableStrafingAutoMode {
-	public F1_Move_Forward(DriveSubsystem m_robotDrive) {
+/**
+ * Taxi. Used when everything is broken.
+ * Starting Position: ANY
+ */
+public class F1_Taxi extends _DelayableStrafingAutoMode {
+	public F1_Taxi(DriveSubsystem m_robotDrive) {
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(new WaitCommand(getInitialDelaySeconds()),
 
