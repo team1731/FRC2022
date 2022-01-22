@@ -39,7 +39,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 
 	private final Timer m_timer = new Timer();
