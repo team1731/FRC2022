@@ -8,6 +8,7 @@ public class LeftIntakeCommand extends CommandBase {
 
     public LeftIntakeCommand(IntakeSubsystem intake) {
         _intake = intake;
+        addRequirements(intake);
     }
 
     @Override
