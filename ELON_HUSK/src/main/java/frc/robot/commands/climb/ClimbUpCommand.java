@@ -6,6 +6,7 @@ public class ClimbUpCommand extends ClimbCommand {
 
     public ClimbUpCommand(ClimbSubsystem climb){
         super(climb);
+        addRequirements(climb);
     }
 
     @Override
