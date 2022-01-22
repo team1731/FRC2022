@@ -16,6 +16,6 @@ public abstract class ClimbCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        _climb.setInputState(ClimbSubsystem.InputState.NEUTRAL);
+        _climb.setInputDirection(ClimbSubsystem.InputDirection.NEUTRAL);
     }
 }

@@ -10,6 +10,6 @@ public class ClimbDownCommand extends ClimbCommand {
 
     @Override
     public void initialize() {
-        _climb.setInputState(ClimbSubsystem.InputState.DOWN);
+        _climb.setInputDirection(ClimbSubsystem.InputDirection.DOWN);
     }
 }
