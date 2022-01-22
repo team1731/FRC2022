@@ -116,6 +116,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			rightRearAbsEncoder = null;
 			mCSVWriter1 = null;
 			mCSVWriter2 = null;
+			m_leftFront = null;
+			m_rightFront = null;
+			m_leftRear = null;
+			m_rightRear = null;
 			return;
 		}
 		
