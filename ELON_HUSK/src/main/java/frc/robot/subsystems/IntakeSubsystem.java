@@ -37,11 +37,11 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}
 
 		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANLaunch1);
-		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
-				OpConstants.k1IntakeExtend);
+		_RightIntakeSolenoid = null; // Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
+				// OpConstants.k1IntakeExtend);
 		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANLaunch2);
-		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
-				OpConstants.k1IntakeExtend);
+		_LeftIntakeSolenoid = null; // Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
+				// OpConstants.k1IntakeExtend);
 
 		//Defaulting the Motors
 		_RightMotorIntake.configFactoryDefault();
