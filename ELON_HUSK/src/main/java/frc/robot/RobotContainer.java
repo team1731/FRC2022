@@ -17,7 +17,6 @@ import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.ResetGyroCommand;
-import frc.robot.commands.VisionRotateCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -29,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.intake.LeftIntakeCommand;
+import frc.robot.commands.intake.RightIntakeCommand;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -111,11 +112,11 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
 		//#endregion
-
-		//#region Vision Subsystem
-		// Map right bumper to rotation lock to power port
-		new JoystickButton(m_driverController, ButtonConstants.kVision).whenActive(new VisionRotateCommand(m_vision, m_drive, m_driverController));
-		//#endregion
+		
+		//left = button 1
+		//right = button 12
+		new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
+		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
 	}
 
 	public _NamedAutoMode getNamedAutonomousCommand(String autoSelected) {
