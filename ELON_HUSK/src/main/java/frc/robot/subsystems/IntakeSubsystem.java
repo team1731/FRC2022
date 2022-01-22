@@ -2,8 +2,8 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
-import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 public class IntakeSubsystem extends ToggleableSubsystem{
 
@@ -13,9 +13,9 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 	}
 
 	// private final LedStringSubsystem m_ledstring;
-	private final PWMTalonFX _RightMotorIntake;
+	private final WPI_TalonFX _RightMotorIntake;
 	private final DoubleSolenoid _RightIntakeSolenoid;
-	private final PWMTalonFX _LeftMotorIntake;
+	private final WPI_TalonFX _LeftMotorIntake;
 	private final DoubleSolenoid _LeftIntakeSolenoid;
 
 	/**
@@ -32,10 +32,10 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightMotorIntake = new PWMTalonFX(OpConstants.kMotorPWMIntake);
+		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorPWMIntake);
 		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
 				OpConstants.k1IntakeExtend);
-		_LeftMotorIntake = new PWMTalonFX(OpConstants.kMotorPWMIntake);
+		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorPWMIntake);
 		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
 				OpConstants.k1IntakeExtend);
 	}
