@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -14,13 +15,19 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.F1_Move_Forward;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
+import frc.robot.commands.ResetEncodersCommand;
+import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.VisionRotateCommand;
+import frc.robot.commands.climb.ClimbDownCommand;
+import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.XboxConstants;
@@ -34,10 +41,12 @@ import frc.robot.Constants.XboxConstants;
 public class RobotContainer {
 
 	XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+	Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
 
-	private DriveSubsystem m_robotDrive;
+	private DriveSubsystem m_drive;
 	private IntakeSubsystem m_intake;
 	private LimeLightSubsystem m_vision;
+	private ClimbSubsystem m_climb;
 
 	public enum HanMode {
 		MODE_SHOOT, MODE_CLIMB
@@ -48,21 +57,21 @@ public class RobotContainer {
 	 * 
 	 * @throws _NotImplementedProperlyException
 	 */
-	public RobotContainer(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake, LimeLightSubsystem m_vision) {
+	public RobotContainer(ClimbSubsystem climb, DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision) {
 		// this.m_ledstring = m_ledstring;
-		this.m_robotDrive = m_robotDrive;
-		this.m_intake = m_intake;
-		this.m_vision = m_vision;
+		this.m_drive = drive;
+		this.m_intake = intake;
+		this.m_vision = vision;
 
 		// Configure the button bindings
 		configureButtonBindings();
 
 		// Configure default commands
 		// Set the default drive command to split-stick arcade drive
-		m_robotDrive.setDefaultCommand(
+		m_drive.setDefaultCommand(
 				// A split-stick arcade command, with forward/backward controlled by the left
 				// hand, and turning controlled by the right.
-				new RunCommand(() -> m_robotDrive.drive(
+				new RunCommand(() -> m_drive.drive(
 						// Get the x speed. We are inverting this because Xbox controllers return
 						// negative values when we push forward.
 						-m_driverController.getLeftY() * Math.abs(m_driverController.getLeftY())
@@ -84,7 +93,7 @@ public class RobotContainer {
 
 						true),
 
-						m_robotDrive));
+						m_drive));
 	}
 
 	/**
@@ -95,23 +104,20 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 
-		// Activate Intake via Operator Left Axis/Trigger
-		// new HanTrigger(HanTriggers.DR_TRIG_RIGHT).whileActiveContinuous(new ShootSeqCommand(m_shootclimb, m_sequencer),
-		// 		true);
+		//#region Drive Subsystem
+		new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
+		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
+		//#endregion
+		
+		//#region Climb Subsystem
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
+		//#endregion
 
+		//#region Vision Subsystem
 		// Map right bumper to rotation lock to power port
-		new JoystickButton(m_driverController, XboxConstants.kRBumper)
-				.whenActive(new VisionRotateCommand(m_vision, m_robotDrive, m_driverController));
-
-		new JoystickButton(m_driverController, 7).whenPressed(new InstantCommand(() -> {
-			m_robotDrive.resetGyro();
-			System.out.println("Reset gyro");
-		}, m_robotDrive));
-		new JoystickButton(m_driverController, XboxConstants.kMenu).whenPressed(new InstantCommand(() -> {
-			m_robotDrive.resetEncoders();
-			System.out.println("Reset encoders");
-		}, m_robotDrive));
-
+		new JoystickButton(m_driverController, ButtonConstants.kVision).whenActive(new VisionRotateCommand(m_vision, m_drive, m_driverController));
+		//#endregion
 	}
 
 	public _NamedAutoMode getNamedAutonomousCommand(String autoSelected) {
@@ -143,7 +149,7 @@ public class RobotContainer {
 		} catch (_NotImplementedProperlyException e) {
 			System.err.println("SELECTED MODE NOT IMPLEMENTED -- DEFAULT TO F1_MOVE_FORWARD!!!");
 			try {
-				selectedAutoMode = new _NamedAutoMode(new F1_Move_Forward(m_robotDrive));
+				selectedAutoMode = new _NamedAutoMode(new F1_Move_Forward(m_drive));
 			} catch (_NotImplementedProperlyException e2) {
 				System.err.println("F1_Move_Forward could NOT be created -- Aborting!!!");
 				return null;
@@ -160,7 +166,7 @@ public class RobotContainer {
 	private _NamedAutoMode createNamedAutoMode(String autoModeName) throws _NotImplementedProperlyException {
 		switch (autoModeName) {
 			case "F1":
-				return new _NamedAutoMode(new F1_Move_Forward(m_robotDrive));
+				return new _NamedAutoMode(new F1_Move_Forward(m_drive));
 
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");
