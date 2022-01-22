@@ -23,25 +23,34 @@ elif len(sys.argv) == 2:
 	else:
 		className = arg1
 
-# Input verification
-while len(className) < 1:
-	className = input('Enter a name for the new mode: ').strip()
-while modeType != 'path' and modeType != 'coord':
-	modeType = input('Choose which type of mode you want to generate (path|coord): ').lower().strip()
+repeat = 'Y'
+while repeat == 'Y':
+	# Input verification
+	while len(className) < 1:
+		className = input('Enter a name for the new mode: ').strip()
+	while modeType != 'path' and modeType != 'coord':
+		modeType = input('Choose which type of mode you want to generate (path|coord): ').lower().strip()
 
-modePath = os.path.join(MODE_DIR, className + '.java')
-if modeType == 'path':
-	print('Generating path mode ' + className + '...')
-	with open(PATH_TEMPLATE, 'r') as templateFile:
-		templateData = templateFile.read()
-elif modeType == 'coord':
-	print('Generating coordinate mode ' + className + '...')
-	with open(COORD_TEMPLATE, 'r') as templateFile:
-		templateData = templateFile.read()
+	modePath = os.path.join(MODE_DIR, className + '.java')
+	if modeType == 'path':
+		print('Generating path mode ' + className + '...')
+		with open(PATH_TEMPLATE, 'r') as templateFile:
+			templateData = templateFile.read()
+	elif modeType == 'coord':
+		print('Generating coordinate mode ' + className + '...')
+		with open(COORD_TEMPLATE, 'r') as templateFile:
+			templateData = templateFile.read()
 
-templateData = templateData.replace('#CLASSNAME', className)
+	templateData = templateData.replace('#CLASSNAME', className)
 
-with open(modePath, 'w') as modeFile:
-	modeFile.write(templateData)
+	with open(modePath, 'w') as modeFile:
+		modeFile.write(templateData)
 
-print('File generated as ' + modePath)
+	print('File generated as ' + modePath)
+
+	className = ''
+	modeType = ''
+	repeat = input('Generate another auto mode? (y/N): ').strip().upper()
+	if len(repeat) > 1:
+		repeat = repeat[0]
+	print()
