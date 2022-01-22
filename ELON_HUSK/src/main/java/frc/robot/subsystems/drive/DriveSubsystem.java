@@ -83,17 +83,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private double m_heading;
 
 	// Robot swerve modules
-	private final SwerveModule m_leftFront = new SwerveModule(DriveConstants.kLeftFrontDriveMotorPort,
-			DriveConstants.kLeftFrontTurningMotorPort);
-
-	private final SwerveModule m_rightFront = new SwerveModule(DriveConstants.kRightFrontDriveMotorPort,
-			DriveConstants.kRightFrontTurningMotorPort);
-
-	private final SwerveModule m_leftRear = new SwerveModule(DriveConstants.kLeftRearDriveMotorPort,
-			DriveConstants.kLeftRearTurningMotorPort);
-
-	private final SwerveModule m_rightRear = new SwerveModule(DriveConstants.kRightRearDriveMotorPort,
-			DriveConstants.kRightRearTurningMotorPort);
+	private final SwerveModule m_leftFront;
+	private final SwerveModule m_rightFront;
+	private final SwerveModule m_leftRear;
+	private final SwerveModule m_rightRear;
 
 	// The gyro sensor
 	// private final Gyro a_gyro = new ADXRS450_Gyro();
@@ -125,6 +118,15 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			mCSVWriter2 = null;
 			return;
 		}
+		
+		m_leftFront = new SwerveModule(DriveConstants.kLeftFrontDriveMotorPort,
+			DriveConstants.kLeftFrontTurningMotorPort);
+		m_rightFront = new SwerveModule(DriveConstants.kRightFrontDriveMotorPort,
+			DriveConstants.kRightFrontTurningMotorPort);
+		m_leftRear = new SwerveModule(DriveConstants.kLeftRearDriveMotorPort,
+			DriveConstants.kLeftRearTurningMotorPort);
+		m_rightRear = new SwerveModule(DriveConstants.kRightRearDriveMotorPort,
+			DriveConstants.kRightRearTurningMotorPort);
 
 		leftFrontAbsEncoder = new AnalogInput(0);
 		rightFrontAbsEncoder = new AnalogInput(1);
