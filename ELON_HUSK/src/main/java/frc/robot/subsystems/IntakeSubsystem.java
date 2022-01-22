@@ -5,7 +5,7 @@ import frc.robot.Constants.OpConstants;
 import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
-public class IntakeSubsystem extends ToggleableSubsystem {
+public class IntakeSubsystem extends ToggleableSubsystem{
 
 	@Override
 	protected boolean getEnabled(){
@@ -13,9 +13,10 @@ public class IntakeSubsystem extends ToggleableSubsystem {
 	}
 
 	// private final LedStringSubsystem m_ledstring;
-	private final PWMTalonFX mTalonIntake;
-	private final DoubleSolenoid mIntakeSolenoid;
-	private String mTalonState;
+	private final PWMTalonFX _RightMotorIntake;
+	private final DoubleSolenoid _RightIntakeSolenoid;
+	private final PWMTalonFX _LeftMotorIntake;
+	private final DoubleSolenoid _LeftIntakeSolenoid;
 
 	/**
 	 * Creates a new IntakeSubsystem.
@@ -24,15 +25,19 @@ public class IntakeSubsystem extends ToggleableSubsystem {
 	 */
 	public IntakeSubsystem() {
 		if(isDisabled()){
-			mTalonIntake = null;
-			mIntakeSolenoid = null;
+			_RightMotorIntake = null;
+			_RightIntakeSolenoid = null;
+			_LeftMotorIntake = null;
+			_LeftIntakeSolenoid = null;
 			return;
 		}
 
-		mTalonIntake = new PWMTalonFX(OpConstants.kMotorPWMIntake);
-		mIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
+		_RightMotorIntake = new PWMTalonFX(OpConstants.kMotorPWMIntake);
+		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
 				OpConstants.k1IntakeExtend);
-		mTalonState = "Off";
+		_LeftMotorIntake = new PWMTalonFX(OpConstants.kMotorPWMIntake);
+		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
+				OpConstants.k1IntakeExtend);
 	}
 
 	@Override
@@ -52,8 +57,8 @@ public class IntakeSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		mIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		mTalonState = "Intake Extend";
+		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 
 	public void active() {
@@ -61,8 +66,8 @@ public class IntakeSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		mTalonIntake.set(OpConstants.kMotorIntakeFwdSpeed);
-		mTalonState = "Intake Fwd";
+		_RightMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
+		_LeftMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
 		// m_ledstring.option(LedOption.INTAKE);
 	}
 
@@ -71,8 +76,8 @@ public class IntakeSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		mTalonIntake.set(0);
-		mTalonState = "Intake Stop";
+		_RightMotorIntake.set(0);
+		_LeftMotorIntake.set(0);
 	}
 
 	/**
@@ -83,8 +88,8 @@ public class IntakeSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		mTalonIntake.set(OpConstants.kMotorIntakeRevSpeed);
-		mTalonState = "Intake Rev";
+		_RightMotorIntake.set(OpConstants.kMotorIntakeRevSpeed);
+		_LeftMotorIntake.set(OpConstants.kMotorIntakeRevSpeed);
 	}
 
 	/**
@@ -95,16 +100,49 @@ public class IntakeSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		mIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-		mTalonIntake.set(0);
-		mTalonState = "Intake Retracted/Off";
+		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		_RightMotorIntake.set(0);
+		_LeftMotorIntake.set(0);
 	}
 
-	public String getIntakeState() {
+	//Extends the Right intake and spins the motor to intake
+	public void extendRightIntake(){
 		if(isDisabled()){
-			return "N/A";
-		}
+			return;
+		}	
+		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		_RightMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
+	}
 
-		return (mTalonState);
+	//Retracts the Right intake and stops spinning the motor
+	public void retractRightIntake(){
+		if(isDisabled()){
+			return;
+		}
+		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
+		_RightMotorIntake.set(0);
+	}
+
+	//Extends the Left intake and spins the motor to intake
+	public void extendLeftIntake(){
+		if(isDisabled()){
+			return;
+		}
+		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		_LeftMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
+	}
+
+	//Retracts the Left intake and stops spinning the motor
+	public void retractLeftIntake(){
+		if(isDisabled()){
+			return;
+		}
+		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
+		_LeftMotorIntake.set(0);
 	}
 }
+
+//both sides can intake
+/*Make some functions for spining a motor when a buton is pressed: both can spin at the same time
+ are indepent of eachother, use commands to bind the functions to the subsystem*/
