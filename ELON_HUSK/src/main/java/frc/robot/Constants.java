@@ -342,4 +342,13 @@ public final class Constants {
 		public static final int kRStickYAxis = 5;
 
 	}
+
+	public static final class ButtonConstants {
+		public static final int kClimbUp = 6;
+		public static final int kClimbDown = 7;
+
+		public static final int kVision = XboxConstants.kRBumper;
+		public static final int kResetGyro = XboxConstants.kAppMenu;
+		public static final int kResetEncoders = XboxConstants.kMenu;
+	}
 }
