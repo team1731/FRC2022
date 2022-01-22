@@ -9,8 +9,8 @@ import frc.robot.subsystems.drive.DriveSubsystem;
  * Taxi. Used when everything is broken.
  * Starting Position: ANY
  */
-public class F1_Taxi extends _DelayableStrafingAutoMode {
-	public F1_Taxi(DriveSubsystem m_robotDrive) {
+public class T1_Taxi extends _DelayableStrafingAutoMode {
+	public T1_Taxi(DriveSubsystem m_robotDrive) {
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(new WaitCommand(getInitialDelaySeconds()),
 

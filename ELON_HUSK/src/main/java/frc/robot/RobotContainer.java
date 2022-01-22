@@ -11,7 +11,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.autonomous.F1_Taxi;
+import frc.robot.autonomous.P1_ShootThenPickupRandomShoot;
+import frc.robot.autonomous.P2_TaxiThenPickupRandomShoot;
+import frc.robot.autonomous.P3_PickupR1ShootThenPickupR2Shoot;
+import frc.robot.autonomous.P4_PickupR2ShootThenPickupR4R1Shoot;
+import frc.robot.autonomous.P5_PickupR2ShootThenPickupR4Shoot;
+import frc.robot.autonomous.P6_PickupR1ShootThenPickupR2R4Shoot;
+import frc.robot.autonomous.P7_PickupR1ShootThenPickupR4R2Shoot;
+import frc.robot.autonomous.T1_Taxi;
+import frc.robot.autonomous.T2_ShootThenTaxi;
+import frc.robot.autonomous.T3_TaxiThenShoot;
 import frc.robot.autonomous.Z1_Move_Test;
 import frc.robot.autonomous.Z2_PathWeaver_Test;
 import frc.robot.autonomous._NamedAutoMode;
@@ -145,7 +154,7 @@ public class RobotContainer {
 		} catch (_NotImplementedProperlyException e) {
 			System.err.println("SELECTED MODE NOT IMPLEMENTED -- DEFAULT TO F1_MOVE_FORWARD!!!");
 			try {
-				selectedAutoMode = new _NamedAutoMode(new F1_Taxi(m_robotDrive));
+				selectedAutoMode = new _NamedAutoMode(new T1_Taxi(m_robotDrive));
 			} catch (_NotImplementedProperlyException e2) {
 				System.err.println("F1_Move_Forward could NOT be created -- Aborting!!!");
 				return null;
@@ -161,12 +170,18 @@ public class RobotContainer {
 
 	private _NamedAutoMode createNamedAutoMode(String autoModeName) throws _NotImplementedProperlyException {
 		switch (autoModeName) {
-			case "F1":
-				return new _NamedAutoMode(new F1_Taxi(m_robotDrive));
-			case "Z1":
-				return new _NamedAutoMode(new Z1_Move_Test(m_robotDrive));
-			case "Z2":
-				return new _NamedAutoMode(new Z2_PathWeaver_Test(m_robotDrive));
+			case "T1": return new _NamedAutoMode(new T1_Taxi(m_robotDrive));
+			case "T2": return new _NamedAutoMode(new T2_ShootThenTaxi(m_robotDrive));
+			case "T3": return new _NamedAutoMode(new T3_TaxiThenShoot(m_robotDrive));
+			case "P1": return new _NamedAutoMode(new P1_ShootThenPickupRandomShoot(m_robotDrive));
+			case "P2": return new _NamedAutoMode(new P2_TaxiThenPickupRandomShoot(m_robotDrive));
+			case "P3": return new _NamedAutoMode(new P3_PickupR1ShootThenPickupR2Shoot(m_robotDrive));
+			case "P4": return new _NamedAutoMode(new P4_PickupR2ShootThenPickupR4R1Shoot(m_robotDrive));
+			case "P5": return new _NamedAutoMode(new P5_PickupR2ShootThenPickupR4Shoot(m_robotDrive));
+			case "P6": return new _NamedAutoMode(new P6_PickupR1ShootThenPickupR2R4Shoot(m_robotDrive));
+			case "P7": return new _NamedAutoMode(new P7_PickupR1ShootThenPickupR4R2Shoot(m_robotDrive));
+			case "Z1": return new _NamedAutoMode(new Z1_Move_Test(m_robotDrive));
+			case "Z2": return new _NamedAutoMode(new Z2_PathWeaver_Test(m_robotDrive));
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");
 				return null;
