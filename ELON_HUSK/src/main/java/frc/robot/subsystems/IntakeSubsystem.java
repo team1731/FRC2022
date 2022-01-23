@@ -16,11 +16,10 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		return true;
 	}
 
-	// private final LedStringSubsystem m_ledstring;
 	private final WPI_TalonFX _RightMotorIntake;
-	private final DoubleSolenoid _RightIntakeSolenoid;
+	// private final DoubleSolenoid _RightIntakeSolenoid;
 	private final WPI_TalonFX _LeftMotorIntake;
-	private final DoubleSolenoid _LeftIntakeSolenoid;
+	// private final DoubleSolenoid _LeftIntakeSolenoid;
 
 	/**
 	 * Creates a new IntakeSubsystem.
@@ -30,17 +29,17 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 	public IntakeSubsystem() {
 		if(isDisabled()){
 			_RightMotorIntake = null;
-			_RightIntakeSolenoid = null;
+			// _RightIntakeSolenoid = null;
 			_LeftMotorIntake = null;
-			_LeftIntakeSolenoid = null;
+			// _LeftIntakeSolenoid = null;
 			return;
 		}
 
 		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANLaunch1);
-		_RightIntakeSolenoid = null; // Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
+		// _RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
 				// OpConstants.k1IntakeExtend);
 		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANLaunch2);
-		_LeftIntakeSolenoid = null; // Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
+		// _LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
 				// OpConstants.k1IntakeExtend);
 
 		//Defaulting the Motors
@@ -96,8 +95,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 
 	public void active() {
@@ -139,8 +138,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 		_RightMotorIntake.set(0);
 		_LeftMotorIntake.set(0);
 	}
@@ -151,7 +150,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}	
 
-		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0);
 	}
 
@@ -160,7 +159,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		if(isDisabled()){
 			return;
 		}
-		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
+		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
 		_RightMotorIntake.set(0);
 	}
 
@@ -169,7 +168,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		if(isDisabled()){
 			return;
 		}
-		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0);
 	}
 
@@ -178,7 +177,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		if(isDisabled()){
 			return;
 		}
-		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
+		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
 		_LeftMotorIntake.set(0);
 	}
 }
