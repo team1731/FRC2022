@@ -96,6 +96,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getAngle());
 
 	public void updateOdometry() {
+		if(isDisabled()){
+			return;
+		}
+		
 		if (m_odometry != null) {
 			m_odometry.update(new Rotation2d(Math.toRadians(getHeading())), m_leftFront.getState(), // leftFront,
 																									// rightFront,
