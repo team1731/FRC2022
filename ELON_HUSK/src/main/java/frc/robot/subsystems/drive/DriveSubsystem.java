@@ -37,7 +37,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 
 	private final Timer m_timer = new Timer();
@@ -92,7 +92,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	// Odometry class for tracking robot pose
 	private SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getAngle());
-
+	
 	public void updateOdometry() {
 		if(isDisabled()){
 			return;
