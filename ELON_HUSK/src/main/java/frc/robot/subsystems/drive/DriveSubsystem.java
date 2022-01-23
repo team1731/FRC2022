@@ -12,12 +12,10 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-//import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-//import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -116,6 +114,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			rightRearAbsEncoder = null;
 			mCSVWriter1 = null;
 			mCSVWriter2 = null;
+			m_leftFront = null;
+			m_rightFront = null;
+			m_leftRear = null;
+			m_rightRear = null;
 			return;
 		}
 		
