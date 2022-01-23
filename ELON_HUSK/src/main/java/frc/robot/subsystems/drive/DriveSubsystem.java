@@ -94,7 +94,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	// Odometry class for tracking robot pose
 	private SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getAngle());
-
+	
 	public void updateOdometry() {
 		if(isDisabled()){
 			return;
