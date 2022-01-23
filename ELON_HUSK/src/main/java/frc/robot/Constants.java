@@ -30,8 +30,10 @@ public final class Constants {
 		// System.out.println("creating solenoid ids " + forward_solenoidId + "-" +
 		// reverse_solenoidId + " PCM " + pcmChannel + " CHAN ");
 		//return new DoubleSolenoid(pcmChannel, moduleType, forward_solenoidId, reverse_solenoidId);
-		return new DoubleSolenoid(pcmChannel, PneumaticsModuleType.CTREPCM, forward_solenoidId, reverse_solenoidId);
+		return new DoubleSolenoid(pcmChannel, Constants.kPneumaticsType, forward_solenoidId, reverse_solenoidId);
 	}
+
+	public static final PneumaticsModuleType kPneumaticsType = PneumaticsModuleType.REVPH;
 
 	public static final int kTICKS = 33024; // 16.125 * 2048;
 
