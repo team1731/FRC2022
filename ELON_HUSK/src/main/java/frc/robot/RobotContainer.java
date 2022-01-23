@@ -61,6 +61,7 @@ public class RobotContainer {
 		this.m_drive = drive;
 		this.m_intake = intake;
 		this.m_vision = vision;
+		this.m_climb = climb;
 
 		// Configure the button bindings
 		configureButtonBindings();
