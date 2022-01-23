@@ -148,17 +148,19 @@ public final class Constants {
 
 		// Intake
 		public static final int kMotorPWMIntake = 0; // Intake
-		public static final int kMotorSeq = 9; // Sequencer
+		//public static final int kMotorSeq = 9; // Sequencer
 		public static final int kMotorPWMLaunch1 = 2; // Launcher Motor One
 		public static final int kMotorPWMLaunch2 = 3; // Launcher Motor Two
-		public static final int kMotorCANLaunch1 = 7;
-		public static final int kMotorCANLaunch2 = 8;
+		public static final int kMotorCANLaunch1 = 9;
+		public static final int kMotorCANLaunch2 = 10;
+		public static final int kMotorCANIntake1 = 7;
+		public static final int kMotorCANIntake2 = 8;
 		public static final double kMotorSeqFwdIntakeSpeed = -0.4; // -0.3 // forward or backward
 		public static final double kMotorSeqRevIntakeSpeed = 0.4; // forward or backward
 		public static final double kMotorSeqFwdLaunchSpeed = -0.4; // -0.5 // forward or backward
 		public static final double kMotorSeqRevLaunchSpeed = 0.4; // forward or backward
-		public static final double kMotorIntakeFwdSpeed = 1.0; // forward or backward
-		public static final double kMotorIntakeRevSpeed = -1.0; // forward or backward
+		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
+		public static final double kMotorIntakeRevSpeed = -0.8; // forward or backward
 		public static final double kMotorLaunchSpeed1 = -0.3; // forward or backward
 		public static final double kMotorLaunchSpeed2 = 0.3;
 		public static final double kMotorLaunchPercent = 0.50; // check shooting motor percent
@@ -168,7 +170,7 @@ public final class Constants {
 		public static final double kSeqResetDelay = 2.0;
 
 		// ColorWheel
-		public static final int kColorWheelTalonFX = 8;
+		//public static final int kColorWheelTalonFX = 8;
 
 		// Launcher
 		public static final int kLauncherVictor = 3;
@@ -268,7 +270,7 @@ public final class Constants {
 		 * 
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
-		public final static Gains kGains_Velocity = new Gains(2.0, 0, 0, .06, 300, 1.00);
+		public final static Gains kGains_Velocity = new Gains(0.05, 0, 0, .06, 300, 1.00);
 		///// End TalonFX
 	}
 

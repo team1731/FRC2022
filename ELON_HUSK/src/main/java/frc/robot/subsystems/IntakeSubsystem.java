@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -35,10 +36,10 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANLaunch1);
+		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntake1);
 		// _RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
 				// OpConstants.k1IntakeExtend);
-		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANLaunch2);
+		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntake2);
 		// _LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1IntakeRetract,
 				// OpConstants.k1IntakeExtend);
 
@@ -65,14 +66,14 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_LeftMotorIntake.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
 
 		_RightMotorIntake.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_RightMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_RightMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_RightMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
+		_RightMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
+		_RightMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
+		_RightMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
 
 		_LeftMotorIntake.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
+		_LeftMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
+		_LeftMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
+		_LeftMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
 
 		_RightMotorIntake.setNeutralMode(NeutralMode.Coast);
 		_LeftMotorIntake.setNeutralMode(NeutralMode.Coast);
@@ -84,6 +85,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
+		SmartDashboard.putNumber("RightIntakeVelocity", _RightMotorIntake.getSelectedSensorVelocity());
+		SmartDashboard.putNumber("LeftIntakeVelocity", _LeftMotorIntake.getSelectedSensorVelocity());
 		// This method will be called once per scheduler run
 	}
 
@@ -104,8 +107,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
-		_LeftMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
+		//_RightMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
+		//_LeftMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
 		// m_ledstring.option(LedOption.INTAKE);
 	}
 
@@ -114,8 +117,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightMotorIntake.set(0);
-		_LeftMotorIntake.set(0);
+		//_RightMotorIntake.set(0);
+		//_LeftMotorIntake.set(0);
 	}
 
 	/**
@@ -126,8 +129,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightMotorIntake.set(OpConstants.kMotorIntakeRevSpeed);
-		_LeftMotorIntake.set(OpConstants.kMotorIntakeRevSpeed);
+		//_RightMotorIntake.set(OpConstants.kMotorIntakeRevSpeed);
+		//_LeftMotorIntake.set(OpConstants.kMotorIntakeRevSpeed);
 	}
 
 	/**
@@ -140,8 +143,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-		_RightMotorIntake.set(0);
-		_LeftMotorIntake.set(0);
+		//_RightMotorIntake.set(0);
+		//_LeftMotorIntake.set(0);
 	}
 
 	//Extends the Right intake and spins the motor to intake
@@ -151,7 +154,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}	
 
 		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0);
+		_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
+		//_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2);
 	}
 
 	//Retracts the Right intake and stops spinning the motor
@@ -169,7 +173,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0);
+		_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
+		//_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2 );
 	}
 
 	//Retracts the Left intake and stops spinning the motor
