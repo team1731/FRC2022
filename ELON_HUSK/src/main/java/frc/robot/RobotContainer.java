@@ -27,7 +27,6 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
 import frc.robot.commands.intake.LeftIntakeCommand;
 import frc.robot.commands.intake.RightIntakeCommand;
 
@@ -39,8 +38,8 @@ import frc.robot.commands.intake.RightIntakeCommand;
  */
 public class RobotContainer {
 
-	XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-	Joystick m_operatorController = new Joystick(OIConstants.kOperatorControllerPort);
+	XboxController m_driverController = new XboxController(Constants.kDriverControllerPort);
+	Joystick m_operatorController = new Joystick(Constants.kOperatorControllerPort);
 
 	private DriveSubsystem m_drive;
 	private IntakeSubsystem m_intake;
