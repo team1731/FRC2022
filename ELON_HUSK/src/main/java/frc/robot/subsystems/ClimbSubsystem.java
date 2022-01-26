@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
+import frc.robot.Constants.OpConstants;
 
 public class ClimbSubsystem extends ToggleableSubsystem {
 
@@ -21,28 +22,29 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private State _currentState = State.READY;
 	private InputDirection _inputDirection = InputDirection.NEUTRAL;
 
-	private final Solenoid _extender1;
-	private final Solenoid _extender2;
-	private final Solenoid _grabber1;
-	private final Solenoid _grabber2;
+	private final Solenoid _leftExtender;
+	private final Solenoid _rightExtender;
+	private final Solenoid _grabberNorth1;
+	private final Solenoid _grabberNorth2;
+	private final Solenoid _grabberSouth1;
+	private final Solenoid _grabberSouth2;
 
 	private final TalonFX _swingerMasterMotor;
 	private final TalonFX _swingerSlaveMotor;
 
+	private double timer = System.currentTimeMillis();
+
 	//#region Enums
 
 	public enum State {
-		READY(0),
-		EXTEND(1),
-		GRAB_FIRST(2),
-		SWING_FIRST(3),
-		GRAB_SECOND(4),
-		RELEASE_FIRST(5),
-		SWING_SECOND(6),
-		GRAB_LAST(7),
-		RELEASE_SECOND(8),
-		SWING_LAST(9),
-		FINISHED(10);
+		READY(0),                // Extenders down, north grabbers open, south grabbers closed
+		EXTEND(1),               // Extenders up, north grabber one half closed, south grabbers closed
+		GRAB_BAR(2),             // Extenders up, north grabber closed, south grabber closed
+
+		SWING_TO_NEXT_BAR(3),    // Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
+		OPEN_NEXT_GRABBERS(4),   // Extenders up, north grabber closed, south grabber half open, swinger motors spinning+
+		GRAB_NEXT_BAR(5),        // Extenders up, north grabber closed, south grabber closed
+		RELEASE_PREVIOUS_BAR(6); // Extenders up, north grabber open, south grabber closed
 
 		private final int _value;
 
@@ -87,26 +89,42 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		}
 	}
 
+	private enum GrabberHalf {
+		EAST(1),
+		WEST(2),
+		BOTH(3);
+
+		private final int value;
+
+		GrabberHalf(int value){
+			this.value = value;
+		}
+	}
+
 	//#endregion
 
 	public ClimbSubsystem() {
 		if(isDisabled()){ 
-			_extender1 = null;
-			_extender2 = null;
-			_grabber1 = null;
-			_grabber2 = null;
+			_leftExtender = null;
+			_rightExtender = null;
+			_grabberNorth1 = null;
+			_grabberNorth2 = null;
+			_grabberSouth1 = null;
+			_grabberSouth2 = null;
 			_swingerMasterMotor = null;
 			_swingerSlaveMotor = null;
 			return;
 		}
 
-		_extender1 = new Solenoid(Constants.kPneumaticsType, 0);
-		_extender2 = new Solenoid(Constants.kPneumaticsType, 0);
-		_grabber1 = new Solenoid(Constants.kPneumaticsType, 0);
-		_grabber2 = new Solenoid(Constants.kPneumaticsType, 0);
+		_leftExtender = new Solenoid(Constants.kPneumaticsType, OpConstants.kLeftExtenderID);
+		_rightExtender = new Solenoid(Constants.kPneumaticsType, OpConstants.kRightExtenderID);
+		_grabberNorth1 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth1ID);
+		_grabberNorth2 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth2ID);
+		_grabberSouth1 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth1ID);
+		_grabberSouth2 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth2ID);
 
-		_swingerMasterMotor = new TalonFX(0);
-		_swingerSlaveMotor = new TalonFX(0);
+		_swingerMasterMotor = new TalonFX(OpConstants.kLeftSwingerMotorID);
+		_swingerSlaveMotor = new TalonFX(OpConstants.kRightSwingerMotorID);
 
 		_swingerSlaveMotor.follow(_swingerMasterMotor);
 	}
@@ -125,32 +143,39 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_inputDirection = value;
 	}
 
-	private void setExtenders(boolean on){
-		_extender1.set(on);
-		_extender2.set(on);
+	//#region Controls
+
+	private void setExtenders(boolean up){
+		_leftExtender.set(up);
+		_rightExtender.set(up);
 	}
 
-	private void grab(int id){
-		if(id == 1){
-			_grabber1.set(_inputDirection == InputDirection.UP);
-		} else {
-			_grabber2.set(_inputDirection == InputDirection.UP);
+	private void setNorthGrabber(GrabberHalf grabberHalf, boolean closed){
+		if(grabberHalf.value >= 1){
+			_grabberNorth1.set(closed);
+		}
+		if(grabberHalf.value >= 2){
+			_grabberNorth2.set(closed);
 		}
 	}
 
-	private void release(int id){
-		if(_inputDirection == InputDirection.DOWN){
-			grab(id);
-			return;
-		}
+	private void setNorthGrabbers(boolean closed){
+		setNorthGrabber(GrabberHalf.BOTH, closed);
+	}
 
-		if(id == 1){
-			_grabber1.set(_inputDirection == InputDirection.DOWN);
-		} else {
-			_grabber2.set(_inputDirection == InputDirection.DOWN);
+	private void setSouthGrabber(GrabberHalf grabberHalf, boolean closed){
+		if(grabberHalf.value >= 1){
+			_grabberSouth1.set(closed);
+		}
+		if(grabberHalf.value >= 2){
+			_grabberSouth2.set(closed);
 		}
 	}
-	
+
+	private void setSouthGrabbers(boolean closed){
+		setSouthGrabber(GrabberHalf.BOTH, closed);
+	}
+
 	private void startSwing(){
 		_swingerMasterMotor.set(ControlMode.PercentOutput, 100 * _inputDirection.value);
 	}
@@ -159,132 +184,87 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerMasterMotor.set(ControlMode.PercentOutput, 0);
 	}
 
+	//#endregion
+
 	//#region State Handlers
 
 	private boolean handleReady(){
+		// Extenders down, north grabbers open, south grabbers closed
 		setExtenders(false);
-		release(1);
-		release(2);
-		_swingerMasterMotor.set(ControlMode.PercentOutput, 0);
+		setNorthGrabbers(false);
+		setSouthGrabbers(false);
+		stopSwing();
 		return true;
 	}
 
 	private boolean handleExtend(){
-		//Make extender motors go _inputDirection.value
-
-		setExtenders(_inputDirection == InputDirection.UP);
-
-		// if(doneExtending){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleGrabFirst(){
-		//Make first grabber go _inputDirection.value
-
-		grab(1);
+		// Extenders up, north grabber one half closed, south grabbers closed
+		setExtenders(true);
+		setNorthGrabber(GrabberHalf.EAST, true);
+		setNorthGrabber(GrabberHalf.WEST, false);
+		setSouthGrabbers(true);
 		stopSwing();
 
-		// if(doneGrabbing){
-		// 	return true;
-		// }
-
-		return false;
+		//TODO: Replace this with sensors for north grabber. We also want to test this for timing
+		return System.currentTimeMillis() - timer >= 3;
 	}
 
-	private boolean handleSwingFirst(){
-		//Make swing motor go _inputDirection.value
+	private boolean handleGrabBar(){
+		// Extenders up, north grabber closed, south grabber closed
+		setExtenders(true);
+		setNorthGrabbers(true);
+		setSouthGrabbers(true);
+		stopSwing();
 
+		//TODO: Test this timing, we want the user to have enough time to react if the grabber doesn't grasp the bar correctly
+		return System.currentTimeMillis() - timer >= 1;
+	}
+
+	private boolean handleSwingToNextBar(){
+		// Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
+		setExtenders(true);
+		setNorthGrabbers(true);
+		setSouthGrabbers(true);
 		startSwing();
 
-		// if(doneSwinging){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleGrabSecond(){
-		//Make second grabber go _inputDirection.value
-
-		grab(2);
-		stopSwing();
-
-		// if(doneGrabbing){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleReleaseFirst(){
-		//Make first grabber go negative _inputDirection.value
-
-		release(1);
-		stopSwing();
-
-		// if(doneReleasing){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleSwingSecond(){
-		//Make swing motor go _inputDirection.value
-
-		startSwing();
-
-		// if(doneSwinging){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleGrabLast(){
-		//Make first grabber go _inputDirection.value
-
-		stopSwing();
-		grab(2);
-
-		// if(doneGrabbing){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleReleaseSecond(){
-		//Make second grabber go negative _inputDirection.value
-
-		release(1);
-
-		// if(doneSwinging){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleSwingLast(){
-		//Make swing motor go _inputDirection.value
-
-		startSwing();
-
-		// if(doneSwinging){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleFinished(){
-		stopSwing();
+		//TODO: We need to figure out if there's a switch for when the grabbers should open. Maybe count motor rotations?
 		
-		return _inputDirection == InputDirection.DOWN;
+		return System.currentTimeMillis() - timer >= 1.5;
+
+	}
+
+	private boolean handleOpenNextGrabbers(){
+		// Extenders up, north grabber closed, south grabber half open, swinger motors spinning+
+		setExtenders(true);
+		setNorthGrabbers(true);
+		setSouthGrabber(GrabberHalf.EAST, true);
+		setSouthGrabber(GrabberHalf.WEST, false);
+		startSwing();
+
+		//TODO: It is critical we get IR sensor input for this rather than use timing
+		return System.currentTimeMillis() - timer >= 1;
+	}
+
+	private boolean handleGrabNextBar(){
+		// Extenders up, north grabber closed, south grabber closed
+		setExtenders(true);
+		setNorthGrabbers(true);
+		setSouthGrabbers(true);
+		stopSwing();
+
+		//TODO: Test this timing
+		return System.currentTimeMillis() - timer >= 0.5;
+	}
+
+	private boolean handleReleasePreviousBar(){
+		// Extenders up, north grabber open, south grabber closed
+		setExtenders(true);
+		setNorthGrabbers(false);
+		setSouthGrabbers(false);
+		stopSwing();
+
+		//TODO: Test this timing
+		return System.currentTimeMillis() - timer >= 0.25;
 	}
 
 	//#endregion
@@ -295,10 +275,21 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){ return; }
 
 		if(_inputDirection == InputDirection.NEUTRAL){
-			_swingerMasterMotor.set(ControlMode.PercentOutput, 0);
+			stopSwing();
+			timer = System.currentTimeMillis();
 			return;
 		}
 
+		/*
+		READY(0),                // Extenders down, north grabbers open, south grabbers closed
+		EXTEND(1),               // Extenders up, north grabber one half closed, south grabbers closed
+		GRAB_BAR(2),             // Extenders up, north grabber closed, south grabber closed
+
+		SWING_TO_NEXT_BAR(3),    // Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
+		OPEN_NEXT_GRABBERS(4),   // Extenders up, north grabber closed, south grabber half open, swinger motors spinning+
+		GRAB_NEXT_BAR(5),        // Extenders up, north grabber closed, south grabber closed
+		RELEASE_PREVIOUS_BAR(6); // Extenders up, north grabber open, south grabber closed
+		*/
 		boolean transition = false;
 		switch(_currentState){
 			case READY:
@@ -307,38 +298,29 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			case EXTEND:
 				transition = handleExtend();
 				break;
-			case GRAB_FIRST:
-				transition = handleGrabFirst();
+			case GRAB_BAR:
+				transition = handleGrabBar();
 				break;
-			case SWING_FIRST:
-				transition = handleSwingFirst();
+
+			case SWING_TO_NEXT_BAR:
+				transition = handleSwingToNextBar();
 				break;
-			case GRAB_SECOND:
-				transition = handleGrabSecond();
+			case OPEN_NEXT_GRABBERS:
+				transition = handleOpenNextGrabbers();
 				break;
-			case RELEASE_FIRST:
-				transition = handleReleaseFirst();
+			case GRAB_NEXT_BAR:
+				transition = handleGrabNextBar();
 				break;
-			case SWING_SECOND:
-				transition = handleSwingSecond();
-				break;
-			case GRAB_LAST:
-				transition = handleGrabLast();
-				break;
-			case RELEASE_SECOND:
-				transition = handleReleaseSecond();
-				break;
-			case SWING_LAST:
-				transition = handleSwingLast();
-				break;
-			case FINISHED:
-				transition = handleFinished();
+			case RELEASE_PREVIOUS_BAR:
+				transition = handleReleasePreviousBar();
 				break;
 		}
 
 		if(transition){
-			_currentState = _inputDirection == InputDirection.UP ? _currentState.next()
-				: _currentState.previous();
+			timer = System.currentTimeMillis();
+			_currentState = _currentState.next();
+			// _currentState = _inputDirection == InputDirection.UP ? _currentState.next()
+			// 	: _currentState.previous();
 		}
 	}
 
