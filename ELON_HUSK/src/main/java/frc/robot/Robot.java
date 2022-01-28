@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.autonomous._NamedAutoMode;
@@ -40,22 +41,23 @@ public class Robot extends TimedRobot {
 	private Integer fieldOrientation;
 
 	// The robot's subsystems
-	public DriveSubsystem m_robotDrive;
+	public DriveSubsystem m_drive;
 	public LimeLightSubsystem m_vision;
 	public IntakeSubsystem m_intake;
+	public ClimbSubsystem m_climb;
 
 	String autoCode = AutoConstants.kDEFAULT_AUTO_CODE;
 
 	public Robot() {
 		addPeriodic(() -> {
-			if (m_robotDrive != null)
-				m_robotDrive.updateOdometry();
+			if (m_drive != null)
+				m_drive.updateOdometry();
 		}, 0.010, 0.0); // was 0.005
 	}
 
 	private void initSubsystems() {
 		// initial SubSystems to at rest states
-		m_robotDrive.resetEncoders();
+		m_drive.resetEncoders();
 		if (m_intake != null) {
 			m_intake.retract();
 		}
@@ -64,9 +66,9 @@ public class Robot extends TimedRobot {
 	private void autoInitPreload() {
 		System.out.println("autoInitPreload: Start");
 		m_autonomousCommand = null;
-		m_robotDrive.resetOdometry(new Pose2d());
+		m_drive.resetOdometry(new Pose2d());
 
-		m_robotDrive.resumeCSVWriter();
+		m_drive.resumeCSVWriter();
 
 		if (RobotBase.isReal()) {
 			autoCode = SmartDashboard.getString("AUTO CODE", autoCode);
@@ -100,16 +102,17 @@ public class Robot extends TimedRobot {
 		// CameraServer camServer = CameraServer.getInstance();
 		// camServer.startAutomaticCapture();
 
-		m_vision = null; // new LimeLightSubsystem();
-		m_robotDrive = new DriveSubsystem(m_vision);
-		m_intake = null; // new IntakeSubsystem();
+		m_vision = new LimeLightSubsystem();
+		m_drive = new DriveSubsystem(m_vision);
+		m_intake = new IntakeSubsystem();
+		m_climb = new ClimbSubsystem();
 
-		m_robotDrive.zeroHeading();
+		m_drive.zeroHeading();
 
 		// Instantiate our RobotContainer. This will perform all our button bindings,
 		// and put our
 		// autonomous chooser on the dashboard.
-		m_robotContainer = new RobotContainer(m_robotDrive, m_intake, m_vision);
+		m_robotContainer = new RobotContainer(m_climb, m_drive, m_intake, m_vision);
 
 		initSubsystems();
 
@@ -123,18 +126,27 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Vis_HasTarget", false);
 		SmartDashboard.putNumber("Vis_TargetAngle", 0);
 
+		SmartDashboard.putString("Build Info - Branch", "N/A");
+		SmartDashboard.putString("Build Info - Commit Hash", "N/A");
+		SmartDashboard.putString("Build Info - Date", "N/A");
 		try {
-			File branchInfo = new File(Filesystem.getDeployDirectory() + "/DeployedBranchInfo~.txt");
-			Scanner reader = new Scanner(branchInfo);
-			String fullText = "";
-			while (reader.hasNext()) {
-				fullText += reader.nextLine();
+			File buildInfoFile = new File(Filesystem.getDeployDirectory(), "DeployedBranchInfo.txt");
+			Scanner reader = new Scanner(buildInfoFile);
+			int i = 0;
+			while(reader.hasNext()){
+				if(i == 0){
+					SmartDashboard.putString("Build Info - Branch", reader.nextLine());
+				} else if(i == 1){
+					SmartDashboard.putString("Build Info - Commit Hash", reader.nextLine());
+				} else {
+					SmartDashboard.putString("Build Info - Date", reader.nextLine());
+				}
+				i++;
 			}
-			SmartDashboard.putString("Build Info", fullText);
+			
 			reader.close();
 		} catch (FileNotFoundException fnf) {
-			SmartDashboard.putString("Build Info", "N/A");
-			System.err.println("DeployedBranchInfo~.txt not found");
+			System.err.println("DeployedBranchInfo.txt not found");
 			fnf.printStackTrace();
 		}
 	}
@@ -159,7 +171,7 @@ public class Robot extends TimedRobot {
 		// block in order for anything in the Command-based framework to work.
 		CommandScheduler.getInstance().run();
 
-		m_robotDrive.displayEncoders();
+		m_drive.displayEncoders();
 	}
 
 	/**
@@ -167,7 +179,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		m_robotDrive.suspendCSVWriter();
+		m_drive.suspendCSVWriter();
 	}
 
 	@Override
@@ -175,7 +187,7 @@ public class Robot extends TimedRobot {
 		/*
 		 * if(m_ledstring != null){ m_ledstring.option(LedOption.TEAM); }
 		 */
-		m_robotDrive.resetEncoders();
+		m_drive.resetEncoders();
 		if (System.currentTimeMillis() % 100 == 0) {
 			// SmartDashboard.putBoolean("LowSensor", m_sequencer.lowSensorHasBall());
 			// SmartDashboard.putBoolean("MidSensor", m_sequencer.midSensorHasBall());
@@ -210,7 +222,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		m_robotDrive.resumeCSVWriter();
+		m_drive.resumeCSVWriter();
 
 		CommandScheduler.getInstance().cancelAll();
 
@@ -219,10 +231,10 @@ public class Robot extends TimedRobot {
 			System.err.println("SOMETHING WENT WRONG - UNABLE TO RUN AUTONOMOUS! CHECK SOFTWARE!");
 		} else {
 			System.out.println("Running actual autonomous mode --> " + namedAutoMode.name);
-			m_robotDrive.zeroHeading();
+			m_drive.zeroHeading();
 			Pose2d initialPose = namedAutoMode.getInitialPose();
 			if (initialPose != null) {
-				m_robotDrive.resetOdometry(initialPose);
+				m_drive.resetOdometry(initialPose);
 				System.out.println("Initial Pose: " + initialPose.toString());
 			}
 			m_autonomousCommand.schedule();
@@ -241,7 +253,7 @@ public class Robot extends TimedRobot {
 	public void teleopInit() {
 		CommandScheduler.getInstance().cancelAll();
 		
-		m_robotDrive.resumeCSVWriter();
+		m_drive.resumeCSVWriter();
 
 		initSubsystems();
 

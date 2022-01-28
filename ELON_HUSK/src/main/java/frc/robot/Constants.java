@@ -10,7 +10,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
@@ -30,12 +29,15 @@ public final class Constants {
 		// System.out.println("creating solenoid ids " + forward_solenoidId + "-" +
 		// reverse_solenoidId + " PCM " + pcmChannel + " CHAN ");
 		//return new DoubleSolenoid(pcmChannel, moduleType, forward_solenoidId, reverse_solenoidId);
-		return new DoubleSolenoid(pcmChannel, PneumaticsModuleType.CTREPCM, forward_solenoidId, reverse_solenoidId);
+		return new DoubleSolenoid(pcmChannel, Constants.kPneumaticsType, forward_solenoidId, reverse_solenoidId);
 	}
 
+	public static final PneumaticsModuleType kPneumaticsType = PneumaticsModuleType.REVPH;
+	
 	public static final int kTICKS = 33024; // 16.125 * 2048;
 
-	public static final double kFlywheelVelocityTolerance = 5 / 100; // percent
+	public static final int kDriverControllerPort = 0;
+	public static final int kOperatorControllerPort = 1;
 
 	public static final class DriveConstants {
 
@@ -64,49 +66,11 @@ public final class Constants {
 
 		public static final boolean kGyroReversed = true; // 09FEB false;
 
-		public static final double kMinRightStickThreshold = 0.7;
-
-		// These are example values only - DO NOT USE THESE FOR YOUR OWN ROBOT!
-		// These characterization values MUST be determined either experimentally or
-		// theoretically
-		// for *your* robot's drive.
-		// The RobotPy Characterization Toolsuite provides a convenient tool for
-		// obtaining these
-		// values for your robot.
-		public static final double ksVolts = 1;
-		public static final double kvVoltSecondsPerMeter = 0.8;
-		public static final double kaVoltSecondsSquaredPerMeter = 0.15;
-
 		public static final double kMaxSpeedMetersPerSecond = 4.0; // tune
 
 		public static final double kTurnP = 0.1; // was 0.05
 		public static final double kTurnI = 0;
 		public static final double kTurnD = 0;
-
-	}
-
-	public static final class ModuleConstants {
-		// public static final double kMaxModuleAngularSpeedRadiansPerSecond = 2 *
-		// Math.PI;
-		// public static final double
-		// kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
-
-		// public static final double kDriveEncoderCPR = 5.5;
-		// public static final double kTurningEncoderCPR = 16;
-		// public static final double kWheelDiameterMeters = 0.0762;
-		// public static final double kDriveEncoderDistancePerPulse = // not used
-		// Assumes the encoders are directly mounted on the wheel shafts
-		// (kWheelDiameterMeters * Math.PI) / kDriveEncoderCPR;
-
-		// public static final double kTurningEncoderDistancePerPulse = //not used
-		// Assumes the encoders are on a 1:1 reduction with the module shaft.
-		// (2 * Math.PI) / kTurningEncoderCPR;
-
-	}
-
-	public static final class OIConstants {
-		public static final int kDriverControllerPort = 0;
-		public static final int kOperatorControllerPort = 1;
 
 	}
 
@@ -131,128 +95,23 @@ public final class Constants {
 
 		public static final double kMaxSpeedMetersPerSecond = 2.6; // 2.6
 		public static final double kMaxAccelerationMetersPerSecondSquared = 2; // 2
-		public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 2;
-		public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI * 2;
 
 		public static final double kPXController = 10.0;
 		public static final double kPYController = 10.0;
 		public static final double kPThetaController = 3;
 
-		// Constraint for the motion profilied robot angle controller
-		public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-				kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-
 	}
 
 	public static final class OpConstants {
-		// PWM
-		public static final int kPWM_LedSting = 6; // Addressable Led String
-
-		// Intake
-		public static final int kMotorPWMIntake = 0; // Intake
-		public static final int kMotorSeq = 9; // Sequencer
-		public static final int kMotorPWMLaunch1 = 2; // Launcher Motor One
-		public static final int kMotorPWMLaunch2 = 3; // Launcher Motor Two
-		public static final int kMotorCANLaunch1 = 7;
-		public static final int kMotorCANLaunch2 = 8;
-		public static final double kMotorSeqFwdIntakeSpeed = -0.4; // -0.3 // forward or backward
-		public static final double kMotorSeqRevIntakeSpeed = 0.4; // forward or backward
-		public static final double kMotorSeqFwdLaunchSpeed = -0.4; // -0.5 // forward or backward
-		public static final double kMotorSeqRevLaunchSpeed = 0.4; // forward or backward
-		public static final double kMotorIntakeFwdSpeed = 1.0; // forward or backward
-		public static final double kMotorIntakeRevSpeed = -1.0; // forward or backward
-		public static final double kMotorLaunchSpeed1 = -0.3; // forward or backward
-		public static final double kMotorLaunchSpeed2 = 0.3;
-		public static final double kMotorLaunchPercent = 0.50; // check shooting motor percent
-		public static final double kMotorClimbPercent = 0.3;
-		public static final int kMaxPowerCells = 5;
-		public static final double kSeqEjectDelay = 2.0;
-		public static final double kSeqResetDelay = 2.0;
-
-		// ColorWheel
-		public static final int kColorWheelTalonFX = 8;
-
-		// Launcher
-		public static final int kLauncherVictor = 3;
-		public static final int kLaunchMinVelocity = 500;
-
-		public static final double kClimbMaxPercent = 0.5;
-		public static final double kJoystickDeadband = 0.3;
-		public static final double kClutchDeadband = 0.3;
-		public static final int kClimbJoystickInvert = 1;
-
-		public static final double kClimbExSafeEncValue = 100000;
-		// Digital Input/Outputs
-		public static int kLowSequencer = 0;
-		public static int kMidSequencer = 1;
-		public static int kHighSequencer = 2;
-
-		public static int kHiCylinder = 3;
-		public static int kLoCylinder = 4;
-		public static int kClimbExtend = 5;
-		public static int kClimbRetract = 6;
-
-		// public static int kArduinoLed0 = 7;
-		// public static int kArduinoLed1 = 8;
-		// public static int kArduinoLed2 = 9;
-
-		// Arduino Colors/Options
-		public static int kArduino_TEAM = 0;
-		public static int kArduino_RED = 1; // solid red
-		public static int kArduino_GREEN = 2; // solid green
-		public static int kArduino_BLUE = 3; // solid blue
-		public static int kArduino_REDW = 4; // red wipe
-		public static int kArduino_GREENW = 5; // green wipe
-		public static int kArduino_BLUEW = 6; // blue wipe
-		public static int kArduino_YELLW = 7; // yellow wipe
-
-		public enum LedOption {
-			TEAM, RED, BLUE, GREEN, YELLOW, ORANGE, PURPLE, RAINBOW, FULL, CLIMB, SHOOT, INTAKE, INTAKEBALL, WHEEL,
-			BALLONE, BALLTWO, BALLTHREE, BALLFOUR
-		}
-
-		// in order of pneumatic actuators (top to bottom)
-		// PCM terminals function
-		// 0 6-7 == spare
-		// 0 4-5 == climb clutch
-		// 1 0-1 == color wheel
-		// 1 2-3 == climber arms
-		// 1 4-5 == shooter hood
-		// 1 6-7 == intake
-
-		// PCM 0 SOLENOIDS
-		// public static final int k0SpareLeft = 6;
-		// public static final int k0SpareRight = 7;
-		public static final int k0Launching = 4; // ok
-		public static final int k0Climbing = 5; // ok
-		public static final int k0BrakeOn = 2;
-		public static final int k0BrakeOff = 1;
-
-		// PCM 1 SOLENOIDS
-		public static final int k1ColorWheelExtend = 0;
-		public static final int k1ColorWheelRetract = 1;
-		public static final int k1ClimbExtend = 2;
-		public static final int k1ClimbRetract = 3;
-		public static final int k1HoodExtend = 4;
-		public static final int k1HoodRetract = 5;
-		public static final int k1IntakeExtend = 6; // ok
-		public static final int k1IntakeRetract = 7; // ok
-
-		public static final int kWheelUnknown = 0;
-		public static final int kWheelGreen = 1;
-		public static final int kWheelBlue = 2;
-		public static final int kWheelYellow = 3;
-		public static final int kWheelRed = 4;
-
-		public static final int kWheelCountRotate = 7;
-		public static final int kWheelCountMatch = 1;
-
-		public static double kWheelRotateSpeed = 0.5;
-		public static double kWheelMatchFwdSpeed = 0.2;
-		public static double kWheelMatchRevSpeed = -0.2;
+		
+		public static final int kMotorCANLaunch1 = 9;
+		public static final int kMotorCANLaunch2 = 10;
+		public static final int kMotorCANIntake1 = 7;
+		public static final int kMotorCANIntake2 = 8;
+		
+		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
 
 		/////// TalonFX parameters
-		public static final int kSlotIdx = 0;
 		/**
 		 * Talon SRX/ Victor SPX will supported multiple (cascaded) PID loops. For now
 		 * we just want the primary one.
@@ -270,7 +129,7 @@ public final class Constants {
 		 * 
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
-		public final static Gains kGains_Velocity = new Gains(2.0, 0, 0, .06, 300, 1.00);
+		public final static Gains kGains_Velocity = new Gains(0.05, 0, 0, .06, 300, 1.00);
 		///// End TalonFX
 	}
 
@@ -343,5 +202,14 @@ public final class Constants {
 		public static final int kRStickXAxis = 4;
 		public static final int kRStickYAxis = 5;
 
+	}
+
+	public static final class ButtonConstants {
+		public static final int kClimbUp = 6;
+		public static final int kClimbDown = 7;
+
+		public static final int kVision = XboxConstants.kRBumper;
+		public static final int kResetGyro = XboxConstants.kAppMenu;
+		public static final int kResetEncoders = XboxConstants.kMenu;
 	}
 }

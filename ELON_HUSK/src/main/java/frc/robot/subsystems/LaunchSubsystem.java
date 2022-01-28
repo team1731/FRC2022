@@ -26,7 +26,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 
 	private DoubleSolenoid mLaunchClimbSolenoid;
@@ -59,17 +59,17 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		mLaunchClimbSolenoid = Constants.makeDoubleSolenoidForIds(0, OpConstants.k0Launching, OpConstants.k0Climbing);
-		mClimberSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1ClimbRetract, OpConstants.k1ClimbExtend);
-		mLaunchHoodSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1HoodRetract, OpConstants.k1HoodExtend);
-		mBrakeSolenoid = Constants.makeDoubleSolenoidForIds(0, OpConstants.k0BrakeOn, OpConstants.k0BrakeOff);
-		mTalonLaunch1 = new TalonFX(OpConstants.kMotorCANLaunch1);
-		mTalonLaunch2 = new TalonFX(OpConstants.kMotorCANLaunch2);
+		mLaunchClimbSolenoid = null;//Constants.makeDoubleSolenoidForIds(0, OpConstants.k0Launching, OpConstants.k0Climbing);
+		mClimberSolenoid = null;//Constants.makeDoubleSolenoidForIds(1, OpConstants.k1ClimbRetract, OpConstants.k1ClimbExtend);
+		mLaunchHoodSolenoid = null;//Constants.makeDoubleSolenoidForIds(1, OpConstants.k1HoodRetract, OpConstants.k1HoodExtend);
+		mBrakeSolenoid = null;//Constants.makeDoubleSolenoidForIds(0, OpConstants.k0BrakeOn, OpConstants.k0BrakeOff);
+		mTalonLaunch1 = null;//new TalonFX(OpConstants.kMotorCANLaunch1);
+		mTalonLaunch2 = null;//new TalonFX(OpConstants.kMotorCANLaunch2);
 
-		sHiCylinder = new DigitalInput(OpConstants.kHiCylinder);
-		sLoCylinder = new DigitalInput(OpConstants.kLoCylinder);
-		sClimbExtend = new DigitalInput(OpConstants.kClimbExtend);
-		sClimbRetract = new DigitalInput(OpConstants.kClimbRetract);
+		sHiCylinder = null;//new DigitalInput(OpConstants.kHiCylinder);
+		sLoCylinder = null;//new DigitalInput(OpConstants.kLoCylinder);
+		sClimbExtend = null;//new DigitalInput(OpConstants.kClimbExtend);
+		sClimbRetract = null;// new DigitalInput(OpConstants.kClimbRetract);
 
 		mTalonLaunch1.configFactoryDefault();
 		mTalonLaunch2.configFactoryDefault();
@@ -260,8 +260,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 
 		// System.out.println("climb output = " + output);
-		mTalonLaunch1.set(ControlMode.PercentOutput, output * OpConstants.kClimbMaxPercent);
-		mTalonLaunch2.set(ControlMode.PercentOutput, output * OpConstants.kClimbMaxPercent);
+		// mTalonLaunch1.set(ControlMode.PercentOutput, output * OpConstants.kClimbMaxPercent);
+		// mTalonLaunch2.set(ControlMode.PercentOutput, output * OpConstants.kClimbMaxPercent);
 	}
 
 	public void launchMode() {

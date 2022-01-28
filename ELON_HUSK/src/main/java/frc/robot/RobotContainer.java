@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -25,16 +26,20 @@ import frc.robot.autonomous.Z1_Move_Test;
 import frc.robot.autonomous.Z2_PathWeaver_Test;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
-import frc.robot.commands.VisionRotateCommand;
+import frc.robot.commands.ResetEncodersCommand;
+import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.climb.ClimbDownCommand;
+import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.XboxConstants;
+import frc.robot.commands.intake.LeftIntakeCommand;
+import frc.robot.commands.intake.RightIntakeCommand;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -44,11 +49,13 @@ import frc.robot.Constants.XboxConstants;
  */
 public class RobotContainer {
 
-	XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+	XboxController m_driverController = new XboxController(Constants.kDriverControllerPort);
+	Joystick m_operatorController = new Joystick(Constants.kOperatorControllerPort);
 
-	private DriveSubsystem m_robotDrive;
+	private DriveSubsystem m_drive;
 	private IntakeSubsystem m_intake;
 	private LimeLightSubsystem m_vision;
+	private ClimbSubsystem m_climb;
 
 	public enum HanMode {
 		MODE_SHOOT, MODE_CLIMB
@@ -59,21 +66,22 @@ public class RobotContainer {
 	 * 
 	 * @throws _NotImplementedProperlyException
 	 */
-	public RobotContainer(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake, LimeLightSubsystem m_vision) {
+	public RobotContainer(ClimbSubsystem climb, DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision) {
 		// this.m_ledstring = m_ledstring;
-		this.m_robotDrive = m_robotDrive;
-		this.m_intake = m_intake;
-		this.m_vision = m_vision;
+		this.m_drive = drive;
+		this.m_intake = intake;
+		this.m_vision = vision;
+		this.m_climb = climb;
 
 		// Configure the button bindings
 		configureButtonBindings();
 
 		// Configure default commands
 		// Set the default drive command to split-stick arcade drive
-		m_robotDrive.setDefaultCommand(
+		m_drive.setDefaultCommand(
 				// A split-stick arcade command, with forward/backward controlled by the left
 				// hand, and turning controlled by the right.
-				new RunCommand(() -> m_robotDrive.drive(
+				new RunCommand(() -> m_drive.drive(
 						// Get the x speed. We are inverting this because Xbox controllers return
 						// negative values when we push forward.
 						-m_driverController.getLeftY() * Math.abs(m_driverController.getLeftY())
@@ -95,7 +103,7 @@ public class RobotContainer {
 
 						true),
 
-						m_robotDrive));
+						m_drive));
 	}
 
 	/**
@@ -106,23 +114,20 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 
-		// Activate Intake via Operator Left Axis/Trigger
-		// new HanTrigger(HanTriggers.DR_TRIG_RIGHT).whileActiveContinuous(new ShootSeqCommand(m_shootclimb, m_sequencer),
-		// 		true);
-
-		// Map right bumper to rotation lock to power port
-		new JoystickButton(m_driverController, XboxConstants.kRBumper)
-				.whenActive(new VisionRotateCommand(m_vision, m_robotDrive, m_driverController));
-
-		new JoystickButton(m_driverController, 7).whenPressed(new InstantCommand(() -> {
-			m_robotDrive.resetGyro();
-			System.out.println("Reset gyro");
-		}, m_robotDrive));
-		new JoystickButton(m_driverController, XboxConstants.kMenu).whenPressed(new InstantCommand(() -> {
-			m_robotDrive.resetEncoders();
-			System.out.println("Reset encoders");
-		}, m_robotDrive));
-
+		//#region Drive Subsystem
+		new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
+		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
+		//#endregion
+		
+		//#region Climb Subsystem
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
+		//#endregion
+		
+		//left = button 1
+		//right = button 12
+		new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
+		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
 	}
 
 	public _NamedAutoMode getNamedAutonomousCommand(String autoSelected) {
@@ -154,7 +159,7 @@ public class RobotContainer {
 		} catch (_NotImplementedProperlyException e) {
 			System.err.println("SELECTED MODE NOT IMPLEMENTED -- DEFAULT TO F1_MOVE_FORWARD!!!");
 			try {
-				selectedAutoMode = new _NamedAutoMode(new T1_Taxi(m_robotDrive));
+				selectedAutoMode = new _NamedAutoMode(new F1_Move_Forward(m_drive));
 			} catch (_NotImplementedProperlyException e2) {
 				System.err.println("F1_Move_Forward could NOT be created -- Aborting!!!");
 				return null;
@@ -170,18 +175,18 @@ public class RobotContainer {
 
 	private _NamedAutoMode createNamedAutoMode(String autoModeName) throws _NotImplementedProperlyException {
 		switch (autoModeName) {
-			case "T1": return new _NamedAutoMode(new T1_Taxi(m_robotDrive));
-			case "T2": return new _NamedAutoMode(new T2_ShootThenTaxi(m_robotDrive));
-			case "T3": return new _NamedAutoMode(new T3_TaxiThenShoot(m_robotDrive));
-			case "P1": return new _NamedAutoMode(new P1_ShootThenPickupRandomShoot(m_robotDrive));
-			case "P2": return new _NamedAutoMode(new P2_TaxiThenPickupRandomShoot(m_robotDrive));
-			case "P3": return new _NamedAutoMode(new P3_PickupR1ShootThenPickupR2Shoot(m_robotDrive));
-			case "P4": return new _NamedAutoMode(new P4_PickupR2ShootThenPickupR4R1Shoot(m_robotDrive));
-			case "P5": return new _NamedAutoMode(new P5_PickupR2ShootThenPickupR4Shoot(m_robotDrive));
-			case "P6": return new _NamedAutoMode(new P6_PickupR1ShootThenPickupR2R4Shoot(m_robotDrive));
-			case "P7": return new _NamedAutoMode(new P7_PickupR1ShootThenPickupR4R2Shoot(m_robotDrive));
-			case "Z1": return new _NamedAutoMode(new Z1_Move_Test(m_robotDrive));
-			case "Z2": return new _NamedAutoMode(new Z2_PathWeaver_Test(m_robotDrive));
+			case "T1": return new _NamedAutoMode(new T1_Taxi(m_drive));
+			case "T2": return new _NamedAutoMode(new T2_ShootThenTaxi(m_drive));
+			case "T3": return new _NamedAutoMode(new T3_TaxiThenShoot(m_drive));
+			case "P1": return new _NamedAutoMode(new P1_ShootThenPickupRandomShoot(m_drive));
+			case "P2": return new _NamedAutoMode(new P2_TaxiThenPickupRandomShoot(m_drive));
+			case "P3": return new _NamedAutoMode(new P3_PickupR1ShootThenPickupR2Shoot(m_drive));
+			case "P4": return new _NamedAutoMode(new P4_PickupR2ShootThenPickupR4R1Shoot(m_drive));
+			case "P5": return new _NamedAutoMode(new P5_PickupR2ShootThenPickupR4Shoot(m_drive));
+			case "P6": return new _NamedAutoMode(new P6_PickupR1ShootThenPickupR2R4Shoot(m_drive));
+			case "P7": return new _NamedAutoMode(new P7_PickupR1ShootThenPickupR4R2Shoot(m_drive));
+			case "Z1": return new _NamedAutoMode(new Z1_Move_Test(m_drive));
+			case "Z2": return new _NamedAutoMode(new Z2_PathWeaver_Test(m_drive));
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");
 				return null;
