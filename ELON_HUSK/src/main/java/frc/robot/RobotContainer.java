@@ -159,7 +159,7 @@ public class RobotContainer {
 		} catch (_NotImplementedProperlyException e) {
 			System.err.println("SELECTED MODE NOT IMPLEMENTED -- DEFAULT TO F1_MOVE_FORWARD!!!");
 			try {
-				selectedAutoMode = new _NamedAutoMode(new F1_Move_Forward(m_drive));
+				selectedAutoMode = new _NamedAutoMode(new T1_Taxi(m_drive));
 			} catch (_NotImplementedProperlyException e2) {
 				System.err.println("F1_Move_Forward could NOT be created -- Aborting!!!");
 				return null;
