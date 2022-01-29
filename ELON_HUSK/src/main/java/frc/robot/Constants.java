@@ -107,6 +107,8 @@ public final class Constants {
 		public static final int kMotorCANIntake1 = 7;
 		public static final int kMotorCANIntake2 = 8;
 		
+		//FIXME: We need to assign IDs to all of these
+		//Solenoids
 		public static final int kLeftExtenderID = 0;
 		public static final int kRightExtenderID = 0;
 		public static final int kGrabberNorth1ID = 0;
@@ -115,6 +117,12 @@ public final class Constants {
 		public static final int kGrabberSouth2ID = 0;
 		public static final int kLeftSwingerMotorID = 0;
 		public static final int kRightSwingerMotorID = 0;
+		public static final int kNorthSensorID = 0;
+		public static final int kSouthSensorID = 0;
+
+		//AnalogInputs
+		public static final int kMinIRVoltage = 0;
+		public static final int kMaxIRVoltage = 0;
 
 		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
 
