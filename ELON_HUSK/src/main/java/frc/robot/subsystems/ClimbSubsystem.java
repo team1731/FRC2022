@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
+import frc.robot.IRSensor;
 import frc.robot.Constants.OpConstants;
 
 public class ClimbSubsystem extends ToggleableSubsystem {
@@ -31,6 +32,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	private final TalonFX _swingerMasterMotor;
 	private final TalonFX _swingerSlaveMotor;
+
+	private final IRSensor _northSensor;
+	private final IRSensor _southSensor;
 
 	private double timer = System.currentTimeMillis();
 
@@ -113,6 +117,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			_grabberSouth2 = null;
 			_swingerMasterMotor = null;
 			_swingerSlaveMotor = null;
+			_northSensor = null;
+			_southSensor = null;
 			return;
 		}
 
@@ -125,6 +131,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 		_swingerMasterMotor = new TalonFX(OpConstants.kLeftSwingerMotorID);
 		_swingerSlaveMotor = new TalonFX(OpConstants.kRightSwingerMotorID);
+
+		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
+		_southSensor = new IRSensor(OpConstants.kSouthSensorID);
 
 		_swingerSlaveMotor.follow(_swingerMasterMotor);
 	}
@@ -205,8 +214,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setSouthGrabbers(true);
 		stopSwing();
 
-		//TODO: Replace this with sensors for north grabber. We also want to test this for timing
-		return System.currentTimeMillis() - timer >= 3;
+		//TODO: Test the sensor
+		return _northSensor.isTriggered();
 	}
 
 	private boolean handleGrabBar(){
@@ -228,7 +237,6 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		startSwing();
 
 		//TODO: We need to figure out if there's a switch for when the grabbers should open. Maybe count motor rotations?
-		
 		return System.currentTimeMillis() - timer >= 1.5;
 
 	}
@@ -241,8 +249,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setSouthGrabber(GrabberHalf.WEST, false);
 		startSwing();
 
-		//TODO: It is critical we get IR sensor input for this rather than use timing
-		return System.currentTimeMillis() - timer >= 1;
+		//TODO: Test the timing of this
+		return _southSensor.isTriggered();
 	}
 
 	private boolean handleGrabNextBar(){
@@ -302,6 +310,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 				transition = handleGrabBar();
 				break;
 
+			//Loop these to climb all the way up to the top
 			case SWING_TO_NEXT_BAR:
 				transition = handleSwingToNextBar();
 				break;
