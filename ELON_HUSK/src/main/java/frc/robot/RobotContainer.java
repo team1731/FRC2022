@@ -209,3 +209,34 @@ public class RobotContainer {
 		}
 	}
 }
+
+//Driver Controls List
+
+
+//Operator controls List
+/*
+//AXES = JOYSTICKS/BACK WHEEL CONTROLS
+getRawAxis(0) = left joystick(L/R): Unspecified
+getRawAxis(1) = left joystick(U/D): Extend/Retract Intake
+getRawAxis(2) = left back wheel: Unspecified
+getRawAxis(3) = right joystick(L/R): Unspecified
+getRawAxis(4) = right joystick(U/D): shooter speed
+getRawAxis(5) = right back wheel: Unspecified
+
+//BUTTONS
+Button(1) = top Left back toggle: Unspecified (Towards Driver = ON);
+Button(2) = top Left front toggle: Unspecified (Toggle away from Driver)
+Button(3) = top Left front toggle: Unspecified (Toggle towards Driver)
+Button(4) = front Left front toggle(L): Unspecified (Toggle away from Driver)
+Button(5) = front Left front toggle(L): Unspecified (Toggle towards Driver)
+Button(6) = front Left front toggle(R): Unspecified (Toggle away from Driver)
+Button(7) = front Left front toggle(R): Unspecified (Toggle towards Driver)
+Button(8) = front Right front toggle(R): Shoot (Toggle towards Driver)
+Button(9) = front Right front toggle(R): Climb (Toggle away from Driver)
+Button(10) = top Right front toggle: Unspecified (Toggle towards Driver)
+Button(11) = top Right front toggle: Unspecified (Toggle away from Driver)
+Button(12) = top Right back toggle: Unspecified (Toggle towards Driver)
+Button(14) = Front Left Bottom(1): Eject (Top Button)
+Button(15) = front Left Bottom(2): Pickup (Bottom Button)
+Button(16) = front Right Bottom: Unspecified (Clicking the scrollwheel thing)
+*/
