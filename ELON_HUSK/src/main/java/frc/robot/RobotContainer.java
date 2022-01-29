@@ -117,6 +117,8 @@ public class RobotContainer {
 		//right = button 12
 		new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
 		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
+
+		//#
 	}
 
 	public _NamedAutoMode getNamedAutonomousCommand(String autoSelected) {
@@ -212,7 +214,6 @@ public class RobotContainer {
 
 //Driver Controls List
 
-
 //Operator controls List
 /*
 //AXES = JOYSTICKS/BACK WHEEL CONTROLS
@@ -229,8 +230,8 @@ Button(2) = top Left front toggle: Unspecified (Toggle away from Driver)
 Button(3) = top Left front toggle: Unspecified (Toggle towards Driver)
 Button(4) = front Left front toggle(L): Unspecified (Toggle away from Driver)
 Button(5) = front Left front toggle(L): Unspecified (Toggle towards Driver)
-Button(6) = front Left front toggle(R): Unspecified (Toggle away from Driver)
-Button(7) = front Left front toggle(R): Unspecified (Toggle towards Driver)
+Button(6) = front Left front toggle(R): Climb Up (Toggle away from Driver)
+Button(7) = front Left front toggle(R): Climb Down (Toggle towards Driver)
 Button(8) = front Right front toggle(R): Shoot (Toggle towards Driver)
 Button(9) = front Right front toggle(R): Climb (Toggle away from Driver)
 Button(10) = top Right front toggle: Unspecified (Toggle towards Driver)

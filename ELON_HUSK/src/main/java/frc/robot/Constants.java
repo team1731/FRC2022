@@ -224,11 +224,40 @@ public final class Constants {
 	}
 
 	public static final class ButtonConstants {
+		
+		/**
+		 * Climb Buttons - Front Left front toggle(R/L): 6, 7
+		 */
 		public static final int kClimbUp = 6;
 		public static final int kClimbDown = 7;
+		
+		/**
+		 * Robot Mode Buttons - Front Right front toggle(R/L): 8, 9
+		 */
+		public static final int kRobotModeClimb = 8;
+		public static final int kRobotModeShoot = 9;
+
+		/**
+		 * Intake Mode Buttons - Front Left Bottom(T/B): 14, 15
+		 */
+		public static final int kIntakeModeEject = 14;
+		public static final int kIntakeModePickup = 15;
+
 
 		public static final int kVision = XboxConstants.kRBumper;
 		public static final int kResetGyro = XboxConstants.kAppMenu;
 		public static final int kResetEncoders = XboxConstants.kMenu;
+	}
+
+	public static final class JoyStickConstants {
+		/**
+		 * Pickup Mode JoyStick - Left joystick(U/D): 1
+		 */
+		public static final int kJoyStickPickupMode = 1;
+
+		/**
+		 * Shooter Speed JoyStick - Right joystick(U/D): 4
+		 */
+		public static final int kJoyStickShooterSpeed = 4;
 	}
 }
