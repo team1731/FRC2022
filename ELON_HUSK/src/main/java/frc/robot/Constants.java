@@ -102,10 +102,31 @@ public final class Constants {
 
 	public static final class OpConstants {
 		
-		public static final int kMotorCANLaunch1 = 9;
-		public static final int kMotorCANLaunch2 = 10;
-		public static final int kMotorCANIntake1 = 7;
-		public static final int kMotorCANIntake2 = 8;
+		//Can IDs for all non-driving motors/motor controllers
+		//Shooter/Launcher CAN IDS
+		public static final int kMotorCANLaunch1 = 5;
+		public static final int kMotorCANLaunch2 = 6;
+
+		//Climber CAN IDs
+		public static final int kMotorCANClimber1 = 7;
+		public static final int kMotorCANClimber2 = 8;
+
+		//Sequencer CAN IDs
+		public static final int kMotorCanSequencer1 = 9;
+		public static final int kMotorCanSequencer2 = 10;
+
+		//Intake CAN IDs
+		public static final int kMotorCANIntake1 = 15;
+		public static final int kMotorCANIntake2 = 16;
+		public static final int kMotorCANIntake3 = 17;
+		public static final int kMotorCANIntake4 = 18;
+
+		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
+		//Power Distribution Pannel CAN IDs
+		public static final int kPDPCanID = 20;
+
+		//Pneumatics Panel CAN IDs
+		public static final int kPneumaticsCanID = 21;
 		
 		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
 
