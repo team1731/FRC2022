@@ -19,8 +19,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.VelocityTalonFX;
+import frc.robot.subsystems.VelocityNeo;
+import frc.robot.subsystems.SmartMotionNeo;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -44,7 +46,9 @@ public class Robot extends TimedRobot {
 	public DriveSubsystem m_drive;
 	public LimeLightSubsystem m_vision;
 	public IntakeSubsystem m_intake;
-	public ClimbSubsystem m_climb;
+	public VelocityTalonFX m_talon;
+	public VelocityNeo m_neo;
+	public SmartMotionNeo m_smart;
 
 	String autoCode = AutoConstants.kDEFAULT_AUTO_CODE;
 
@@ -99,20 +103,19 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 
-		// CameraServer camServer = CameraServer.getInstance();
-		// camServer.startAutomaticCapture();
-
 		m_vision = new LimeLightSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
 		m_intake = new IntakeSubsystem();
-		m_climb = new ClimbSubsystem();
-
+		m_talon = new VelocityTalonFX();
+		m_neo = new VelocityNeo();
+		m_smart = new SmartMotionNeo();
+		
 		m_drive.zeroHeading();
 
 		// Instantiate our RobotContainer. This will perform all our button bindings,
 		// and put our
 		// autonomous chooser on the dashboard.
-		m_robotContainer = new RobotContainer(m_climb, m_drive, m_intake, m_vision);
+		m_robotContainer = new RobotContainer(m_drive, m_intake, m_vision, m_talon, m_neo, m_smart);
 
 		initSubsystems();
 
@@ -122,9 +125,6 @@ public class Robot extends TimedRobot {
 		}
 
 		autoInitPreload();
-
-		SmartDashboard.putBoolean("Vis_HasTarget", false);
-		SmartDashboard.putNumber("Vis_TargetAngle", 0);
 
 		SmartDashboard.putString("Build Info - Branch", "N/A");
 		SmartDashboard.putString("Build Info - Commit Hash", "N/A");

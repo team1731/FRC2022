@@ -17,11 +17,11 @@ import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.ResetGyroCommand;
-import frc.robot.commands.climb.ClimbDownCommand;
-import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.VelocityTalonFX;
+import frc.robot.subsystems.VelocityNeo;
+import frc.robot.subsystems.SmartMotionNeo;
 import frc.robot.subsystems.LimeLightSubsystem;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -41,10 +41,13 @@ public class RobotContainer {
 	XboxController m_driverController = new XboxController(Constants.kDriverControllerPort);
 	Joystick m_operatorController = new Joystick(Constants.kOperatorControllerPort);
 
+	// The robot's subsystems
 	private DriveSubsystem m_drive;
 	private IntakeSubsystem m_intake;
 	private LimeLightSubsystem m_vision;
-	private ClimbSubsystem m_climb;
+	private VelocityTalonFX m_talon;
+	private VelocityNeo m_neo;
+	private SmartMotionNeo m_motor;
 
 	public enum HanMode {
 		MODE_SHOOT, MODE_CLIMB
@@ -55,12 +58,14 @@ public class RobotContainer {
 	 * 
 	 * @throws _NotImplementedProperlyException
 	 */
-	public RobotContainer(ClimbSubsystem climb, DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision) {
+	public RobotContainer(DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision, VelocityTalonFX talon, VelocityNeo neo, SmartMotionNeo motor) {
 		// this.m_ledstring = m_ledstring;
 		this.m_drive = drive;
 		this.m_intake = intake;
 		this.m_vision = vision;
-		this.m_climb = climb;
+		this.m_talon = talon;
+		this.m_neo = neo;
+		this.m_motor = motor;
 
 		// Configure the button bindings
 		configureButtonBindings();
@@ -109,8 +114,6 @@ public class RobotContainer {
 		//#endregion
 		
 		//#region Climb Subsystem
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
 		//#endregion
 		
 		//left = button 1
