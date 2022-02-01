@@ -8,9 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-// import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -39,7 +37,7 @@ public class SmartMotionNeo extends ToggleableSubsystem {
 
 	private DoubleSolenoid mBrakeSolenoid;
 
-	private CANSparkMax m_motor;
+	private CANSparkMax m_smart;
 	private SparkMaxPIDController m_pidController;
 	private RelativeEncoder m_encoder;
 	public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr; 
@@ -49,23 +47,23 @@ public class SmartMotionNeo extends ToggleableSubsystem {
 	 */
 	public SmartMotionNeo() {
 		if(isDisabled()){
-			m_motor = null;
+			m_smart = null;
 			return;
 		}
 
 		// initialize motor
-		m_motor = new CANSparkMax(OpConstants.kMotorCANLaunch1, MotorType.kBrushless);
+		m_smart = new CANSparkMax(OpConstants.kMotorCANLaunch1, MotorType.kBrushless);
 
 		/**
 		 * The RestoreFactoryDefaults method can be used to reset the configuration parameters
 		 * in the SPARK MAX to their factory default state. If no argument is passed, these
 		 * parameters will not persist between power cycles
 		 */
-		m_motor.restoreFactoryDefaults();
+		m_smart.restoreFactoryDefaults();
 
 		// initialze PID controller and encoder objects
-		m_pidController = m_motor.getPIDController();
-		m_encoder = m_motor.getEncoder();
+		m_pidController = m_smart.getPIDController();
+		m_encoder = m_smart.getEncoder();
 
 		// PID coefficients
 		kP = 5e-5; 
@@ -152,34 +150,13 @@ public class SmartMotionNeo extends ToggleableSubsystem {
 		}
 	}
 
-	public double getLaunchMotor1Velocity() {
+	public double getSmartVelocity() {
 		if(isDisabled()){
 			return 0;
 		}
 
-		return m_motor.get(); // mTalonLaunch1.getSelectedSensorVelocity();
+		return m_smart.get(); // mTalonLaunch1.getSelectedSensorVelocity();
 	}
-
-	public boolean atTargetVelocity() {
-		if(isDisabled()){
-			return false;
-		}
-
-		//return mTalonLaunch1.getSelectedSensorVelocity() >= targetVelocity_UnitsPer100ms * 0.95
-		//		&& mTalonLaunch1.getSelectedSensorVelocity() < targetVelocity_UnitsPer100ms * 1.05;
-		return false;
-	}
-
-	public void enableLaunching() {
-		if(isDisabled()){
-			return;
-		}
-
-		// this is for Autonomous
-		//this.spinLauncher(0.8);
-		//hoodExtend();
-	}
-
 
 	public void spinSmart(double launchMotorPercent_0_to_1) {
 		if(isDisabled()){
@@ -206,8 +183,8 @@ public class SmartMotionNeo extends ToggleableSubsystem {
 		if((iz != kIz)) { m_pidController.setIZone(iz); kIz = iz; }
 		if((ff != kFF)) { m_pidController.setFF(ff); kFF = ff; }
 		if((max != kMaxOutput) || (min != kMinOutput)) { 
-		m_pidController.setOutputRange(min, max); 
-		kMinOutput = min; kMaxOutput = max; 
+			m_pidController.setOutputRange(min, max); 
+			kMinOutput = min; kMaxOutput = max; 
 		}
 		if((maxV != maxVel)) { m_pidController.setSmartMotionMaxVelocity(maxV,0); maxVel = maxV; }
 		if((minV != minVel)) { m_pidController.setSmartMotionMinOutputVelocity(minV,0); minVel = minV; }
@@ -217,23 +194,23 @@ public class SmartMotionNeo extends ToggleableSubsystem {
 		double setPoint, processVariable;
 		boolean mode = SmartDashboard.getBoolean("Mode", false);
 		if(mode) {
-		setPoint = SmartDashboard.getNumber("Set Velocity", 0);
-		m_pidController.setReference(setPoint, CANSparkMax.ControlType.kVelocity);
-		processVariable = m_encoder.getVelocity();
+			setPoint = SmartDashboard.getNumber("Set Velocity", 0);
+			m_pidController.setReference(setPoint, CANSparkMax.ControlType.kVelocity);
+			processVariable = m_encoder.getVelocity();
 		} else {
-		setPoint = SmartDashboard.getNumber("Set Position", 0);
-		/**
-		 * As with other PID modes, Smart Motion is set by calling the
-		 * setReference method on an existing pid object and setting
-		 * the control type to kSmartMotion
-		 */
-		m_pidController.setReference(setPoint, CANSparkMax.ControlType.kSmartMotion);
-		processVariable = m_encoder.getPosition();
+			setPoint = SmartDashboard.getNumber("Set Position", 0);
+			/**
+			* As with other PID modes, Smart Motion is set by calling the
+			* setReference method on an existing pid object and setting
+			* the control type to kSmartMotion
+			*/
+			m_pidController.setReference(setPoint, CANSparkMax.ControlType.kSmartMotion);
+			processVariable = m_encoder.getPosition();
 		}
 		
 		SmartDashboard.putNumber("SetPoint", setPoint);
 		SmartDashboard.putNumber("Process Variable", processVariable);
-		SmartDashboard.putNumber("Output", m_motor.getAppliedOutput());
+		SmartDashboard.putNumber("Output", m_smart.getAppliedOutput());
 	}
 
 	public void stopSmart() {
@@ -247,53 +224,17 @@ public class SmartMotionNeo extends ToggleableSubsystem {
 		//mTalonLaunch1.set(ControlMode.PercentOutput, 0);
 		//mTalonLaunch2.set(ControlMode.PercentOutput, 0);
 		//launchMode();
-		m_motor.set(0);
+		m_smart.set(0);
 	}
 
-	public void launchMode() {
-		if(isDisabled()){
-			return;
-		}
-	}
 
-	public void climbMode() {
-		if(isDisabled()){
-			return;
-		}
-	}
-
-	public void brakeOn() {
-		if(isDisabled()){
-			return;
-		}
-
-		mBrakeSolenoid.set(DoubleSolenoid.Value.kForward); // brake
-	}
-
-	public void brakeOff() {
-		if(isDisabled()){
-			return;
-		}
-
-		mBrakeSolenoid.set(DoubleSolenoid.Value.kReverse); // brake
-	}
-
-	public void resetClimbEncoder() {
-		if(isDisabled()){
-			return;
-		}
-
-		//mTalonLaunch1.setSelectedSensorPosition(0);
-		///mTalonLaunch2.setSelectedSensorPosition(0);
-	}
-
-	public double getClimbEncoderValue() {
+	public double getSmartEncoderValue() {
 		if(isDisabled()){
 			return 0;
 		}
 
 		//return mTalonLaunch1.getSelectedSensorPosition();
-		return m_motor.getEncoder().getPosition();
+		return m_smart.getEncoder().getPosition();
 	}
 }
 

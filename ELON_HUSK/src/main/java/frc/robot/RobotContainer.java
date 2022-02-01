@@ -47,7 +47,7 @@ public class RobotContainer {
 	private LimeLightSubsystem m_vision;
 	private VelocityTalonFX m_talon;
 	private VelocityNeo m_neo;
-	private SmartMotionNeo m_motor;
+	private SmartMotionNeo m_smart;
 
 	public enum HanMode {
 		MODE_SHOOT, MODE_CLIMB
@@ -58,14 +58,14 @@ public class RobotContainer {
 	 * 
 	 * @throws _NotImplementedProperlyException
 	 */
-	public RobotContainer(DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision, VelocityTalonFX talon, VelocityNeo neo, SmartMotionNeo motor) {
+	public RobotContainer(DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision, VelocityTalonFX talon, VelocityNeo neo, SmartMotionNeo smart) {
 		// this.m_ledstring = m_ledstring;
 		this.m_drive = drive;
 		this.m_intake = intake;
 		this.m_vision = vision;
 		this.m_talon = talon;
 		this.m_neo = neo;
-		this.m_motor = motor;
+		this.m_smart = smart;
 
 		// Configure the button bindings
 		configureButtonBindings();
@@ -113,7 +113,19 @@ public class RobotContainer {
 		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
 		//#endregion
 		
-		//#region Climb Subsystem
+		//#region Test Subsystem
+		new JoystickButton(m_operatorController, 8) // convert -1 to +1 TO 0 to 1
+	//		.whileActiveContinuous(() -> m_launcher.spinLauncher((m_operatorController.getRawAxis(1)+1)/2))
+			.whileActiveContinuous(() -> m_neo.spinLauncher(m_operatorController.getRawAxis(1)))
+			.whenInactive(() -> m_neo.stopLaunching());
+
+		new JoystickButton(m_operatorController, 9)
+			.whileActiveContinuous(() -> m_talon.spinIntake((m_operatorController.getRawAxis(4)+1)/2))
+			.whenInactive(() -> m_talon.stopIntake());
+
+		new JoystickButton(m_operatorController, 7)
+			.whileActiveContinuous(() -> m_smart.spinSmart(m_operatorController.getRawAxis(1)))
+			.whenInactive(() -> m_smart.stopSmart());
 		//#endregion
 		
 		//left = button 1

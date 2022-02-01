@@ -43,7 +43,7 @@ public class VelocityNeo extends ToggleableSubsystem {
 	//private final WPI_TalonFX mTalonLaunch2;
 	private double targetVelocity_UnitsPer100ms;
 
-	private CANSparkMax m_motor;
+	private CANSparkMax m_neo;
 	private SparkMaxPIDController m_pidController;
 	private RelativeEncoder m_encoder;
 	public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
@@ -57,95 +57,29 @@ public class VelocityNeo extends ToggleableSubsystem {
 			//mBrakeSolenoid = null;
 			///mTalonLaunch1 = null;
 			//mTalonLaunch2 = null;
-			m_motor = null;
+			m_neo = null;
 			return;
 		}
 
-		//mLaunchHoodSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.k1HoodRetract, OpConstants.k1HoodExtend);
-		//mBrakeSolenoid = Constants.makeDoubleSolenoidForIds(0, OpConstants.k0BrakeOn, OpConstants.k0BrakeOff);
-		///mTalonLaunch1 = new WPI_TalonFX(OpConstants.kMotorCANLaunch1);
-		//mTalonLaunch2 = new WPI_TalonFX(OpConstants.kMotorCANLaunch2);
-
-		///mTalonLaunch1.configFactoryDefault();
-		//mTalonLaunch2.configFactoryDefault();
-
-		/* Config neutral deadband to be the smallest possible */
-		///mTalonLaunch1.configNeutralDeadband(0.001);
-		//mTalonLaunch2.configNeutralDeadband(0.001);
-
-		//mTalonLaunch1.setInverted(TalonFXInvertType.CounterClockwise);
-		//mTalonLaunch2.setInverted(TalonFXInvertType.Clockwise);
-
-		/* Config sensor used for Primary PID [Velocity] */
-		///mTalonLaunch1.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,
-		///		OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
-
-		//mTalonLaunch2.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 
-		//		OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
-		/**
-		 * Phase sensor accordingly. Positive Sensor Reading should match Green
-		 * (blinking) Leds on Talon
-		 */
-		//mTalonLaunch1.setSensorPhase(false);
-		//mTalonLaunch2.setSensorPhase(true);
-
-
-		/* Config the peak and nominal outputs */
-		///mTalonLaunch1.configNominalOutputForward(0, OpConstants.kTimeoutMs);
-		// mTalonLaunch1.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
-		// mTalonLaunch1.configPeakOutputForward(1, OpConstants.kTimeoutMs);
-		// mTalonLaunch1.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
-		//mTalonLaunch2.configNominalOutputForward(0, OpConstants.kTimeoutMs);
-		//mTalonLaunch2.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
-		//mTalonLaunch2.configPeakOutputForward(1, OpConstants.kTimeoutMs);
-		//mTalonLaunch2.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
-
-		/* Config the Velocity closed loop gains in slot0 */
-		// mTalonLaunch1.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		// mTalonLaunch1.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
-		// mTalonLaunch1.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
-		// mTalonLaunch1.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
-		//mTalonLaunch2.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		//mTalonLaunch2.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
-		//mTalonLaunch2.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
-		//mTalonLaunch2.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
-
-		// mTalonLaunch1.setNeutralMode(NeutralMode.Brake);
-		//mTalonLaunch2.setNeutralMode(NeutralMode.Coast);
-
-		/*
-		 * StatorCurrentLimitConfiguration statorConfig = // ENABLED LIMIT(AMP) TRIGGER
-		 * THRESHOLD(AMP) TRIGGER THRESHOLD TIME(s) new
-		 * StatorCurrentLimitConfiguration(true, 40, 45, 1.0);
-		 * mTalonLaunch1.configStatorCurrentLimit(statorConfig);
-		 * mTalonLaunch2.configStatorCurrentLimit(statorConfig);
-		 */
-		// SupplyCurrentLimitConfiguration supplyConfig =
-		// 		// ENABLED LIMIT(AMP) TRIGGER THRESHOLD(AMP) TRIGGER THRESHOLD TIME(s)
-		// 		new SupplyCurrentLimitConfiguration(true, 40, 45, 0.5);
-		// mTalonLaunch1.configSupplyCurrentLimit(supplyConfig);
-		//mTalonLaunch2.configSupplyCurrentLimit(supplyConfig);
-
-
 		// initialize motor
-		m_motor = new CANSparkMax(OpConstants.kMotorCANLaunch1, MotorType.kBrushless);
+		m_neo = new CANSparkMax(OpConstants.kMotorCANLaunch1, MotorType.kBrushless);
 
 		/**
 		 * The RestoreFactoryDefaults method can be used to reset the configuration parameters
 		 * in the SPARK MAX to their factory default state. If no argument is passed, these
 		 * parameters will not persist between power cycles
 		 */
-		m_motor.restoreFactoryDefaults();
+		m_neo.restoreFactoryDefaults();
 
 		/**
 		 * In order to use PID functionality for a controller, a SparkMaxPIDController object
 		 * is constructed by calling the getPIDController() method on an existing
 		 * CANSparkMax object
 		 */
-		m_pidController = m_motor.getPIDController();
+		m_pidController = m_neo.getPIDController();
 
 		// Encoder object created to display position values
-		m_encoder = m_motor.getEncoder();
+		m_encoder = m_neo.getEncoder();
 
 		// PID coefficients
 		kP = 6e-5; 
@@ -198,34 +132,13 @@ public class VelocityNeo extends ToggleableSubsystem {
 		}
 	}
 
-	public double getLaunchMotor1Velocity() {
+	public double getNeoVelocity() {
 		if(isDisabled()){
 			return 0;
 		}
 
-		return m_motor.get(); // mTalonLaunch1.getSelectedSensorVelocity();
+		return m_neo.get(); // mTalonLaunch1.getSelectedSensorVelocity();
 	}
-
-	public boolean atTargetVelocity() {
-		if(isDisabled()){
-			return false;
-		}
-
-		//return mTalonLaunch1.getSelectedSensorVelocity() >= targetVelocity_UnitsPer100ms * 0.95
-		//		&& mTalonLaunch1.getSelectedSensorVelocity() < targetVelocity_UnitsPer100ms * 1.05;
-		return false;
-	}
-
-	public void enableLaunching() {
-		if(isDisabled()){
-			return;
-		}
-
-		// this is for Autonomous
-		//this.spinLauncher(0.8);
-		//hoodExtend();
-	}
-
 
 	public void spinLauncher(double launchMotorPercent_0_to_1) {
 		if(isDisabled()){
@@ -281,38 +194,10 @@ public class VelocityNeo extends ToggleableSubsystem {
 		//mTalonLaunch1.set(ControlMode.PercentOutput, 0);
 		//mTalonLaunch2.set(ControlMode.PercentOutput, 0);
 		//launchMode();
-		m_motor.set(0);
+		m_neo.set(0);
 	}
 
-	public void launchMode() {
-		if(isDisabled()){
-			return;
-		}
-	}
-
-	public void climbMode() {
-		if(isDisabled()){
-			return;
-		}
-	}
-
-	public void brakeOn() {
-		if(isDisabled()){
-			return;
-		}
-
-		mBrakeSolenoid.set(DoubleSolenoid.Value.kForward); // brake
-	}
-
-	public void brakeOff() {
-		if(isDisabled()){
-			return;
-		}
-
-		mBrakeSolenoid.set(DoubleSolenoid.Value.kReverse); // brake
-	}
-
-	public void resetClimbEncoder() {
+	public void resetNeoEncoder() {
 		if(isDisabled()){
 			return;
 		}
@@ -321,13 +206,13 @@ public class VelocityNeo extends ToggleableSubsystem {
 		///mTalonLaunch2.setSelectedSensorPosition(0);
 	}
 
-	public double getClimbEncoderValue() {
+	public double getNeoEncoderValue() {
 		if(isDisabled()){
 			return 0;
 		}
 
 		//return mTalonLaunch1.getSelectedSensorPosition();
-		return m_motor.getEncoder().getPosition();
+		return m_neo.getEncoder().getPosition();
 	}
 }
 
