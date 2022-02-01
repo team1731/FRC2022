@@ -140,7 +140,7 @@ public class VelocityNeo extends ToggleableSubsystem {
 		return m_neo.get(); // mTalonLaunch1.getSelectedSensorVelocity();
 	}
 
-	public void spinLauncher(double launchMotorPercent_0_to_1) {
+	public void spinNeo(double launchMotorPercent_0_to_1) {
 		if(isDisabled()){
 			return;
 		}

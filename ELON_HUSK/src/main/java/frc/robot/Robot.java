@@ -18,15 +18,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.VelocityTalonFX;
 import frc.robot.subsystems.VelocityNeo;
 import frc.robot.subsystems.SmartMotionNeo;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.autonomous._NamedAutoMode;
-import frc.robot.subsystems.LimeLightSubsystem;
-import edu.wpi.first.math.geometry.Pose2d;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,64 +32,23 @@ import edu.wpi.first.math.geometry.Pose2d;
  */
 public class Robot extends TimedRobot {
 
-	private _NamedAutoMode namedAutoMode;
-	private Command m_autonomousCommand;
 	private RobotContainer m_robotContainer;
-	private Integer fieldOrientation;
 
 	// The robot's subsystems
-	public DriveSubsystem m_drive;
-	public LimeLightSubsystem m_vision;
 	public IntakeSubsystem m_intake;
 	public VelocityTalonFX m_talon;
 	public VelocityNeo m_neo;
 	public SmartMotionNeo m_smart;
 
-	String autoCode = AutoConstants.kDEFAULT_AUTO_CODE;
-
 	public Robot() {
 		addPeriodic(() -> {
-			if (m_drive != null)
-				m_drive.updateOdometry();
 		}, 0.010, 0.0); // was 0.005
 	}
 
 	private void initSubsystems() {
 		// initial SubSystems to at rest states
-		m_drive.resetEncoders();
-		if (m_intake != null) {
-			m_intake.retract();
-		}
 	}
 
-	private void autoInitPreload() {
-		System.out.println("autoInitPreload: Start");
-		m_autonomousCommand = null;
-		m_drive.resetOdometry(new Pose2d());
-
-		m_drive.resumeCSVWriter();
-
-		if (RobotBase.isReal()) {
-			autoCode = SmartDashboard.getString("AUTO CODE", autoCode);
-		}
-		System.out.println("AUTO CODE retrieved from Dashboard --> " + autoCode);
-		if (autoCode == null || autoCode.length() < 2) {
-			autoCode = AutoConstants.kDEFAULT_AUTO_CODE;
-		}
-		autoCode = autoCode.toUpperCase();
-		System.out.println("AUTO CODE being used by the software --> " + autoCode);
-
-		m_autonomousCommand = null;
-		namedAutoMode = m_robotContainer.getNamedAutonomousCommand(autoCode);
-		if (namedAutoMode != null) {
-			System.out.println("autoInitPreload: getCommand Auto Begin");
-			m_autonomousCommand = namedAutoMode.getCommand();
-			System.out.println("autoInitPreload: getCommand Auto Complete");
-		} else {
-			System.err.println("UNABLE TO EXECUTE SELECTED AUTONOMOUS MODE!!");
-		}
-		System.out.println("autoInitPreload: End");
-	}
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -103,28 +57,17 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 
-		m_vision = new LimeLightSubsystem();
-		m_drive = new DriveSubsystem(m_vision);
 		m_intake = new IntakeSubsystem();
 		m_talon = new VelocityTalonFX();
 		m_neo = new VelocityNeo();
 		m_smart = new SmartMotionNeo();
 		
-		m_drive.zeroHeading();
-
 		// Instantiate our RobotContainer. This will perform all our button bindings,
 		// and put our
 		// autonomous chooser on the dashboard.
-		m_robotContainer = new RobotContainer(m_drive, m_intake, m_vision, m_talon, m_neo, m_smart);
+		m_robotContainer = new RobotContainer(m_intake, m_talon, m_neo, m_smart);
 
 		initSubsystems();
-
-		SmartDashboard.putString("AUTO CODE", AutoConstants.kDEFAULT_AUTO_CODE); // see above for explanation
-		if (RobotBase.isReal()) {
-			autoCode = SmartDashboard.getString("AUTO CODE", autoCode);
-		}
-
-		autoInitPreload();
 
 		SmartDashboard.putString("Build Info - Branch", "N/A");
 		SmartDashboard.putString("Build Info - Commit Hash", "N/A");
@@ -170,8 +113,6 @@ public class Robot extends TimedRobot {
 		// robot's periodic
 		// block in order for anything in the Command-based framework to work.
 		CommandScheduler.getInstance().run();
-
-		m_drive.displayEncoders();
 	}
 
 	/**
@@ -179,7 +120,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		m_drive.suspendCSVWriter();
 	}
 
 	@Override
@@ -187,33 +127,6 @@ public class Robot extends TimedRobot {
 		/*
 		 * if(m_ledstring != null){ m_ledstring.option(LedOption.TEAM); }
 		 */
-		m_drive.resetEncoders();
-		if (System.currentTimeMillis() % 100 == 0) {
-			// SmartDashboard.putBoolean("LowSensor", m_sequencer.lowSensorHasBall());
-			// SmartDashboard.putBoolean("MidSensor", m_sequencer.midSensorHasBall());
-			// SmartDashboard.putBoolean("HighSensor", m_sequencer.highSensorHasBall());
-		}
-
-		if (RobotBase.isReal()) {
-			String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
-			if (!newCode.equals(autoCode)) {
-				autoCode = newCode;
-				System.out.println("New Auto Code read from dashboard - initializing.");
-				autoInitPreload();
-			}
-			if (m_autonomousCommand != null) {
-				if (m_autonomousCommand.getName().startsWith("H0")) {
-					Integer newFieldOrientation = namedAutoMode.getFieldOrientation();
-					if (newFieldOrientation != null) {
-						if (!newFieldOrientation.equals(fieldOrientation)) {
-							System.out.println("New Field Orientation detected by LimeLight - initializing.");
-							fieldOrientation = newFieldOrientation;
-							autoInitPreload();
-						}
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -222,24 +135,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		m_drive.resumeCSVWriter();
-
-		CommandScheduler.getInstance().cancelAll();
-
-		// schedule the autonomous command (example)
-		if (m_autonomousCommand == null) {
-			System.err.println("SOMETHING WENT WRONG - UNABLE TO RUN AUTONOMOUS! CHECK SOFTWARE!");
-		} else {
-			System.out.println("Running actual autonomous mode --> " + namedAutoMode.name);
-			m_drive.zeroHeading();
-			Pose2d initialPose = namedAutoMode.getInitialPose();
-			if (initialPose != null) {
-				m_drive.resetOdometry(initialPose);
-				System.out.println("Initial Pose: " + initialPose.toString());
-			}
-			m_autonomousCommand.schedule();
-		}
-		System.out.println("autonomousInit: End");
 	}
 
 	/**
@@ -253,18 +148,7 @@ public class Robot extends TimedRobot {
 	public void teleopInit() {
 		CommandScheduler.getInstance().cancelAll();
 		
-		m_drive.resumeCSVWriter();
-
 		initSubsystems();
-
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.cancel();
-		}
-
 	}
 
 	public static long millis = System.currentTimeMillis();
@@ -307,7 +191,6 @@ public class Robot extends TimedRobot {
 	public void testInit() {
 		// Cancels all running commands at the start of test mode.
 		CommandScheduler.getInstance().cancelAll();
-		SmartDashboard.putNumber("Shoot Motor % (0-1)", 0.5);
 	}
 
 	/**
