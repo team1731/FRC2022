@@ -3,8 +3,8 @@ package frc.robot.subsystems;
 import java.util.Arrays;
 import java.util.Optional;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
@@ -30,8 +30,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private final Solenoid _grabberSouth1;
 	private final Solenoid _grabberSouth2;
 
-	private final TalonFX _swingerMasterMotor;
-	private final TalonFX _swingerSlaveMotor;
+	private final CANSparkMax _swingerMasterMotor;
+	private final CANSparkMax _swingerSlaveMotor;
 
 	private final IRSensor _northSensor;
 	private final IRSensor _southSensor;
@@ -129,8 +129,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_grabberSouth1 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth1ID);
 		_grabberSouth2 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth2ID);
 
-		_swingerMasterMotor = new TalonFX(OpConstants.kLeftSwingerMotorID);
-		_swingerSlaveMotor = new TalonFX(OpConstants.kRightSwingerMotorID);
+		_swingerMasterMotor = new CANSparkMax(OpConstants.kLeftSwingerMotorID, MotorType.kBrushless);
+		_swingerSlaveMotor = new CANSparkMax(OpConstants.kRightSwingerMotorID, MotorType.kBrushless);
 
 		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
 		_southSensor = new IRSensor(OpConstants.kSouthSensorID);
@@ -186,11 +186,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	}
 
 	private void startSwing(){
-		_swingerMasterMotor.set(ControlMode.PercentOutput, 100 * _inputDirection.value);
+		_swingerMasterMotor.set(10 * _inputDirection.value);
 	}
 
 	private void stopSwing(){
-		_swingerMasterMotor.set(ControlMode.PercentOutput, 0);
+		_swingerMasterMotor.set(0);
 	}
 
 	//#endregion
