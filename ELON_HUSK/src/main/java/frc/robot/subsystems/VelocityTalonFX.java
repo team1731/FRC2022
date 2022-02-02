@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 import frc.robot.Constants.OpConstants;
@@ -41,6 +42,10 @@ public class VelocityTalonFX extends ToggleableSubsystem {
 		mTalonPickup1 = new WPI_TalonFX(6); //OpConstants.kMotorCANIntake1);
 
 		mTalonPickup1.configFactoryDefault();
+
+		// Current limiting
+		StatorCurrentLimitConfiguration currentLimitCfg = new StatorCurrentLimitConfiguration(true, 20, 25, 1.0);
+		mTalonPickup1.configStatorCurrentLimit(currentLimitCfg);
 
 		/* Config neutral deadband to be the smallest possible */
 		mTalonPickup1.configNeutralDeadband(0.001);
