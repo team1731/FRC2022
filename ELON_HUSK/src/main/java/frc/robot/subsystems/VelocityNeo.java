@@ -34,7 +34,7 @@ public class VelocityNeo extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 
 	//private DoubleSolenoid mLaunchHoodSolenoid;
@@ -62,7 +62,7 @@ public class VelocityNeo extends ToggleableSubsystem {
 		}
 
 		// initialize motor
-		m_neo = new CANSparkMax(OpConstants.kMotorCANLaunch1, MotorType.kBrushless);
+		m_neo = new CANSparkMax(OpConstants.kMotorCanSequencer1, MotorType.kBrushless);
 
 		/**
 		 * The RestoreFactoryDefaults method can be used to reset the configuration parameters

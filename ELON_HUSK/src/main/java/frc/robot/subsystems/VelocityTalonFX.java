@@ -38,7 +38,7 @@ public class VelocityTalonFX extends ToggleableSubsystem {
 			return;
 		}
 
-		mTalonPickup1 = new WPI_TalonFX(OpConstants.kMotorCANIntake1);
+		mTalonPickup1 = new WPI_TalonFX(6); //OpConstants.kMotorCANIntake1);
 
 		mTalonPickup1.configFactoryDefault();
 

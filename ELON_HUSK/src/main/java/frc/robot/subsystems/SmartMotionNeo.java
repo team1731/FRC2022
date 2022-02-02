@@ -52,7 +52,7 @@ public class SmartMotionNeo extends ToggleableSubsystem {
 		}
 
 		// initialize motor
-		m_smart = new CANSparkMax(OpConstants.kMotorCANLaunch1, MotorType.kBrushless);
+		m_smart = new CANSparkMax(OpConstants.kMotorCanSequencer1, MotorType.kBrushless);
 
 		/**
 		 * The RestoreFactoryDefaults method can be used to reset the configuration parameters
