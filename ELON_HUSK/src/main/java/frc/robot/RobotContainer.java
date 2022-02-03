@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-//import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -20,6 +19,7 @@ import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.RangeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -27,6 +27,7 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.InputRange;
 import frc.robot.commands.intake.LeftIntakeCommand;
 import frc.robot.commands.intake.RightIntakeCommand;
 
@@ -42,6 +43,7 @@ public class RobotContainer {
 	Joystick m_operatorController = new Joystick(Constants.kOperatorControllerPort);
 
 	private DriveSubsystem m_drive;
+	private RangeSubsystem m_range;
 	private IntakeSubsystem m_intake;
 	private LimeLightSubsystem m_vision;
 	private ClimbSubsystem m_climb;
@@ -55,9 +57,16 @@ public class RobotContainer {
 	 * 
 	 * @throws _NotImplementedProperlyException
 	 */
-	public RobotContainer(ClimbSubsystem climb, DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision) {
+	public RobotContainer(
+			DriveSubsystem drive, 
+			ClimbSubsystem climb,
+			RangeSubsystem range, 
+			IntakeSubsystem intake, 
+			LimeLightSubsystem vision)
+		{
 		// this.m_ledstring = m_ledstring;
 		this.m_drive = drive;
+		this.m_range = range;
 		this.m_intake = intake;
 		this.m_vision = vision;
 		this.m_climb = climb;
@@ -119,6 +128,28 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
 
 		//#
+		//#region Test Subsystem
+		// new JoystickButton(m_operatorController, 8) // convert -1 to +1 TO 0 to 1
+		// 	.whileActiveContinuous(() -> m_neo.spinNeo(m_operatorController.getRawAxis(1)))
+		// 	.whenInactive(() -> m_neo.stopLaunching());
+
+		// new JoystickButton(m_operatorController, 9)
+		// 	.whileActiveContinuous(() -> m_talon.spinIntake((m_operatorController.getRawAxis(4)+1)/2))
+		// 	.whenInactive(() -> m_talon.stopIntake());
+
+		new JoystickButton(m_operatorController, 1)
+			.whileActiveContinuous(() -> m_range.setRange(InputRange.HOME.value))
+			.whenInactive(() -> m_range.stopRange());
+		new JoystickButton(m_operatorController, 2)
+			.whileActiveContinuous(() -> m_range.setRange(InputRange.SHORT.value))
+			.whenInactive(() -> m_range.stopRange());
+		new JoystickButton(m_operatorController, 3)
+			.whileActiveContinuous(() -> m_range.setRange(InputRange.MID.value))
+			.whenInactive(() -> m_range.stopRange());
+		new JoystickButton(m_operatorController, 4)
+			.whileActiveContinuous(() -> m_range.setRange(InputRange.LONG.value))
+			.whenInactive(() -> m_range.stopRange());
+		//#endregion
 	}
 
 	public _NamedAutoMode getNamedAutonomousCommand(String autoSelected) {

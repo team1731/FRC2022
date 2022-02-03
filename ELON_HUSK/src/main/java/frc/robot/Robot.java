@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.RangeSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.AutoConstants;
@@ -43,6 +44,7 @@ public class Robot extends TimedRobot {
 	// The robot's subsystems
 	public DriveSubsystem m_drive;
 	public LimeLightSubsystem m_vision;
+	public RangeSubsystem m_range;
 	public IntakeSubsystem m_intake;
 	public ClimbSubsystem m_climb;
 
@@ -104,6 +106,7 @@ public class Robot extends TimedRobot {
 
 		m_vision = new LimeLightSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
+		m_range = new RangeSubsystem();
 		m_intake = new IntakeSubsystem();
 		m_climb = new ClimbSubsystem();
 
@@ -112,7 +115,7 @@ public class Robot extends TimedRobot {
 		// Instantiate our RobotContainer. This will perform all our button bindings,
 		// and put our
 		// autonomous chooser on the dashboard.
-		m_robotContainer = new RobotContainer(m_climb, m_drive, m_intake, m_vision);
+		m_robotContainer = new RobotContainer(m_drive, m_climb, m_range, m_intake, m_vision);
 
 		initSubsystems();
 

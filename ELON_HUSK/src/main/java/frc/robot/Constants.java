@@ -106,6 +106,7 @@ public final class Constants {
 		//Shooter/Launcher CAN IDS
 		public static final int kMotorCANLaunch1 = 5;
 		public static final int kMotorCANLaunch2 = 6;
+		public static final int kMotorCANRange = 6;
 
 		//Climber CAN IDs
 		public static final int kMotorCANClimber1 = 7;
@@ -149,6 +150,10 @@ public final class Constants {
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
 		public final static Gains kGains_Velocity = new Gains(0.05, 0, 0, .06, 300, 1.00);
+		public final static Gains kGains_Range = new Gains(2.0, 0.0, 0.0, 0.0, 0, 1.0);
+		
+		public final static int SLOT_0 = 0;
+		public final static int SLOT_1 = 1;
 		///// End TalonFX
 	}
 
@@ -260,4 +265,18 @@ public final class Constants {
 		 */
 		public static final int kJoyStickShooterSpeed = 4;
 	}
+
+	public enum InputRange {
+		LONG(3000),
+		MID(2000),
+		SHORT(1000),
+		HOME(0);
+
+		public final int value;
+
+		InputRange(int value){
+			this.value = value;
+		}
+	}
+
 }
