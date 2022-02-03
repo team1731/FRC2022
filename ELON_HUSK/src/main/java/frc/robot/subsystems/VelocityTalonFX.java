@@ -44,7 +44,7 @@ public class VelocityTalonFX extends ToggleableSubsystem {
 		mTalonPickup1.configFactoryDefault();
 
 		// Current limiting
-		StatorCurrentLimitConfiguration currentLimitCfg = new StatorCurrentLimitConfiguration(true, 20, 25, 1.0);
+		StatorCurrentLimitConfiguration currentLimitCfg = new StatorCurrentLimitConfiguration(true, 10, 10, 0.5);
 		mTalonPickup1.configStatorCurrentLimit(currentLimitCfg);
 
 		/* Config neutral deadband to be the smallest possible */
