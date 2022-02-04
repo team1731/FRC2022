@@ -19,7 +19,7 @@ import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.RangeSubsystem;
+import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -28,8 +28,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputRange;
-import frc.robot.commands.intake.LeftIntakeCommand;
-import frc.robot.commands.intake.RightIntakeCommand;
+import frc.robot.commands.intake.*;
+import frc.robot.commands.launch.*;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -43,7 +43,7 @@ public class RobotContainer {
 	Joystick m_operatorController = new Joystick(Constants.kOperatorControllerPort);
 
 	private DriveSubsystem m_drive;
-	private RangeSubsystem m_range;
+	private LaunchSubsystem m_launch;
 	private IntakeSubsystem m_intake;
 	private LimeLightSubsystem m_vision;
 	private ClimbSubsystem m_climb;
@@ -60,13 +60,13 @@ public class RobotContainer {
 	public RobotContainer(
 			DriveSubsystem drive, 
 			ClimbSubsystem climb,
-			RangeSubsystem range, 
+			LaunchSubsystem launch, 
 			IntakeSubsystem intake, 
 			LimeLightSubsystem vision)
 		{
 		// this.m_ledstring = m_ledstring;
 		this.m_drive = drive;
-		this.m_range = range;
+		this.m_launch = launch;
 		this.m_intake = intake;
 		this.m_vision = vision;
 		this.m_climb = climb;
@@ -124,7 +124,7 @@ public class RobotContainer {
 		
 		//left = button 1
 		//right = button 12
-		new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
+		//new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
 		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
 
 		//#
@@ -134,21 +134,17 @@ public class RobotContainer {
 		// 	.whenInactive(() -> m_neo.stopLaunching());
 
 		// new JoystickButton(m_operatorController, 9)
-		// 	.whileActiveContinuous(() -> m_talon.spinIntake((m_operatorController.getRawAxis(4)+1)/2))
-		// 	.whenInactive(() -> m_talon.stopIntake());
+		// 	.whileActiveContinuous(() -> m_launcher.spinLauncher((m_operatorController.getRawAxis(4)+1)/2))
+		// 	.whenInactive(() -> m_launcher.stopLauncher());
 
-		new JoystickButton(m_operatorController, 1)
-			.whileActiveContinuous(() -> m_range.setRange(InputRange.HOME.value))
-			.whenInactive(() -> m_range.stopRange());
-		new JoystickButton(m_operatorController, 2)
-			.whileActiveContinuous(() -> m_range.setRange(InputRange.SHORT.value))
-			.whenInactive(() -> m_range.stopRange());
-		new JoystickButton(m_operatorController, 3)
-			.whileActiveContinuous(() -> m_range.setRange(InputRange.MID.value))
-			.whenInactive(() -> m_range.stopRange());
 		new JoystickButton(m_operatorController, 4)
-			.whileActiveContinuous(() -> m_range.setRange(InputRange.LONG.value))
-			.whenInactive(() -> m_range.stopRange());
+			.whenActive(new LaunchRunCommand(m_launch))
+			.whenInactive(new LaunchStopCommand(m_launch));
+
+		new JoystickButton(m_operatorController, 1).whenHeld(new LaunchRangeCommand(m_launch, InputRange.HOME));
+		new JoystickButton(m_operatorController, 2).whenHeld(new LaunchRangeCommand(m_launch, InputRange.SHORT));
+		new JoystickButton(m_operatorController, 3).whenHeld(new LaunchRangeCommand(m_launch, InputRange.MID));
+		new JoystickButton(m_operatorController, 5).whenHeld(new LaunchRangeCommand(m_launch, InputRange.LONG));
 		//#endregion
 	}
 

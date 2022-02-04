@@ -104,8 +104,7 @@ public final class Constants {
 		
 		//Can IDs for all non-driving motors/motor controllers
 		//Shooter/Launcher CAN IDS
-		public static final int kMotorCANLaunch1 = 5;
-		public static final int kMotorCANLaunch2 = 6;
+		public static final int kMotorCANLaunch = 5;
 		public static final int kMotorCANRange = 6;
 
 		//Climber CAN IDs
@@ -267,15 +266,17 @@ public final class Constants {
 	}
 
 	public enum InputRange {
-		LONG(3000),
-		MID(2000),
-		SHORT(1000),
-		HOME(0);
+		LONG(3000, 3000),
+		MID(2000, 2000),
+		SHORT(1000, 1000),
+		HOME(0, 500);
 
-		public final int value;
+		public final int position;
+		public final int speed;
 
-		InputRange(int value){
-			this.value = value;
+		InputRange(int position, int speed){
+			this.position = position;
+			this.speed = speed;
 		}
 	}
 
