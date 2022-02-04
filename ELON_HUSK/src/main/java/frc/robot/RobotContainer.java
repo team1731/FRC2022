@@ -137,14 +137,18 @@ public class RobotContainer {
 		// 	.whileActiveContinuous(() -> m_launcher.spinLauncher((m_operatorController.getRawAxis(4)+1)/2))
 		// 	.whenInactive(() -> m_launcher.stopLauncher());
 
-		new JoystickButton(m_operatorController, 4)
+		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whenActive(new LaunchRunCommand(m_launch))
 			.whenInactive(new LaunchStopCommand(m_launch));
 
-		new JoystickButton(m_operatorController, 1).whenHeld(new LaunchRangeCommand(m_launch, InputRange.HOME));
-		new JoystickButton(m_operatorController, 2).whenHeld(new LaunchRangeCommand(m_launch, InputRange.SHORT));
-		new JoystickButton(m_operatorController, 3).whenHeld(new LaunchRangeCommand(m_launch, InputRange.MID));
-		new JoystickButton(m_operatorController, 5).whenHeld(new LaunchRangeCommand(m_launch, InputRange.LONG));
+		new JoystickButton(m_operatorController, 4)
+			.whenPressed(new LaunchRangeCommand(m_launch, InputRange.HOME));
+		new JoystickButton(m_operatorController, 5)
+			.whenPressed(new LaunchRangeCommand(m_launch, InputRange.SHORT));
+		new JoystickButton(m_operatorController, 6)
+			.whenPressed(new LaunchRangeCommand(m_launch, InputRange.MID));
+		new JoystickButton(m_operatorController, 7)
+			.whenPressed(new LaunchRangeCommand(m_launch, InputRange.LONG));
 		//#endregion
 	}
 
