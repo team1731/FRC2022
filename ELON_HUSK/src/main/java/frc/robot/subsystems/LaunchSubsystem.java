@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 import frc.robot.Constants.OpConstants;
 
@@ -41,8 +42,10 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		/* Factory Default Hardware to prevent unexpected behaviour */
 		_RangeMotor.configFactoryDefault();
 		// _LaunchMotor.configFactoryDefault();
-			
-		_RangeMotor.configAllowableClosedloopError(OpConstants.SLOT_0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
+
+		/* set deadband to super small 0.001 (0.1 %). The default deadband is 0.04 (4 %) */
+		_RangeMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
+
 		/**
 		 * Configure the current limits that will be used
 		 * Stator Current is the current that passes through the motor stators.
@@ -59,9 +62,6 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		/* setup a basic closed loop */
 		_RangeMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override 
 		// _LaunchMotor.setNeutralMode(NeutralMode.Coast); // Netural Mode override 
-
-		/* Config neutral deadband to be the smallest possible */
-		// _LaunchMotor.configNeutralDeadband(0.001);
 
 		_RangeMotor.configSelectedFeedbackSensor(
 			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
@@ -81,6 +81,10 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			* https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
 			*/
 		// _RangeMotor.setSensorPhase(true);
+
+		/* Set relevant frame periods to be at least as fast as periodic rate */
+		_RangeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
+		_RangeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
 		
 		/* Gains for Position Closed Loop servo */
 		_RangeMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Range.kP, OpConstants.kTimeoutMs);
@@ -104,7 +108,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		// _LaunchMotor.configPeakOutputForward(1, OpConstants.kTimeoutMs);
 		// _LaunchMotor.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
 
-		_RangeMotor.setSelectedSensorPosition(0);
+
+		/* Set acceleration and vcruise velocity - see documentation */
+		_RangeMotor.configMotionCruiseVelocity(15000, OpConstants.kTimeoutMs);
+		_RangeMotor.configMotionAcceleration(6000, OpConstants.kTimeoutMs);
+
+		/* Zero the sensor once on robot boot up */
+		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 	}
 
 	@Override
@@ -139,7 +149,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		/// Range, max range guess is 10000
 		double position = normalize_input(position_0to1, 0.140, 0.901) * 10000.0;
 		if (range_update(position, .05)) {
-			_RangeMotor.set(TalonFXControlMode.Position, position);
+			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
 			lastPosition = position;
 		}
 		SmartDashboard.putNumber("_RangeLastPos", lastPosition);
