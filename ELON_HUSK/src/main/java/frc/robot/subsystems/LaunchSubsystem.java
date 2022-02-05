@@ -21,7 +21,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
   	//#region ToggleableSubsystem
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 	//#endregion
 
