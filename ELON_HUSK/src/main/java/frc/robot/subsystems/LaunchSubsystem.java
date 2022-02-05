@@ -25,6 +25,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	private final WPI_TalonFX _RangeMotor;
 	private final WPI_TalonFX _LaunchMotor;
+	private double lastPosition = -1.0;
 
   	/** Creates a new LaunchSubsystem. */
   	public LaunchSubsystem() {
@@ -34,13 +35,14 @@ public class LaunchSubsystem extends ToggleableSubsystem {
       		return;
 		}
 
-		_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange);
-		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch);
+		_RangeMotor = new WPI_TalonFX(6); //OpConstants.kMotorCANRange);
+		_LaunchMotor = null; //new WPI_TalonFX(6); //OpConstants.kMotorCANLaunch);
 
 		/* Factory Default Hardware to prevent unexpected behaviour */
 		_RangeMotor.configFactoryDefault();
-		_LaunchMotor.configFactoryDefault();
+		// _LaunchMotor.configFactoryDefault();
 			
+		_RangeMotor.configAllowableClosedloopError(OpConstants.SLOT_0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 		/**
 		 * Configure the current limits that will be used
 		 * Stator Current is the current that passes through the motor stators.
@@ -56,20 +58,20 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 		/* setup a basic closed loop */
 		_RangeMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override 
-		_LaunchMotor.setNeutralMode(NeutralMode.Coast); // Netural Mode override 
+		// _LaunchMotor.setNeutralMode(NeutralMode.Coast); // Netural Mode override 
 
 		/* Config neutral deadband to be the smallest possible */
-		_LaunchMotor.configNeutralDeadband(0.001);
+		// _LaunchMotor.configNeutralDeadband(0.001);
 
 		_RangeMotor.configSelectedFeedbackSensor(
 			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
 			OpConstants.kPIDLoopIdx,      			// PID Index
 			OpConstants.kTimeoutMs);      			// Config Timeout
 
-		_LaunchMotor.configSelectedFeedbackSensor(
-			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
-			OpConstants.kPIDLoopIdx,      			// PID Index
-			OpConstants.kTimeoutMs);      			// Config Timeout
+		// _LaunchMotor.configSelectedFeedbackSensor(
+		// 	TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
+		// 	OpConstants.kPIDLoopIdx,      			// PID Index
+		// 	OpConstants.kTimeoutMs);      			// Config Timeout
 
 		/*
 			* Talon FX does not need sensor phase set for its integrated sensor
@@ -86,21 +88,23 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_RangeMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Range.kD, OpConstants.kTimeoutMs);
 		_RangeMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Range.kF, OpConstants.kTimeoutMs);
 		
-		/* Config the Velocity closed loop gains in slot0 */
-		_LaunchMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_LaunchMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
-		_LaunchMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
-		_LaunchMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
+		// /* Config the Velocity closed loop gains in slot0 */
+		// _LaunchMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
+		// _LaunchMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
+		// _LaunchMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
+		// _LaunchMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
 
-		/**
-		 * Phase sensor accordingly. Positive Sensor Reading should match Green
-		 * (blinking) Leds on Talon
-		 */
-		/* Config the peak and nominal outputs */
-		_LaunchMotor.configNominalOutputForward(0, OpConstants.kTimeoutMs);
-		_LaunchMotor.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
-		_LaunchMotor.configPeakOutputForward(1, OpConstants.kTimeoutMs);
-		_LaunchMotor.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
+		// /**
+		//  * Phase sensor accordingly. Positive Sensor Reading should match Green
+		//  * (blinking) Leds on Talon
+		//  */
+		// /* Config the peak and nominal outputs */
+		// _LaunchMotor.configNominalOutputForward(0, OpConstants.kTimeoutMs);
+		// _LaunchMotor.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
+		// _LaunchMotor.configPeakOutputForward(1, OpConstants.kTimeoutMs);
+		// _LaunchMotor.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
+
+		_RangeMotor.setSelectedSensorPosition(0);
 	}
 
 	@Override
@@ -116,26 +120,41 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		return result;
 	}
 
+	private boolean range_update(double _position, double _percent) {
+		boolean update = false;
+		if (_position > lastPosition * (1+_percent)) update = true;
+		else if (_position < lastPosition * (1 - _percent)) update = true;
+		return update;
+	}
+
 	public void runLaunch(double speed_0to1, double position_0to1) {
 		if(isDisabled()){
 			return;
 		}
-		SmartDashboard.putNumber("_LaunchPostion", position_0to1);
-		SmartDashboard.putNumber("_LaunchSpeed", speed_0to1);
+		SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
+		SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
+		SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
+		//SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
 
-		/// Range, max range guess is 2000
-		double position = normalize_input(position_0to1, 0.176, 0.710) * 2000.0;
-		_RangeMotor.set(TalonFXControlMode.Position, position);
+		/// Range, max range guess is 10000
+		double position = normalize_input(position_0to1, 0.140, 0.901) * 10000.0;
+		if (range_update(position, .05)) {
+			_RangeMotor.set(TalonFXControlMode.Position, position);
+			lastPosition = position;
+		}
+		SmartDashboard.putNumber("_RangeLastPos", lastPosition);
+		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
 
-		/// Speed
-		//launchMotorPercent_0_to_1 *= -1;
+		/// Speed - max is 6000.0 RPMs
+		// launchMotorPercent_0_to_1 *= -1;
 		/**
 		 * Convert 2000 RPM to units / 100ms.
 		 * 2048 Units/Rev * 2000 RPM / 600 100ms/min in either direction:
 		 * velocity setpoint is in units/100ms
 		 */
-		double velUnitsPer100ms = normalize_input(speed_0to1, 0.176, 0.710) * 2000.0 * 2048.0 / 600.0;		
-		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
+		double velUnitsPer100ms = normalize_input(speed_0to1, 0.183, 0.795) * 6000.0 * 2048.0 / 600.0;		
+		//_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
+		SmartDashboard.putNumber("velUnitsPer100ms", velUnitsPer100ms);
 
 		/**
 		 * Convert 2000 RPM to units / 100ms.
@@ -153,8 +172,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	}
 	
 	public void stopLaunch() {
-		_RangeMotor.set(TalonFXControlMode.Velocity, 0);
-		_LaunchMotor.set(TalonFXControlMode.Velocity, 0);
+		_RangeMotor.set(TalonFXControlMode.PercentOutput, 0);
+		//_LaunchMotor.set(TalonFXControlMode.PercentOutput, 0);
 		SmartDashboard.putNumber("_LaunchPostion", 0);
 		SmartDashboard.putNumber("_LaunchSpeed", 0);
 	}

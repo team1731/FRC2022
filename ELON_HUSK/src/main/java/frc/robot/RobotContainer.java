@@ -132,10 +132,10 @@ public class RobotContainer {
 		// 	.whileActiveContinuous(() -> m_neo.spinNeo(m_operatorController.getRawAxis(1)))
 		// 	.whenInactive(() -> m_neo.stopLaunching());
 
-		new JoystickButton(m_operatorController, 4) //ButtonConstants.kRobotModeShoot)
+		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
-					(m_operatorController.getRawAxis(0)+1)/2,
-					(m_operatorController.getRawAxis(1)+1)/2
+					(m_operatorController.getRawAxis(4)+1)/2, 	// speed
+					(m_operatorController.getRawAxis(5)+1)/2	// position
 				)
 			)
 			.whenInactive(() -> m_launch.stopLaunch());
