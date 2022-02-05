@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-//import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -20,6 +19,7 @@ import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -27,8 +27,7 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.intake.LeftIntakeCommand;
-import frc.robot.commands.intake.RightIntakeCommand;
+import frc.robot.commands.intake.*;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -42,6 +41,7 @@ public class RobotContainer {
 	Joystick m_operatorController = new Joystick(Constants.kOperatorControllerPort);
 
 	private DriveSubsystem m_drive;
+	private LaunchSubsystem m_launch;
 	private IntakeSubsystem m_intake;
 	private LimeLightSubsystem m_vision;
 	private ClimbSubsystem m_climb;
@@ -55,9 +55,16 @@ public class RobotContainer {
 	 * 
 	 * @throws _NotImplementedProperlyException
 	 */
-	public RobotContainer(ClimbSubsystem climb, DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision) {
+	public RobotContainer(
+			DriveSubsystem drive, 
+			ClimbSubsystem climb,
+			LaunchSubsystem launch, 
+			IntakeSubsystem intake, 
+			LimeLightSubsystem vision)
+		{
 		// this.m_ledstring = m_ledstring;
 		this.m_drive = drive;
+		this.m_launch = launch;
 		this.m_intake = intake;
 		this.m_vision = vision;
 		this.m_climb = climb;
@@ -118,7 +125,15 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
 		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
 
-		//#
+		//#region Launch Subsystem
+		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
+			.whileActiveContinuous(() -> m_launch.runLaunch(
+					(m_operatorController.getRawAxis(4)+1)/2, 	// speed
+					(m_operatorController.getRawAxis(5)+1)/2	// position
+				)
+			)
+			.whenInactive(() -> m_launch.stopLaunch());
+		//#endregion
 	}
 
 	public _NamedAutoMode getNamedAutonomousCommand(String autoSelected) {
