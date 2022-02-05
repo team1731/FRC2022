@@ -44,7 +44,7 @@ public class VelocityTalonFX extends ToggleableSubsystem {
 		mTalonPickup1.configFactoryDefault();
 
 		// Current limiting
-		StatorCurrentLimitConfiguration currentLimitCfg = new StatorCurrentLimitConfiguration(true, 10, 10, 0.5);
+		StatorCurrentLimitConfiguration currentLimitCfg = new StatorCurrentLimitConfiguration(true, 20.0, 20.0, 0.5);
 		mTalonPickup1.configStatorCurrentLimit(currentLimitCfg);
 
 		/* Config neutral deadband to be the smallest possible */
@@ -114,7 +114,7 @@ public class VelocityTalonFX extends ToggleableSubsystem {
 			 * 2048 Units/Rev * 2000 RPM / 600 100ms/min in either direction:
 			 * velocity setpoint is in units/100ms
 			 */
-		targetVelocity_UnitsPer100ms = launchMotorPercent_0_to_1 * 2000.0 * 2048.0 / 200.0;
+		targetVelocity_UnitsPer100ms = launchMotorPercent_0_to_1 * 2000.0 * 2048.0 / 400.0;
 			/* 2000 RPM in either direction */
 		//mTalonLaunch2.set(TalonFXControlMode.Velocity, targetVelocity_UnitsPer100ms);
 		/**

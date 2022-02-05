@@ -85,7 +85,7 @@ public class RobotContainer {
 			.whenInactive(() -> m_talon.stopIntake());
 
 		new JoystickButton(m_operatorController, 7)
-			.whileActiveContinuous(() -> m_smart.spinSmart(m_operatorController.getRawAxis(1)))
+			.whileActiveContinuous(() -> m_smart.spinSmart(m_operatorController.getRawAxis(4)))
 			.whenInactive(() -> m_smart.stopSmart());
 		//#endregion
 		
