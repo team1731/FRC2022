@@ -153,6 +153,13 @@ public final class Constants {
 		
 		public final static int SLOT_0 = 0;
 		public final static int SLOT_1 = 1;
+
+		public final static int MMCruiseVelocity = 15000;
+		public final static int MMAcceleration = 6000;
+		public final static int MMScurve = 4;
+		public final static int MaxRange = 10000;
+		public final static int MinRange = 100;
+
 		///// End TalonFX
 	}
 
@@ -263,21 +270,6 @@ public final class Constants {
 		 * Shooter Speed JoyStick - Right joystick(U/D): 4
 		 */
 		public static final int kJoyStickShooterSpeed = 4;
-	}
-
-	public enum InputRange {
-		LONG(3000, 3000),
-		MID(2000, 2000),
-		SHORT(1000, 1000),
-		HOME(0, 500);
-
-		public final int position;
-		public final int speed;
-
-		InputRange(int position, int speed){
-			this.position = position;
-			this.speed = speed;
-		}
 	}
 
 }

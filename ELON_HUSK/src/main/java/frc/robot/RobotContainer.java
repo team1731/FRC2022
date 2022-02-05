@@ -27,7 +27,6 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.InputRange;
 import frc.robot.commands.intake.*;
 
 /*
@@ -126,12 +125,7 @@ public class RobotContainer {
 		//new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
 		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
 
-		//#
-		//#region Test Subsystem
-		// new JoystickButton(m_operatorController, 8) // convert -1 to +1 TO 0 to 1
-		// 	.whileActiveContinuous(() -> m_neo.spinNeo(m_operatorController.getRawAxis(1)))
-		// 	.whenInactive(() -> m_neo.stopLaunching());
-
+		//#region Launch Subsystem
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
 					(m_operatorController.getRawAxis(4)+1)/2, 	// speed
