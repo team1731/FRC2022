@@ -14,8 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
  * The way intake works is there is a motor for left intake, a motor for right intake, and a conveyor motor which takes the balls from intake and pulls
  * them into the shooter.  When the left button is toggled, the left intake motor and conveyor activate; when the right button is toggled, the right intake
  * motor and conveyor activates; when both buttons are toggled, both intake motors and the conveyor activate.
- * TODO: 1. Make sure the motors function as planned
- * TODO: 2. Make sure the logic for having both on then turning off one works
+ * TODO: 1. Make sure the logic for having both on then turning off one works
  * CAN Id 6 = Right Motor Intake
  * Can Id 7 = Conveyor
  * Can Id 8 = Left Motor Intake
@@ -32,6 +31,9 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 	private final WPI_TalonFX _LeftMotorIntake;
 	// private final DoubleSolenoid _LeftIntakeSolenoid;
 	private final WPI_TalonFX _ConveyorMotorIntake;
+
+	private boolean _LeftEnabled = false;
+	private boolean _RightEnabled = false;
 
 	/**
 	 * Creates a new IntakeSubsystem.
@@ -182,8 +184,13 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}	
 
+		_RightEnabled = true;
+
 		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 100.0 * 2048.0 / 600);
+		if(_RightEnabled == true || _LeftEnabled == true){
+			_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
+			activateConveyor();
+		}
 		//_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2);
 	}
 
@@ -194,6 +201,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}
 		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
 		_RightMotorIntake.set(0);
+		_RightEnabled = false;
 	}
 
 	//Extends the Left intake and spins the motor to intake
@@ -201,9 +209,16 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		if(isDisabled()){
 			return;
 		}
+
+		_LeftEnabled = true;
+
 		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 100.0 * 2048.0 / 600.0);
+		if(_LeftEnabled == true || _RightEnabled == true){
+			_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
+			activateConveyor();
+		}		
 		//_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2 );
+		_LeftEnabled = true;
 	}
 
 	//Retracts the Left intake and stops spinning the motor
@@ -213,6 +228,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}
 		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
 		_LeftMotorIntake.set(0);
+		_LeftEnabled = false;
 	}
 
 	//Enables the conveyor motor
