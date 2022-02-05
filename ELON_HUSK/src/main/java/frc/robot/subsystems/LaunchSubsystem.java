@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
@@ -24,6 +25,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	}
 	//#endregion
 
+	private DoubleSolenoid _LaunchSolenoid;
 	private final WPI_TalonFX _RangeMotor;
 	private final WPI_TalonFX _LaunchMotor;
 	private double lastPosition = -1.0;
@@ -31,11 +33,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
   	/** Creates a new LaunchSubsystem. */
   	public LaunchSubsystem() {
 		if(isDisabled()){
+			_LaunchSolenoid = null;
       		_RangeMotor = null; 
       		_LaunchMotor = null;
       		return;
 		}
 
+		_LaunchSolenoid = null;//Constants.makeDoubleSolenoidForIds(0, OpConstants.k0Launching, OpConstants.k0Climbing);
 		_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange);
 		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch);
 
