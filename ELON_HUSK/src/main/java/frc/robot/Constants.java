@@ -240,9 +240,17 @@ public final class Constants {
 		/**
 		 * Intake Mode Buttons - Front Left Bottom(T/B): 14, 15
 		 */
-		public static final int kIntakeModeEject = 14;
-		public static final int kIntakeModePickup = 15;
+		public static final int kIntakeModeEject = 15;
+		public static final int kIntakeModePickup = 16;
 
+		/**
+		 * Intake Control Buttons - Top Back Toggles(U/D): 1, 12
+			Left Button controls left intake, Right Button controls right intake
+			When activated, it extends the intake and starts spinning to intake
+			and when retracted, it retracts and stops spinning.
+		 */
+		public static final int kIntakeLeft1 = 1;
+		public static final int kIntakeRight1 = 12;
 
 		public static final int kVision = XboxConstants.kRBumper;
 		public static final int kResetGyro = XboxConstants.kAppMenu;
