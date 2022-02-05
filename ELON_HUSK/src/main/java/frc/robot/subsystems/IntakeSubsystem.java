@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
+import frc.robot.commands.intake.LeftIntakeCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -187,10 +188,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_RightEnabled = true;
 
 		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		if(_RightEnabled == true || _LeftEnabled == true){
-			_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
-			activateConveyor();
-		}
+		_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
+		activateConveyor();
 		//_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2);
 	}
 
@@ -199,8 +198,13 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		if(isDisabled()){
 			return;
 		}
+
 		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
-		_RightMotorIntake.set(0);
+		if(_LeftEnabled == true){
+			_RightMotorIntake.set(0);
+			activateConveyor();
+		}
+
 		_RightEnabled = false;
 	}
 
@@ -226,8 +230,12 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		if(isDisabled()){
 			return;
 		}
+
 		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
-		_LeftMotorIntake.set(0);
+		if(_RightEnabled == true){
+			_LeftMotorIntake.set(0);
+			activateConveyor();
+		}
 		_LeftEnabled = false;
 	}
 
