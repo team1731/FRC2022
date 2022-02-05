@@ -183,7 +183,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}	
 
 		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
+		_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 100.0 * 2048.0 / 600);
 		//_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2);
 	}
 
@@ -202,7 +202,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
+		_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 100.0 * 2048.0 / 600.0);
 		//_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2 );
 	}
 
