@@ -127,9 +127,9 @@ public final class Constants {
 		//Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 21;
 		
-		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
+		public static final double kMotorIntakeFwdSpeed = 0.4; // forward or backward
 
-		public static final double kMotorConveyorSpeed = 0.5;
+		public static final double kMotorConveyorSpeed = 0.1;
 
 		/////// TalonFX parameters
 		/**
