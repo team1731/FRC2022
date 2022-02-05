@@ -56,8 +56,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * https://phoenix-documentation.readthedocs.io/en/latest/ch13_MC.html#current-limit
 		 * 
 		 * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
-		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 21, 1.0));
-		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 5, 10, 0.5));
+		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 12, 1.0));
+		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
 
 		/* setup a basic closed loop */
 		_RangeMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override 
@@ -115,6 +115,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 		/* Zero the sensor once on robot boot up */
 		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
+		_RangeMotor.configMotionSCurveStrength(4);
 	}
 
 	@Override
@@ -148,6 +149,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 		/// Range, max range guess is 10000
 		double position = normalize_input(position_0to1, 0.140, 0.901) * 10000.0;
+		if (position < 100) { position = 0; }
 		if (range_update(position, .05)) {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
 			lastPosition = position;
