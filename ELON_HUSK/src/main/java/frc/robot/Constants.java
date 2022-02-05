@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -261,8 +262,9 @@ public final class Constants {
 			When activated, it extends the intake and starts spinning to intake
 			and when retracted, it retracts and stops spinning.
 		 */
-		public static final int kIntakeLeft1 = 1;
-		public static final int kIntakeRight1 = 12;
+		public static final int kIntakeLeft1 = 0;
+		public static final int kIntakeRight1 = 1;
+		
 
 		public static final int kVision = XboxConstants.kRBumper;
 		public static final int kResetGyro = XboxConstants.kAppMenu;

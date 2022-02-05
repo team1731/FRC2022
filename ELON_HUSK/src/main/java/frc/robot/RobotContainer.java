@@ -114,7 +114,7 @@ public class RobotContainer {
 		new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
 		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
 		//#endregion
-		
+	
 		//#region Climb Subsystem
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
@@ -122,8 +122,8 @@ public class RobotContainer {
 		
 		//left = button 1
 		//right = button 12
-		new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
-		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
+		new JoystickButton(m_operatorController, 1).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
+		new JoystickButton(m_operatorController, 2).whenActive(new RightIntakeCommand(m_intake)).whenInactive(new RightStopCommand(m_intake));
 
 		//#region Launch Subsystem
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)

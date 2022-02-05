@@ -14,6 +14,7 @@
       "/LiveWindow/ClimbSubsystem": "Subsystem",
       "/LiveWindow/DriveSubsystem": "Subsystem",
       "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/LaunchSubsystem": "Subsystem",
       "/LiveWindow/LimeLightSubsystem": "Subsystem",
       "/LiveWindow/RangeSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",

@@ -132,6 +132,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putString("Build Info - Branch", "N/A");
 		SmartDashboard.putString("Build Info - Commit Hash", "N/A");
 		SmartDashboard.putString("Build Info - Date", "N/A");
+
 		try {
 			File buildInfoFile = new File(Filesystem.getDeployDirectory(), "DeployedBranchInfo.txt");
 			Scanner reader = new Scanner(buildInfoFile);
