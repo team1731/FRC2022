@@ -29,7 +29,6 @@ import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.InputRange;
 import frc.robot.commands.intake.*;
-import frc.robot.commands.launch.*;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -133,22 +132,13 @@ public class RobotContainer {
 		// 	.whileActiveContinuous(() -> m_neo.spinNeo(m_operatorController.getRawAxis(1)))
 		// 	.whenInactive(() -> m_neo.stopLaunching());
 
-		// new JoystickButton(m_operatorController, 9)
-		// 	.whileActiveContinuous(() -> m_launcher.spinLauncher((m_operatorController.getRawAxis(4)+1)/2))
-		// 	.whenInactive(() -> m_launcher.stopLauncher());
-
-		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
-			.whenActive(new LaunchRunCommand(m_launch))
-			.whenInactive(new LaunchStopCommand(m_launch));
-
-		new JoystickButton(m_operatorController, 4)
-			.whenPressed(new LaunchRangeCommand(m_launch, InputRange.HOME));
-		new JoystickButton(m_operatorController, 5)
-			.whenPressed(new LaunchRangeCommand(m_launch, InputRange.SHORT));
-		new JoystickButton(m_operatorController, 6)
-			.whenPressed(new LaunchRangeCommand(m_launch, InputRange.MID));
-		new JoystickButton(m_operatorController, 7)
-			.whenPressed(new LaunchRangeCommand(m_launch, InputRange.LONG));
+		new JoystickButton(m_operatorController, 4) //ButtonConstants.kRobotModeShoot)
+			.whileActiveContinuous(() -> m_launch.runLaunch(
+					(m_operatorController.getRawAxis(0)+1)/2,
+					(m_operatorController.getRawAxis(1)+1)/2
+				)
+			)
+			.whenInactive(() -> m_launch.stopLaunch());
 		//#endregion
 	}
 

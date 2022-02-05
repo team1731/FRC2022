@@ -26,11 +26,9 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	private final WPI_TalonFX _RangeMotor;
 	private final WPI_TalonFX _LaunchMotor;
-	private boolean _running;
 
   	/** Creates a new LaunchSubsystem. */
   	public LaunchSubsystem() {
-		_running = false; 
 		if(isDisabled()){
       		_RangeMotor = null; 
       		_LaunchMotor = null;
@@ -104,37 +102,23 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_LaunchMotor.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
 		_LaunchMotor.configPeakOutputForward(1, OpConstants.kTimeoutMs);
 		_LaunchMotor.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
-
-		SmartDashboard.putString("Debug", "init");
 	}
 
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
 		if(isDisabled()){ return; }
-		SmartDashboard.putBoolean("_running", _running);
 	}
 
-	public void runLaunch(InputRange _input) {
+	public void runLaunch(double speed, double position) {
 		if(isDisabled()){
 			return;
 		}
-		_running = true;
-		setLaunch(_input); 
-		SmartDashboard.putString("Debug", "runLaunch");
-	}	
-	
-	public void setLaunch(InputRange _input) {
-		if(isDisabled() || (!_running)){
-			return;
-		}
+		SmartDashboard.putNumber("_LaunchPostion", position);
+		SmartDashboard.putNumber("_LaunchSpeed", speed);
 
-		SmartDashboard.putNumber("_RangePostion", _input.position);
-		SmartDashboard.putNumber("_RangeSpeed", _input.speed);
-		SmartDashboard.putString("Debug", "setLaunch");
-
-		_RangeMotor.set(TalonFXControlMode.Position, _input.position);
-		_LaunchMotor.set(TalonFXControlMode.Velocity, _input.speed);
+		_RangeMotor.set(TalonFXControlMode.Position, position);
+		_LaunchMotor.set(TalonFXControlMode.Velocity, speed);
 
 		/**
 		 * Convert 2000 RPM to units / 100ms.
@@ -152,12 +136,10 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	}
 	
 	public void stopLaunch() {
-		_running = false; 
 		_RangeMotor.set(TalonFXControlMode.Velocity, 0);
 		_LaunchMotor.set(TalonFXControlMode.Velocity, 0);
-		SmartDashboard.putNumber("_RangePostion", 0);
+		SmartDashboard.putNumber("_LaunchPostion", 0);
 		SmartDashboard.putNumber("_LaunchSpeed", 0);
-		SmartDashboard.putString("Debug", "stopLaunch");
 	}
 
 	@Override
