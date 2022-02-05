@@ -13,7 +13,6 @@ import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 
 import frc.robot.Constants.OpConstants;
-import frc.robot.Constants.InputRange;
 
 public class LaunchSubsystem extends ToggleableSubsystem {
 
