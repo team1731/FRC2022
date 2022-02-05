@@ -109,15 +109,33 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){ return; }
 	}
 
-	public void runLaunch(double speed, double position) {
+	private double normalize_input(double input, double min, double max) {
+		double result;
+		result = (input - min) / (max - min);
+		result = Math.max(0, Math.min(result, 1));
+		return result;
+	}
+
+	public void runLaunch(double speed_0to1, double position_0to1) {
 		if(isDisabled()){
 			return;
 		}
-		SmartDashboard.putNumber("_LaunchPostion", position);
-		SmartDashboard.putNumber("_LaunchSpeed", speed);
+		SmartDashboard.putNumber("_LaunchPostion", position_0to1);
+		SmartDashboard.putNumber("_LaunchSpeed", speed_0to1);
 
+		/// Range, max range guess is 2000
+		double position = normalize_input(position_0to1, 0.176, 0.710) * 2000.0;
 		_RangeMotor.set(TalonFXControlMode.Position, position);
-		_LaunchMotor.set(TalonFXControlMode.Velocity, speed);
+
+		/// Speed
+		//launchMotorPercent_0_to_1 *= -1;
+		/**
+		 * Convert 2000 RPM to units / 100ms.
+		 * 2048 Units/Rev * 2000 RPM / 600 100ms/min in either direction:
+		 * velocity setpoint is in units/100ms
+		 */
+		double velUnitsPer100ms = normalize_input(speed_0to1, 0.176, 0.710) * 2000.0 * 2048.0 / 600.0;		
+		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 
 		/**
 		 * Convert 2000 RPM to units / 100ms.
@@ -125,13 +143,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * velocity setpoint is in units/100ms
 		 */
 		// double targetVelocity_UnitsPer100ms = _input.speed * 2000.0 * 2048.0 / 600.0;
-		// /**
-		//  * Convert 500 RPM to units / 100ms. 2048(FX) 4096(SRX) Units/Rev * 500 RPM /
-		//  * 600 100ms/min in either direction: velocity setpoint is in units/100ms ==>
-		//  * 11425 is measured velocity at 80% / 0.8 = 9140/0.8 ==> 3347 is 11425 * 600 *
-		//  * 2048 == max speed in ticks per 100ms ==> launchPercent is 0 to 1, so 100% ==
-		//  * put in a value of 1.0
-		//  */
+		/**
+		 * Convert 500 RPM to units / 100ms. 2048(FX) 4096(SRX) Units/Rev * 500 RPM /
+		 * 600 100ms/min in either direction: velocity setpoint is in units/100ms ==>
+		 * 11425 is measured velocity at 80% / 0.8 = 9140/0.8 ==> 3347 is 11425 * 600 *
+		 * 2048 == max speed in ticks per 100ms ==> launchPercent is 0 to 1, so 100% ==
+		 * put in a value of 1.0
+		 */
 	}
 	
 	public void stopLaunch() {
