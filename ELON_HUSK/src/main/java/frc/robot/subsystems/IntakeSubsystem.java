@@ -217,10 +217,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_LeftEnabled = true;
 
 		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		if(_LeftEnabled == true || _RightEnabled == true){
 			_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
 			activateConveyor();
-		}		
 		//_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2 );
 		_LeftEnabled = true;
 	}
