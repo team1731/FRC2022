@@ -116,10 +116,9 @@ public final class Constants {
 		public static final int kMotorCanSequencer2 = 10;
 
 		//Intake CAN IDs
-		public static final int kMotorCANIntake1 = 15;
-		public static final int kMotorCANIntake2 = 16;
-		public static final int kMotorCANIntake3 = 17;
-		public static final int kMotorCANIntake4 = 18;
+		public static final int kMotorCANIntake1 = 6;
+		public static final int kMotorCANIntake2 = 8;
+		public static final int kMotorCANIntakeConveyor = 7;
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
 		//Power Distribution Pannel CAN IDs
@@ -129,6 +128,8 @@ public final class Constants {
 		public static final int kPneumaticsCanID = 21;
 		
 		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
+
+		public static final double kMotorConveyorSpeed = 0.5;
 
 		/////// TalonFX parameters
 		/**

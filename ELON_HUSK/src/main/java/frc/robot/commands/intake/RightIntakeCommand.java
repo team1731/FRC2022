@@ -14,10 +14,12 @@ public class RightIntakeCommand extends CommandBase {
 	@Override
 	public void initialize() {
 		_intake.extendRightIntake();
+		_intake.activateConveyor();
 	}
 
 	@Override
 	public void end(boolean interrupted) {
 		_intake.retractRightIntake();
+		_intake.deActivateConveyor();
 	}
 }
