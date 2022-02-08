@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 import org.ejml.masks.FMaskSparse;
 
@@ -112,6 +113,18 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_LeftMotorIntake.setNeutralMode(NeutralMode.Coast);
 		//_ConveyorMotorIntake.setNeutralMode(NeutralMode.Coast);
 
+		_RightMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
+		_RightMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
+
+		_LeftMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
+		_LeftMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
+
+		_RightMotorIntake.configMotionCruiseVelocity(15000, OpConstants.kTimeoutMs);
+		_RightMotorIntake.configMotionAcceleration(6000, OpConstants.kTimeoutMs);
+
+		_LeftMotorIntake.configMotionCruiseVelocity(15000, OpConstants.kTimeoutMs);
+		_LeftMotorIntake.configMotionAcceleration(5000, OpConstants.kTimeoutMs);
+
 		SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
 		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
 	}
@@ -203,9 +216,9 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}	
 
 		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
+		//_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
 		//activateConveyor();
-		//_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2);
+		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2);
 		_RightEnabled = true;
 	}
 
@@ -231,9 +244,9 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}
 
 		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-			_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
-			//activateConveyor();
-		//_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2 );
+		//_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
+		//activateConveyor();
+		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2 );
 		_LeftEnabled = true;
 	}
 
