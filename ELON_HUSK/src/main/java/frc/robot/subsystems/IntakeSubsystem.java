@@ -17,10 +17,9 @@ import org.ejml.masks.FMaskSparse;
  * The way intake works is there is a motor for left intake, a motor for right intake, and a conveyor motor which takes the balls from intake and pulls
  * them into the shooter.  When the left button is toggled, the left intake motor and conveyor activate; when the right button is toggled, the right intake
  * motor and conveyor activates; when both buttons are toggled, both intake motors and the conveyor activate.
- * TODO: 1. Make sure the logic for having both on then turning off one works
+ * TODO: 1. GET IT WORKING AGAIN
  * CAN Id 6 = Right Motor Intake
- * Can Id 7 = Conveyor
- * Can Id 8 = Left Motor Intake
+ * Can Id 7 = Left Motor Intake
  */
 public class IntakeSubsystem extends ToggleableSubsystem{
 
@@ -117,11 +116,15 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
 	}
 
+	int x = 0;
+
 	@Override
 	public void periodic() {
 		if(isDisabled()){
 			return;
 		}
+
+		x++;
 
 		SmartDashboard.putNumber("RightIntakeVelocity", _RightMotorIntake.getSelectedSensorVelocity());
 		SmartDashboard.putNumber("LeftIntakeVelocity", _LeftMotorIntake.getSelectedSensorVelocity());
@@ -130,6 +133,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
 		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
 		//SmartDashboard.putBoolean("ConveyorEnabled", _ConveyorEnabled);
+
+		SmartDashboard.putNumber("Number", x);
 
 		// This method will be called once per scheduler run
 	}
