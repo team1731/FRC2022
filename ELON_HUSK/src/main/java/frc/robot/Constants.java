@@ -109,7 +109,7 @@ public final class Constants {
 		public static final int kMotorCANRange = 6;
 
 		//Climber CAN IDs
-		public static final int kMotorCANClimber1 = 7;
+		public static final int kMotorCANClimber1 = 5;
 		public static final int kMotorCANClimber2 = 8;
 
 		//Sequencer CAN IDs
