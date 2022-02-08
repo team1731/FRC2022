@@ -117,9 +117,8 @@ public final class Constants {
 		public static final int kMotorCanSequencer2 = 10;
 
 		//Intake CAN IDs
-		public static final int kMotorCANIntake1 = 6;
-		public static final int kMotorCANIntake2 = 7;
-		public static final int kMotorCANIntakeConveyor = 5;
+		public static final int kMotorCANIntakeR = 6;
+		public static final int kMotorCANIntakeL = 7;
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
 		//Power Distribution Pannel CAN IDs
@@ -262,8 +261,8 @@ public final class Constants {
 			When activated, it extends the intake and starts spinning to intake
 			and when retracted, it retracts and stops spinning.
 		 */
-		public static final int kIntakeLeft1 = 0;
-		public static final int kIntakeRight1 = 1;
+		public static final int kIntakeLeft = 1;
+		public static final int kIntakeRight= 12;
 		
 
 		public static final int kVision = XboxConstants.kRBumper;
