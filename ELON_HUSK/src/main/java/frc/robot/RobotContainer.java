@@ -120,10 +120,17 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
 		//#endregion
 		
+		//#region Intake Subsystem
+		/* Alternate code for Joystick testing as opposed to simulation
+		 new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake))
+		 new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake))
+		 */
+
 		//left = button 1
 		//right = button 12
 		new JoystickButton(m_operatorController, 1).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
-		new JoystickButton(m_operatorController, 12).whenActive(new RightIntakeCommand(m_intake)).whenInactive(new RightStopCommand(m_intake));
+		new JoystickButton(m_operatorController, 2).whenActive(new RightIntakeCommand(m_intake)).whenInactive(new RightStopCommand(m_intake));
+		//#endregion
 
 		//#region Launch Subsystem
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
