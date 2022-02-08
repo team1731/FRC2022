@@ -129,15 +129,11 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
 	}
 
-	int x = 0;
-
 	@Override
 	public void periodic() {
 		if(isDisabled()){
 			return;
 		}
-
-		x++;
 
 		SmartDashboard.putNumber("RightIntakeVelocity", _RightMotorIntake.getSelectedSensorVelocity());
 		SmartDashboard.putNumber("LeftIntakeVelocity", _LeftMotorIntake.getSelectedSensorVelocity());
@@ -146,8 +142,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
 		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
 		//SmartDashboard.putBoolean("ConveyorEnabled", _ConveyorEnabled);
-
-		SmartDashboard.putNumber("Number", x);
 
 		// This method will be called once per scheduler run
 	}
