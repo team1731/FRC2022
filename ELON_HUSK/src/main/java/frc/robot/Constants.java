@@ -118,7 +118,7 @@ public final class Constants {
 
 		//Intake CAN IDs
 		public static final int kMotorCANIntake1 = 6;
-		public static final int kMotorCANIntake2 = 8;
+		public static final int kMotorCANIntake2 = 5;
 		public static final int kMotorCANIntakeConveyor = 7;
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
