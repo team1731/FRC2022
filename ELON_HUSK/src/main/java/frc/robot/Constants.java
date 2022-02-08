@@ -262,8 +262,8 @@ public final class Constants {
 			When activated, it extends the intake and starts spinning to intake
 			and when retracted, it retracts and stops spinning.
 		 */
-		public static final int kIntakeLeft1 = 0;
-		public static final int kIntakeRight1 = 1;
+		public static final int kIntakeLeft = 1;
+		public static final int kIntakeRight= 12;
 		
 
 		public static final int kVision = XboxConstants.kRBumper;
