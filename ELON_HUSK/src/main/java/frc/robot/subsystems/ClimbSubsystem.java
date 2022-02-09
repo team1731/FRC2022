@@ -8,6 +8,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
+import frc.robot.Constants.OpConstants;
+import com.ctre.phoenix.motorcontrol.*;
+
 
 public class ClimbSubsystem extends ToggleableSubsystem {
 
@@ -100,6 +103,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
+		//Change the range to Master/Slave motor
+
 		_extender1 = new Solenoid(Constants.kPneumaticsType, 0);
 		_extender2 = new Solenoid(Constants.kPneumaticsType, 0);
 		_grabber1 = new Solenoid(Constants.kPneumaticsType, 0);
@@ -109,6 +114,75 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerSlaveMotor = new TalonFX(0);
 
 		_swingerSlaveMotor.follow(_swingerMasterMotor);
+
+		/**
+		 * Configuring Defaults for Master/Slave motors
+		 */
+		_swingerMasterMotor.configFactoryDefault();
+
+		_swingerMasterMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
+
+		_swingerMasterMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 12, 1.0));
+		_swingerMasterMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
+
+		_swingerMasterMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override
+
+		_swingerMasterMotor.configSelectedFeedbackSensor(
+			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
+			OpConstants.kPIDLoopIdx,      			// PID Index
+			OpConstants.kTimeoutMs);      			// Config Timeout
+
+		/* Set relevant frame periods to be at least as fast as periodic rate */
+		_swingerMasterMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
+		_swingerMasterMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
+		
+		/* Gains for Position Closed Loop servo */
+		_swingerMasterMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Range.kP, OpConstants.kTimeoutMs);
+		_swingerMasterMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Range.kI, OpConstants.kTimeoutMs);
+		_swingerMasterMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Range.kD, OpConstants.kTimeoutMs);
+		_swingerMasterMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Range.kF, OpConstants.kTimeoutMs);
+
+		/* Set acceleration and vcruise velocity - see documentation */
+		_swingerMasterMotor.configMotionCruiseVelocity(OpConstants.MMCruiseVelocity, OpConstants.kTimeoutMs);
+		_swingerMasterMotor.configMotionAcceleration(OpConstants.MMAcceleration, OpConstants.kTimeoutMs);
+
+		/* Zero the sensor once on robot boot up */
+		_swingerMasterMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
+		_swingerMasterMotor.configMotionSCurveStrength(OpConstants.MMScurve);
+
+		//Slave Branch
+
+		_swingerSlaveMotor.configFactoryDefault();
+
+		_swingerSlaveMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
+
+		_swingerSlaveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 12, 1.0));
+		_swingerSlaveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
+
+		_swingerSlaveMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override
+
+		_swingerSlaveMotor.configSelectedFeedbackSensor(
+			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
+			OpConstants.kPIDLoopIdx,      			// PID Index
+			OpConstants.kTimeoutMs);      			// Config Timeout
+
+		/* Set relevant frame periods to be at least as fast as periodic rate */
+		_swingerSlaveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
+		_swingerSlaveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
+		
+		/* Gains for Position Closed Loop servo */
+		_swingerSlaveMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Range.kP, OpConstants.kTimeoutMs);
+		_swingerSlaveMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Range.kI, OpConstants.kTimeoutMs);
+		_swingerSlaveMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Range.kD, OpConstants.kTimeoutMs);
+		_swingerSlaveMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Range.kF, OpConstants.kTimeoutMs);
+
+		/* Set acceleration and vcruise velocity - see documentation */
+		_swingerSlaveMotor.configMotionCruiseVelocity(OpConstants.MMCruiseVelocity, OpConstants.kTimeoutMs);
+		_swingerSlaveMotor.configMotionAcceleration(OpConstants.MMAcceleration, OpConstants.kTimeoutMs);
+
+		/* Zero the sensor once on robot boot up */
+		_swingerSlaveMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
+		_swingerSlaveMotor.configMotionSCurveStrength(OpConstants.MMScurve);
 	}
 
 	public State getState(){
