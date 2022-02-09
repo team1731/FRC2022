@@ -53,59 +53,61 @@ public class VelocityNeo extends ToggleableSubsystem {
 			m_neo = null;
 			_irSensor = null;
 			return;
+		} else {
+			m_neo = null;
 		}
 
 		_irSensor = new IRSensor(0);
 
-		// initialize motor
-		m_neo = new CANSparkMax(OpConstants.kMotorCanSequencer1, MotorType.kBrushless);
+		// // initialize motor
+		// m_neo = new CANSparkMax(OpConstants.kMotorCanSequencer1, MotorType.kBrushless);
 
-		/**
-		 * The RestoreFactoryDefaults method can be used to reset the configuration parameters
-		 * in the SPARK MAX to their factory default state. If no argument is passed, these
-		 * parameters will not persist between power cycles
-		 */
-		m_neo.restoreFactoryDefaults();
+		// /**
+		//  * The RestoreFactoryDefaults method can be used to reset the configuration parameters
+		//  * in the SPARK MAX to their factory default state. If no argument is passed, these
+		//  * parameters will not persist between power cycles
+		//  */
+		// m_neo.restoreFactoryDefaults();
 
-		/**
-		 * In order to use PID functionality for a controller, a SparkMaxPIDController object
-		 * is constructed by calling the getPIDController() method on an existing
-		 * CANSparkMax object
-		 */
-		m_pidController = m_neo.getPIDController();
+		// /**
+		//  * In order to use PID functionality for a controller, a SparkMaxPIDController object
+		//  * is constructed by calling the getPIDController() method on an existing
+		//  * CANSparkMax object
+		//  */
+		// m_pidController = m_neo.getPIDController();
 
-		// Encoder object created to display position values
-		m_encoder = m_neo.getEncoder();
+		// // Encoder object created to display position values
+		// m_encoder = m_neo.getEncoder();
 
-		// PID coefficients
-		kP = 6e-5; 
-		kI = 0;
-		kD = 0; 
-		kIz = 0; 
-		kFF = 0.000015; 
-		kMaxOutput = 1; 
-		kMinOutput = -1;
-		maxRPM = 4700;
+		// // PID coefficients
+		// kP = 6e-5; 
+		// kI = 0;
+		// kD = 0; 
+		// kIz = 0; 
+		// kFF = 0.000015; 
+		// kMaxOutput = 1; 
+		// kMinOutput = -1;
+		// maxRPM = 4700;
 
-		// set PID coefficients
-		m_pidController.setP(kP);
-		m_pidController.setI(kI);
-		m_pidController.setD(kD);
-		m_pidController.setIZone(kIz);
-		m_pidController.setFF(kFF);
-		m_pidController.setOutputRange(kMinOutput, kMaxOutput);
+		// // set PID coefficients
+		// m_pidController.setP(kP);
+		// m_pidController.setI(kI);
+		// m_pidController.setD(kD);
+		// m_pidController.setIZone(kIz);
+		// m_pidController.setFF(kFF);
+		// m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
-		// display PID coefficients on SmartDashboard
-		SmartDashboard.putNumber("P Gain", kP);
-		SmartDashboard.putNumber("I Gain", kI);
-		SmartDashboard.putNumber("D Gain", kD);
-		SmartDashboard.putNumber("I Zone", kIz);
-		SmartDashboard.putNumber("Feed Forward", kFF);
-		SmartDashboard.putNumber("Max Output", kMaxOutput);
-		SmartDashboard.putNumber("Min Output", kMinOutput);
-		if (System.currentTimeMillis() % 100 == 0) {
-			SmartDashboard.putNumber("LaunchingPercent", 0.5);
-		}
+		// // display PID coefficients on SmartDashboard
+		// SmartDashboard.putNumber("P Gain", kP);
+		// SmartDashboard.putNumber("I Gain", kI);
+		// SmartDashboard.putNumber("D Gain", kD);
+		// SmartDashboard.putNumber("I Zone", kIz);
+		// SmartDashboard.putNumber("Feed Forward", kFF);
+		// SmartDashboard.putNumber("Max Output", kMaxOutput);
+		// SmartDashboard.putNumber("Min Output", kMinOutput);
+		// if (System.currentTimeMillis() % 100 == 0) {
+		// 	SmartDashboard.putNumber("LaunchingPercent", 0.5);
+		// }
 	}
 
 	public void testSpeed() {
