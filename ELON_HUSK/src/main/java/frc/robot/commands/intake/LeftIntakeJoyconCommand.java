@@ -3,10 +3,10 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class LeftIntakeCommand extends CommandBase {
+public class LeftIntakeJoyconCommand extends CommandBase {
     private final IntakeSubsystem _intake;
 
-    public LeftIntakeCommand(IntakeSubsystem intake) {
+    public LeftIntakeJoyconCommand(IntakeSubsystem intake) {
         _intake = intake;
         addRequirements(intake);
     }
@@ -18,6 +18,6 @@ public class LeftIntakeCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        
+        _intake.retractLeftIntake();
     }
 }

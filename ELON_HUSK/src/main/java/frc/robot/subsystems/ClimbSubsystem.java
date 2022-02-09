@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
+
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -10,6 +13,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.Constants;
 import frc.robot.IRSensor;
 import frc.robot.Constants.OpConstants;
+import frc.robot.Constants.CanSparkMaxConstants;
 
 public class ClimbSubsystem extends ToggleableSubsystem {
 
@@ -35,6 +39,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	private final IRSensor _northSensor;
 	private final IRSensor _southSensor;
+
+	private final SparkMaxPIDController _pidMasterController;
+	private final RelativeEncoder _encoderMaster;
+	private final SparkMaxPIDController _pidSlaveController;
+	private final RelativeEncoder _encoderSlave;
 
 	private double timer = System.currentTimeMillis();
 
@@ -119,6 +128,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			_swingerSlaveMotor = null;
 			_northSensor = null;
 			_southSensor = null;
+			_pidMasterController = null;
+			_encoderMaster = null;
+			_pidSlaveController = null;
+			_encoderSlave = null;
 			return;
 		}
 
@@ -136,6 +149,46 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_southSensor = new IRSensor(OpConstants.kSouthSensorID);
 
 		_swingerSlaveMotor.follow(_swingerMasterMotor);
+
+		/**
+		 * Configuring Defaults for Master/Slave motors
+		 */
+		_swingerMasterMotor.restoreFactoryDefaults();
+
+		_pidMasterController = _swingerMasterMotor.getPIDController();
+		_encoderMaster = _swingerMasterMotor.getEncoder();
+
+		// set PID coefficients
+		_pidMasterController.setP(CanSparkMaxConstants.kP);
+		_pidMasterController.setI(CanSparkMaxConstants.kI);
+		_pidMasterController.setD(CanSparkMaxConstants.kD);
+		_pidMasterController.setIZone(CanSparkMaxConstants.kIz);
+		_pidMasterController.setFF(CanSparkMaxConstants.kFF);
+		_pidMasterController.setOutputRange(CanSparkMaxConstants.kMinOutput, CanSparkMaxConstants.kMaxOutput);
+
+    	_pidMasterController.setSmartMotionMaxVelocity(CanSparkMaxConstants.maxVel, CanSparkMaxConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionMinOutputVelocity(CanSparkMaxConstants.minVel, CanSparkMaxConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionMaxAccel(CanSparkMaxConstants.maxAcc, CanSparkMaxConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionAllowedClosedLoopError(CanSparkMaxConstants.allowedErr, CanSparkMaxConstants.smartMotionSlot);
+
+		//Slave defaults
+		_swingerSlaveMotor.restoreFactoryDefaults();
+
+		_pidSlaveController = _swingerSlaveMotor.getPIDController();
+		_encoderSlave = _swingerSlaveMotor.getEncoder();
+
+		// set PID coefficients
+		_pidSlaveController.setP(CanSparkMaxConstants.kP);
+		_pidSlaveController.setI(CanSparkMaxConstants.kI);
+		_pidSlaveController.setD(CanSparkMaxConstants.kD);
+		_pidSlaveController.setIZone(CanSparkMaxConstants.kIz);
+		_pidSlaveController.setFF(CanSparkMaxConstants.kFF);
+		_pidSlaveController.setOutputRange(CanSparkMaxConstants.kMinOutput, CanSparkMaxConstants.kMaxOutput);
+
+    	_pidSlaveController.setSmartMotionMaxVelocity(CanSparkMaxConstants.maxVel, CanSparkMaxConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionMinOutputVelocity(CanSparkMaxConstants.minVel, CanSparkMaxConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionMaxAccel(CanSparkMaxConstants.maxAcc, CanSparkMaxConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionAllowedClosedLoopError(CanSparkMaxConstants.allowedErr, CanSparkMaxConstants.smartMotionSlot);
 	}
 
 	public State getState(){

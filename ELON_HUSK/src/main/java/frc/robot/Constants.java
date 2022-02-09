@@ -11,6 +11,13 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkMaxPIDController.*;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -102,10 +109,29 @@ public final class Constants {
 
 	public static final class OpConstants {
 		
-		public static final int kMotorCANLaunch1 = 9;
-		public static final int kMotorCANLaunch2 = 10;
-		public static final int kMotorCANIntake1 = 7;
-		public static final int kMotorCANIntake2 = 8;
+		//Can IDs for all non-driving motors/motor controllers
+		//Shooter/Launcher CAN IDS
+		public static final int kMotorCANLaunch = 5;
+		public static final int kMotorCANRange = 6;
+
+		//Climber CAN IDs
+		public static final int kMotorCANClimber1 = 5;
+		public static final int kMotorCANClimber2 = 8;
+
+		//Sequencer CAN IDs
+		public static final int kMotorCanSequencer1 = 9;
+		public static final int kMotorCanSequencer2 = 10;
+
+		//Intake CAN IDs
+		public static final int kMotorCANIntakeR = 6;
+		public static final int kMotorCANIntakeL = 7;
+
+		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
+		//Power Distribution Pannel CAN IDs
+		public static final int kPDPCanID = 20;
+
+		//Pneumatics Panel CAN IDs
+		public static final int kPneumaticsCanID = 21;
 		
 		//FIXME: We need to assign IDs to all of these
 		//Solenoids
@@ -145,6 +171,17 @@ public final class Constants {
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
 		public final static Gains kGains_Velocity = new Gains(0.05, 0, 0, .06, 300, 1.00);
+		public final static Gains kGains_Range = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
+		
+		public final static int SLOT_0 = 0;
+		public final static int SLOT_1 = 1;
+
+		public final static int MMCruiseVelocity = 15000;
+		public final static int MMAcceleration = 6000;
+		public final static int MMScurve = 4;
+		public final static int MaxRange = 10000;
+		public final static int MinRange = 100;
+
 		///// End TalonFX
 	}
 
@@ -220,11 +257,67 @@ public final class Constants {
 	}
 
 	public static final class ButtonConstants {
+		
+		/**
+		 * Climb Buttons - Front Left front toggle(R/L): 6, 7
+		 */
 		public static final int kClimbUp = 6;
 		public static final int kClimbDown = 7;
+		
+		/**
+		 * Robot Mode Buttons - Front Right front toggle(R/L): 8, 9
+		 */
+		public static final int kRobotModeShoot = 8;
+		public static final int kRobotModeClimb = 9;
+
+		/**
+		 * Intake Mode Buttons - Front Left Bottom(T/B): 14, 15
+		 */
+		public static final int kIntakeModeEject = 15;
+		public static final int kIntakeModePickup = 16;
+
+		/**
+		 * Intake Control Buttons - Top Back Toggles(U/D): 1, 12
+			Left Button controls left intake, Right Button controls right intake
+			When activated, it extends the intake and starts spinning to intake
+			and when retracted, it retracts and stops spinning.
+		 */
+		public static final int kIntakeLeft = 1;
+		public static final int kIntakeRight= 12;
+		
 
 		public static final int kVision = XboxConstants.kRBumper;
 		public static final int kResetGyro = XboxConstants.kAppMenu;
 		public static final int kResetEncoders = XboxConstants.kMenu;
+	}
+
+	public static final class JoyStickConstants {
+		/**
+		 * Pickup Mode JoyStick - Left joystick(U/D): 1
+		 */
+		public static final int kJoyStickPickupMode = 1;
+
+		/**
+		 * Shooter Speed JoyStick - Right joystick(U/D): 4
+		 */
+		public static final int kJoyStickShooterSpeed = 4;
+	}
+
+	public static final class CanSparkMaxConstants {
+  		public static final double kP = 5e-5;
+		public static final double kI = 1e-6; 
+		public static final double kD = 0; 
+		public static final double kIz = 0; 
+		public static final double kFF = 0.000156; 
+		public static final double kMaxOutput = 1;
+		public static final double kMinOutput = -1;
+		public static final double maxRPM = 5700;
+
+		public static final double maxVel = 2000; //rpm
+		public static final double minVel = 0;
+		public static final double maxAcc = 1500;
+		public static final double allowedErr = 0;
+
+		public static final int smartMotionSlot = 0;
 	}
 }
