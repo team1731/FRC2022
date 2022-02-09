@@ -11,23 +11,14 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 // import edu.wpi.first.wpilibj.motorcontrol.PWMTalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
-//import edu.wpi.first.wpilibj.DigitalInput;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import frc.robot.IRSensor;
 
-import frc.robot.Constants;
+//import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
 
 public class VelocityNeo extends ToggleableSubsystem {
@@ -47,7 +38,9 @@ public class VelocityNeo extends ToggleableSubsystem {
 	private SparkMaxPIDController m_pidController;
 	private RelativeEncoder m_encoder;
 	public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
-  
+
+	private final IRSensor _irSensor;
+
 	/**
 	 * Creates a new VelocityNeo.
 	 */
@@ -58,8 +51,11 @@ public class VelocityNeo extends ToggleableSubsystem {
 			///mTalonLaunch1 = null;
 			//mTalonLaunch2 = null;
 			m_neo = null;
+			_irSensor = null;
 			return;
 		}
+
+		_irSensor = new IRSensor(0);
 
 		// initialize motor
 		m_neo = new CANSparkMax(OpConstants.kMotorCanSequencer1, MotorType.kBrushless);
@@ -126,6 +122,9 @@ public class VelocityNeo extends ToggleableSubsystem {
 		if(isDisabled()){
 			return;
 		}
+
+		SmartDashboard.putBoolean("irSensorTrig", _irSensor.isTriggered());
+		SmartDashboard.putNumber("irSensorV", _irSensor.getVoltage());
 
 		//mTalonLaunch2.set(ControlMode.Velocity, targetVelocity_UnitsPer100ms);
 		if (System.currentTimeMillis() % 100 == 0) {
