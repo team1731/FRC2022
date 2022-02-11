@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.IRSensor;
 import frc.robot.Constants.OpConstants;
@@ -20,7 +21,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	//#region ToggleableSubsystem
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 	//#endregion
 
@@ -135,7 +136,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		_leftExtender = new Solenoid(Constants.kPneumaticsType, OpConstants.kLeftExtenderID);
+		_leftExtender  = new Solenoid(Constants.kPneumaticsType, OpConstants.kLeftExtenderID);
 		_rightExtender = new Solenoid(Constants.kPneumaticsType, OpConstants.kRightExtenderID);
 		_grabberNorth1 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth1ID);
 		_grabberNorth2 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth2ID);
@@ -340,7 +341,14 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			timer = System.currentTimeMillis();
 			return;
 		}
-
+		SmartDashboard.putString("climb_State", _currentState.name());
+		SmartDashboard.putString("climb_iDir", _inputDirection.name());
+		SmartDashboard.putBoolean("climb_GrbN1", _grabberNorth1.get());
+		SmartDashboard.putBoolean("climb_GrbN2", _grabberNorth2.get());
+		SmartDashboard.putBoolean("climb_GrbS1", _grabberSouth1.get());
+		SmartDashboard.putBoolean("climb_GrbS2", _grabberSouth2.get());
+		SmartDashboard.putBoolean("climb_ExtR", _rightExtender.get());
+		SmartDashboard.putBoolean("climb_ExtL", _leftExtender.get());
 		/*
 		READY(0),                // Extenders down, north grabbers open, south grabbers closed
 		EXTEND(1),               // Extenders up, north grabber one half closed, south grabbers closed

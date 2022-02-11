@@ -136,19 +136,19 @@ public final class Constants {
 		//FIXME: We need to assign IDs to all of these
 		//Solenoids
 		public static final int kLeftExtenderID = 0;
-		public static final int kRightExtenderID = 0;
-		public static final int kGrabberNorth1ID = 0;
-		public static final int kGrabberNorth2ID = 0;
-		public static final int kGrabberSouth1ID = 0;
-		public static final int kGrabberSouth2ID = 0;
-		public static final int kLeftSwingerMotorID = 0;
-		public static final int kRightSwingerMotorID = 0;
+		public static final int kRightExtenderID = 1;
+		public static final int kGrabberNorth1ID = 2;
+		public static final int kGrabberNorth2ID = 3;
+		public static final int kGrabberSouth1ID = 4;
+		public static final int kGrabberSouth2ID = 5;
+		public static final int kLeftSwingerMotorID = 6;
+		public static final int kRightSwingerMotorID = 7;
 		public static final int kNorthSensorID = 0;
-		public static final int kSouthSensorID = 0;
+		public static final int kSouthSensorID = 1;
 
 		//AnalogInputs
-		public static final int kMinIRVoltage = 0;
-		public static final int kMaxIRVoltage = 0;
+		public static final double kMinIRVoltage = 1.0;
+		public static final double kMaxIRVoltage = 1.5;
 
 		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
 
