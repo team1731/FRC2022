@@ -25,7 +25,7 @@ public class VelocityNeo extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 
 	//private DoubleSolenoid mLaunchHoodSolenoid;

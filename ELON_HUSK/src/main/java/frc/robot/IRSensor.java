@@ -21,7 +21,7 @@ public class IRSensor {
         mAnalogTrigger.setAveraged(true);
         mAnalogTrigger.setFiltered(false);
         //mAnalogTrigger.setLimitsVoltage(OpConstants.kMinIRVoltage, OpConstants.kMaxIRVoltage);
-        mAnalogTrigger.setLimitsVoltage(2, 5);
+        mAnalogTrigger.setLimitsVoltage(1.0, 1.5);
         // mCounter = new Counter(mAnalogTrigger.createOutput(AnalogTriggerType.kState));
     }
 
