@@ -1,17 +1,12 @@
 package frc.robot.subsystems;
 
-import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
-import frc.robot.commands.intake.LeftIntakeCommand;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
-import org.ejml.masks.FMaskSparse;
 
 /**
  * The way intake works is there is a motor for left intake, a motor for right intake, and a conveyor motor which takes the balls from intake and pulls
