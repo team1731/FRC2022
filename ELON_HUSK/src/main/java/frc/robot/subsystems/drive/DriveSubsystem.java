@@ -25,7 +25,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ToggleableSubsystem;
 import frc.robot.util.AutoSwerveDebug;
 import frc.robot.util.ReflectingCSVWriter;
@@ -45,7 +45,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private final ReflectingCSVWriter<AutoSwerveDebug> mCSVWriter1;
 	private final ReflectingCSVWriter<SwerveModuleDebug> mCSVWriter2;
 
-	private LimeLightSubsystem m_vision;
+	private VisionSubsystem m_vision;
 
 	private double desiredHeading;
 
@@ -110,7 +110,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	/**
 	 * Creates a new DriveSubsystem.
 	 */
-	public DriveSubsystem(LimeLightSubsystem m_vision) {
+	public DriveSubsystem(VisionSubsystem m_vision) {
 		if(isDisabled()){
 			leftFrontAbsEncoder = null;
 			rightFrontAbsEncoder = null;

@@ -5,18 +5,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.XboxConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * Rotates the robot towards a vision target
  */
 public class VisionRotateCommand extends CommandBase {
 
-	private final LimeLightSubsystem m_vision;
+	private final VisionSubsystem m_vision;
 	private final DriveSubsystem m_drive;
 	private final XboxController m_driverController;
 
-	public VisionRotateCommand(LimeLightSubsystem visionSubsystem, DriveSubsystem driveSubsystem,
+	public VisionRotateCommand(VisionSubsystem visionSubsystem, DriveSubsystem driveSubsystem,
 			XboxController driveController) {
 		m_vision = visionSubsystem;
 		m_drive = driveSubsystem;

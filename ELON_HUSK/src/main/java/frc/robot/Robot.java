@@ -24,7 +24,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.autonomous._NamedAutoMode;
-import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 
 /**
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
 
 	// The robot's subsystems
 	public DriveSubsystem m_drive;
-	public LimeLightSubsystem m_vision;
+	public VisionSubsystem m_vision;
 	public LaunchSubsystem m_launch;
 	public IntakeSubsystem m_intake;
 	public ClimbSubsystem m_climb;
@@ -104,7 +104,7 @@ public class Robot extends TimedRobot {
 		// CameraServer camServer = CameraServer.getInstance();
 		// camServer.startAutomaticCapture();
 
-		m_vision = new LimeLightSubsystem();
+		m_vision = new VisionSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
 		m_launch = new LaunchSubsystem();
 		m_intake = new IntakeSubsystem();

@@ -22,7 +22,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
@@ -43,7 +43,7 @@ public class RobotContainer {
 	private DriveSubsystem m_drive;
 	private LaunchSubsystem m_launch;
 	private IntakeSubsystem m_intake;
-	private LimeLightSubsystem m_vision;
+	private VisionSubsystem m_vision;
 	private ClimbSubsystem m_climb;
 
 	public enum HanMode {
@@ -60,7 +60,7 @@ public class RobotContainer {
 			ClimbSubsystem climb,
 			LaunchSubsystem launch, 
 			IntakeSubsystem intake, 
-			LimeLightSubsystem vision)
+			VisionSubsystem vision)
 		{
 		// this.m_ledstring = m_ledstring;
 		this.m_drive = drive;

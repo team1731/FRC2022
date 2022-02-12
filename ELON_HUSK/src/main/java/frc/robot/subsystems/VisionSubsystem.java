@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * This subsystem stores the last target coordinates and allows for easy control
  * over the LED
  */
-public class LimeLightSubsystem extends ToggleableSubsystem {
+public class VisionSubsystem extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
@@ -82,7 +82,7 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 	 */
 	private int ledQueries = 0;
 
-	public LimeLightSubsystem() {
+	public VisionSubsystem() {
 		if(isDisabled()){
 			return;
 		}
