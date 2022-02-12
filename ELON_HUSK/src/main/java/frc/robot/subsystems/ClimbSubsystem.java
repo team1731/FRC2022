@@ -136,18 +136,18 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		_leftExtender  = new Solenoid(Constants.kPneumaticsType, OpConstants.kLeftExtenderID);
-		_rightExtender = new Solenoid(Constants.kPneumaticsType, OpConstants.kRightExtenderID);
-		_grabberNorth1 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth1ID);
-		_grabberNorth2 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth2ID);
-		_grabberSouth1 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth1ID);
-		_grabberSouth2 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth2ID);
+		_leftExtender  = null; // new Solenoid(Constants.kPneumaticsType, OpConstants.kLeftExtenderID);
+		_rightExtender = null; // new Solenoid(Constants.kPneumaticsType, OpConstants.kRightExtenderID);
+		_grabberNorth1 = null; // new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth1ID);
+		_grabberNorth2 = null; // new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth2ID);
+		_grabberSouth1 = null; // new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth1ID);
+		_grabberSouth2 = null; // new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth2ID);
 
 		_swingerMasterMotor = new CANSparkMax(OpConstants.kLeftSwingerMotorID, MotorType.kBrushless);
 		_swingerSlaveMotor = new CANSparkMax(OpConstants.kRightSwingerMotorID, MotorType.kBrushless);
 
-		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
-		_southSensor = new IRSensor(OpConstants.kSouthSensorID);
+		_northSensor = null; // new IRSensor(OpConstants.kNorthSensorID);
+		_southSensor = null; // new IRSensor(OpConstants.kSouthSensorID);
 
 		_swingerSlaveMotor.follow(_swingerMasterMotor);
 
@@ -215,16 +215,16 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	//#region Controls
 
 	private void setExtenders(boolean up){
-		_leftExtender.set(up);
-		_rightExtender.set(up);
+		// _leftExtender.set(up);
+		// _rightExtender.set(up);
 	}
 
 	private void setNorthGrabber(GrabberHalf grabberHalf, boolean closed){
 		if(grabberHalf.value >= 1){
-			_grabberNorth1.set(closed);
+			// _grabberNorth1.set(closed);
 		}
 		if(grabberHalf.value >= 2){
-			_grabberNorth2.set(closed);
+			// _grabberNorth2.set(closed);
 		}
 	}
 
@@ -234,10 +234,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	private void setSouthGrabber(GrabberHalf grabberHalf, boolean closed){
 		if(grabberHalf.value >= 1){
-			_grabberSouth1.set(closed);
+			// _grabberSouth1.set(closed);
 		}
 		if(grabberHalf.value >= 2){
-			_grabberSouth2.set(closed);
+			// _grabberSouth2.set(closed);
 		}
 	}
 
