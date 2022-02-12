@@ -57,15 +57,6 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			VisionConstants.kDriveI, VisionConstants.kDriveD,
 			new TrapezoidProfile.Constraints(VisionConstants.kDriveMaxSpeed, VisionConstants.kDriveMaxAcceleration));
 
-	// After looking inside the ProfiledPIDController class, I suspect that a
-	// standard PIDController will work better as ProfiledPID seems to primarily use
-	// the
-	// trapezoid profiler to calculate the next output rather than the PID. Since
-	// trapezoid profiler doesn't have continuous input it just ignores it.
-	// private final PIDController headingControllerPID = new
-	// PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI,
-	// DriveConstants.kTurnD);
-
 	private boolean headingOverride = true;
 	private boolean visionHeadingOverride = false;
 	private boolean visionDistanceOverride = false;
@@ -94,9 +85,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getAngle());
 	
 	public void updateOdometry() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		if (m_odometry != null) {
 			m_odometry.update(new Rotation2d(Math.toRadians(getHeading())), m_leftFront.getState(), // leftFront,
@@ -167,17 +156,13 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	}
 
 	public void setDriveSpeedScaler(double axis) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 
 		this.driveSpeedScaler = 0.5 * (axis + 1);
 	}
 
 	public ReflectingCSVWriter<AutoSwerveDebug> getCSVWriter() {
-		if(isDisabled()){
-			return null;
-		}
+		if(isDisabled()) return null;
 		
 		return mCSVWriter1;
 	}
@@ -188,9 +173,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * @return The angle of the robot.
 	 */
 	public Rotation2d getAngle() {
-		if(isDisabled()){
-			return Rotation2d.fromDegrees(0);
-		}
+		if(isDisabled()) return Rotation2d.fromDegrees(0);
 		
 		// Negating the angle because WPILib gyros are CW positive.
 		return Rotation2d.fromDegrees(m_gyro.getAngle() * (DriveConstants.kGyroReversed ? -1.0 : 1.0));
@@ -198,9 +181,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	@Override
 	public void periodic() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 
 		resumeCSVWriter();
 
@@ -237,9 +218,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * @return The pose.
 	 */
 	public Pose2d getPose() {
-		if(isDisabled()){
-			return new Pose2d();
-		}
+		if(isDisabled()) return new Pose2d();
 		
 		return m_odometry.getPoseMeters();
 	}
@@ -250,9 +229,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * @param pose The pose to which to set the odometry.
 	 */
 	public void resetOdometry(Pose2d pose) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		m_odometry.resetPosition(pose, getAngle());
 	}
@@ -268,9 +245,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 */
 	@SuppressWarnings("ParameterName")
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		drive(xSpeed, ySpeed, 0, 0, fieldRelative);
 	}
@@ -286,9 +261,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 */
 	@SuppressWarnings("ParameterName")
 	public void drive(double xSpeed, double ySpeed, double rightX, double rightY, boolean fieldRelative) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		double xSpeedAdjusted = xSpeed;
 		double ySpeedAdjusted = ySpeed;
@@ -349,10 +322,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			// This allows the driver to still have forward/backward control of the robot
 			// while getting to optimal shooting in case something is in the way
 			xSpeedAdjusted = Utils
-					.Clamp(xSpeedAdjusted + visionDistanceController.calculate(m_vision.getLastPortPos().getZ()), 0, 1);
+					.Clamp(xSpeedAdjusted + visionDistanceController.calculate(m_vision.getLastTarget().getZ()), 0, 1);
 			SmartDashboard.putNumber("distanceController Output", ySpeedAdjusted);
 		} else if (m_vision != null) {
-			visionDistanceController.reset(m_vision.getLastPortPos().getZ());
+			visionDistanceController.reset(m_vision.getLastTarget().getZ());
 		}
 
 		var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(fieldRelative
@@ -372,9 +345,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * @param desiredStates The desired SwerveModule states.
 	 */
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
 		m_leftFront.setDesiredState(desiredStates[0]); // leftFront, rightFront, leftRear, rightRear
@@ -387,9 +358,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * Resets the drive encoders to currently read a position of 0.
 	 */
 	public void resetEncoders() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.269); // leftFront, rightFront, leftRear,
 																				// rightRear
@@ -408,9 +377,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * Zeroes the heading of the robot.
 	 */
 	public void zeroHeading() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		m_gyro.reset(); // RDB2020 - I replace this call with the below 5 lines...
 	}
@@ -421,9 +388,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * @return the robot's heading in degrees, from -180 to 180
 	 */
 	public double getHeading() {
-		if(isDisabled()){
-			return 0;
-		}
+		if(isDisabled()) return 0;
 		
 		if (m_gyro != null) {
 			m_heading = Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
@@ -435,17 +400,13 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	}
 
 	public double getXaccel() {
-		if(isDisabled()){
-			return 0;
-		}
+		if(isDisabled()) return 0;
 		
 		return m_gyro.getWorldLinearAccelX() / 9.8066;
 	}
 
 	public double getYaccel() {
-		if(isDisabled()){
-			return 0;
-		}
+		if(isDisabled()) return 0;
 		
 		return m_gyro.getWorldLinearAccelY() / 9.8066;
 	}
@@ -456,17 +417,13 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * @return The turn rate of the robot, in degrees per second
 	 */
 	public double getTurnRate() {
-		if(isDisabled()){
-			return 0;
-		}
+		if(isDisabled()) return 0;
 		
 		return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
 	}
 
 	public void suspendCSVWriter() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		if (!mCSVWriter1.isSuspended()) {
 			mCSVWriter1.suspend();
@@ -477,9 +434,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	}
 
 	public void resumeCSVWriter() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		if (mCSVWriter1.isSuspended()) {
 			mCSVWriter1.resume();
@@ -495,9 +450,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * the orientation in teleop (e.x. vision)
 	 */
 	public void setVisionHeadingOverride(boolean visionOverride) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		visionHeadingOverride = visionOverride;
 		headingController.setP(visionOverride ? VisionConstants.kTurnP : DriveConstants.kTurnP);
@@ -506,25 +459,19 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	}
 
 	public void setVisionDistanceOverride(boolean visionOverride) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		visionDistanceOverride = visionOverride;
 	}
 
 	public void setVisionHeadingGoal(double newGoal) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		headingController.setGoal(newGoal);
 	}
 
 	public void displayEncoders() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
 		SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
@@ -539,9 +486,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	}
 
 	public void resetGyro() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 		
 		if (m_gyro != null) {
 			desiredHeading = 0;

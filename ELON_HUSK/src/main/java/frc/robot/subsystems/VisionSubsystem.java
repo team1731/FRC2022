@@ -7,12 +7,17 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants.VisionConstants;
 import frc.robot.vision.LimeTargetInfo;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -74,7 +79,10 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 * The last target that was reported by the Limelight
 	 */
 	private LimeTargetInfo _lastTarget = LimeTargetInfo.empty;
-
+	/**
+	 * Targets collected over {@link VisionConstants#kAverageKeepTime} seconds
+	 */
+	private List<LimeTargetInfo> _pastTargets = new ArrayList<LimeTargetInfo>();
 
 	/**
 	 * Keeps track of how many systems are requesting the LED. Each system should be
@@ -112,9 +120,14 @@ public class VisionSubsystem extends ToggleableSubsystem {
 
 		// Report target when one is valid
 		if (hasTarget()) {
-			_lastTarget = new LimeTargetInfo(_limeTX.getDouble(0), _limeTY.getDouble(0), _limeArea.getDouble(0),
-					_limeVert.getDouble(0), _limeHoriz.getDouble(0), Timer.getFPGATimestamp());
-		}
+			double currentTime = Timer.getFPGATimestamp();
+			LimeTargetInfo newTarget = new LimeTargetInfo(_limeTX.getDouble(0), _limeTY.getDouble(0), _limeArea.getDouble(0),
+															_limeVert.getDouble(0), _limeHoriz.getDouble(0), currentTime);
+			if(!newTarget.equals(LimeTargetInfo.empty)){
+				_lastTarget = newTarget;
+				_pastTargets.removeIf(target -> currentTime - target.getTimeCaptured() > VisionConstants.kAverageKeepTime);
+				_pastTargets.add(_lastTarget);
+			}
 		}
 
 		UpdateSmartDashboard();
@@ -138,10 +151,38 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 * 
 	 * @return The last target reported by the Limelight
 	 */
-	public LimeTargetInfo getLastPortPos() {
+	public LimeTargetInfo getLastTarget() {
 		if(isDisabled()) return LimeTargetInfo.empty;
 
 		return _lastTarget;
+	}
+
+	/**
+	 * Gets the average position of targets from the past {@link VisionConstants#kAverageKeepTime} seconds
+	 * @return A new target with averaged values
+	 */
+	public LimeTargetInfo getAveragedTarget() {
+		if(isDisabled()) return LimeTargetInfo.empty;
+
+		double avgY = 0;
+		double avgZ = 0;
+		double avgArea = 0;
+		double avgHor = 0;
+		double avgVert = 0;
+		for(LimeTargetInfo target : _pastTargets){
+			avgY += target.getY();
+			avgZ += target.getZ();
+			avgArea += target.getArea();
+			avgHor += target.getWidth();
+			avgVert += target.getLength();
+		}
+		avgY /= _pastTargets.size();
+		avgZ /= _pastTargets.size();
+		avgArea /= _pastTargets.size();
+		avgHor /= _pastTargets.size();
+		avgVert /= _pastTargets.size();
+
+		return new LimeTargetInfo(avgY, avgZ, avgArea, avgHor, avgVert, _lastTarget.getTimeCaptured());
 	}
 
 	/**
@@ -159,9 +200,7 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 * Turns on the LED
 	 */
 	public void enableLED() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 
 		_limeLED.setNumber(3);
 		_ledQueries++;
@@ -196,11 +235,5 @@ public class VisionSubsystem extends ToggleableSubsystem {
 		if (_ledQueries <= 0 && trackQuery) {
 			_limeLED.setNumber(0);
 		}
-	}
-
-	private double getDistance(Translation2d pos1, Translation2d pos2) {
-		if(isDisabled()) return 0;
-
-		return Math.sqrt(Math.pow(pos2.getX() - pos1.getX(), 2) + Math.pow(pos2.getY() - pos1.getY(), 2));
 	}
 }

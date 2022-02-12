@@ -16,6 +16,7 @@ import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.VisionRotateCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -118,6 +119,10 @@ public class RobotContainer {
 		//#region Climb Subsystem
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
+		//#endregion
+
+		//#region Vision Subsystem
+		new JoystickButton(m_driverController, ButtonConstants.kVision).whenHeld(new VisionRotateCommand(m_vision, m_drive));
 		//#endregion
 		
 		//#region Intake Subsystem

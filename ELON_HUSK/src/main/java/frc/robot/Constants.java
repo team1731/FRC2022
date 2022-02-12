@@ -201,6 +201,8 @@ public final class Constants {
 		public static final double kTurnRateToleranceDegPerS = 10; // degrees per second
 		// #endregion
 
+		public static final double kAverageKeepTime = 0.2;
+
 	}
 
 	public static final class DriveConstantsOrig {

@@ -184,6 +184,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		m_drive.suspendCSVWriter();
+		m_vision.disableLED();
 	}
 
 	@Override
@@ -320,5 +321,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 
+	}
+
+	@Override
+	public void disabledExit(){
+		m_vision.enableLED();
 	}
 }
