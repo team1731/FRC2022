@@ -46,7 +46,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private final SparkMaxPIDController _pidSlaveController;
 	private final RelativeEncoder _encoderSlave;
 
-	private double timer = System.currentTimeMillis();
+	private double _timer = System.currentTimeMillis();
 
 	//#region Enums
 
@@ -56,9 +56,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		GRAB_BAR(2),             // Extenders up, north grabber closed, south grabber closed
 
 		SWING_TO_NEXT_BAR(3),    // Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
-		OPEN_NEXT_GRABBERS(4),   // Extenders up, north grabber closed, south grabber half open, swinger motors spinning+
-		GRAB_NEXT_BAR(5),        // Extenders up, north grabber closed, south grabber closed
-		RELEASE_PREVIOUS_BAR(6); // Extenders up, north grabber open, south grabber closed
+		GRAB_NEXT_BAR(4),        // Extenders up, north grabber closed, south grabber closed
+		RELEASE_PREVIOUS_BAR(5); // Extenders up, north grabber open, south grabber closed
 
 		private final int _value;
 
@@ -281,22 +280,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		stopSwing();
 
 		//TODO: Test this timing, we want the user to have enough time to react if the grabber doesn't grasp the bar correctly
-		return System.currentTimeMillis() - timer >= 1;
+		return System.currentTimeMillis() - _timer >= 1;
 	}
 
 	private boolean handleSwingToNextBar(){
-		// Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
-		setExtenders(true);
-		setNorthGrabbers(true);
-		setSouthGrabbers(true);
-		startSwing();
-
-		//TODO: We need to figure out if there's a switch for when the grabbers should open. Maybe count motor rotations?
-		return System.currentTimeMillis() - timer >= 1.5;
-
-	}
-
-	private boolean handleOpenNextGrabbers(){
 		// Extenders up, north grabber closed, south grabber half open, swinger motors spinning+
 		setExtenders(true);
 		setNorthGrabbers(true);
@@ -316,7 +303,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		stopSwing();
 
 		//TODO: Test this timing
-		return System.currentTimeMillis() - timer >= 0.5;
+		return System.currentTimeMillis() - _timer >= 0.5;
 	}
 
 	private boolean handleReleasePreviousBar(){
@@ -327,7 +314,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		stopSwing();
 
 		//TODO: Test this timing
-		return System.currentTimeMillis() - timer >= 0.25;
+		return System.currentTimeMillis() - _timer >= 0.25;
 	}
 
 	//#endregion
@@ -335,11 +322,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
-		if(isDisabled()){ return; }
+		if(isDisabled()) return;
 
 		if(_inputDirection == InputDirection.NEUTRAL){
 			stopSwing();
-			timer = System.currentTimeMillis();
+			_timer = System.currentTimeMillis();
 			return;
 		}
 		SmartDashboard.putString("climb_State", _currentState.name());
@@ -357,9 +344,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		GRAB_BAR(2),             // Extenders up, north grabber closed, south grabber closed
 
 		SWING_TO_NEXT_BAR(3),    // Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
-		OPEN_NEXT_GRABBERS(4),   // Extenders up, north grabber closed, south grabber half open, swinger motors spinning+
-		GRAB_NEXT_BAR(5),        // Extenders up, north grabber closed, south grabber closed
-		RELEASE_PREVIOUS_BAR(6); // Extenders up, north grabber open, south grabber closed
+		GRAB_NEXT_BAR(4),        // Extenders up, north grabber closed, south grabber closed
+		RELEASE_PREVIOUS_BAR(5); // Extenders up, north grabber open, south grabber closed
 		*/
 		boolean transition = false;
 		switch(_currentState){
@@ -377,9 +363,6 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			case SWING_TO_NEXT_BAR:
 				transition = handleSwingToNextBar();
 				break;
-			case OPEN_NEXT_GRABBERS:
-				transition = handleOpenNextGrabbers();
-				break;
 			case GRAB_NEXT_BAR:
 				transition = handleGrabNextBar();
 				break;
@@ -389,7 +372,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		}
 
 		if(transition){
-			timer = System.currentTimeMillis();
+			_timer = System.currentTimeMillis();
 			_currentState = _currentState.next();
 			// _currentState = _inputDirection == InputDirection.UP ? _currentState.next()
 			// 	: _currentState.previous();

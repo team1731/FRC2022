@@ -254,8 +254,8 @@ public final class Constants {
 		/**
 		 * Climb Buttons - Front Left front toggle(R/L): 6, 7
 		 */
-		public static final int kClimbUp = 1; //6;
-		public static final int kClimbDown = 2; //7;
+		public static final int kClimbUp = 6;
+		public static final int kClimbDown = 7;
 		
 		/**
 		 * Robot Mode Buttons - Front Right front toggle(R/L): 8, 9
