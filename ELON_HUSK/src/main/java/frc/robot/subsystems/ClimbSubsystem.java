@@ -240,11 +240,12 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	}
 
 	private void startSwing(){
-		_swingerMasterMotor.set(10 * _inputDirection.value);
+		_pidMasterController.setReference(CanSparkMaxConstants.kFwdSteps, CANSparkMax.ControlType.kSmartMotion);
 	}
 
 	private void stopSwing(){
 		_swingerMasterMotor.set(0);
+		_encoderMaster.setPosition(0); // not sure if this is needed
 	}
 
 	//#endregion
@@ -349,6 +350,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		SmartDashboard.putBoolean("climb_GrbS2", _grabberSouth2.get());
 		SmartDashboard.putBoolean("climb_ExtR", _rightExtender.get());
 		SmartDashboard.putBoolean("climb_ExtL", _leftExtender.get());
+		SmartDashboard.putNumber("climb_encPos", _encoderMaster.getPosition());
 		/*
 		READY(0),                // Extenders down, north grabbers open, south grabbers closed
 		EXTEND(1),               // Extenders up, north grabber one half closed, south grabbers closed

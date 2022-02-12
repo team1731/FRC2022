@@ -254,8 +254,8 @@ public final class Constants {
 		/**
 		 * Climb Buttons - Front Left front toggle(R/L): 6, 7
 		 */
-		public static final int kClimbUp = 6;
-		public static final int kClimbDown = 7;
+		public static final int kClimbUp = 1; //6;
+		public static final int kClimbDown = 2; //7;
 		
 		/**
 		 * Robot Mode Buttons - Front Right front toggle(R/L): 8, 9
@@ -310,6 +310,8 @@ public final class Constants {
 		public static final double minVel = 0;
 		public static final double maxAcc = 1500;
 		public static final double allowedErr = 0;
+
+		public static final double kFwdSteps = 1000;
 
 		public static final int smartMotionSlot = 0;
 	}
