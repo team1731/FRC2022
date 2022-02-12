@@ -109,7 +109,7 @@ public final class Constants {
 		public static final int kMotorCANRange = 6;
 
 		//Climber CAN IDs
-		public static final int kMotorCANClimber1 = 7;
+		public static final int kMotorCANClimber1 = 5;
 		public static final int kMotorCANClimber2 = 8;
 
 		//Sequencer CAN IDs
@@ -162,6 +162,22 @@ public final class Constants {
 		public final static int MinRange = 100;
 
 		///// End TalonFX
+
+		///// Begin Pneumatics Constants
+		public final static int lTopA = 13;
+		public final static int lBottomB = 10;
+		public final static int rTopA = 14;
+		public final static int rBottomB = 11;
+		public final static int fTop = 15;
+		public final static int fBottomB = 12;
+
+		//ltop = left intake top pneumatics: 			13
+		//lbottom = left intake bottom pneumatics:  	10
+		//rtop = right intake top pneumatics:	 		14
+		//rbottom = right intake bottom pneumatics:		11
+		//ftop = top climber pneumatics: 				15
+		//fbottom = bottom climber pneumatics: 			12
+
 	}
 
 	public static final class VisionConstants {
