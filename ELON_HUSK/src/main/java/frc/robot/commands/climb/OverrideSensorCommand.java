@@ -18,8 +18,15 @@ public class OverrideSensorCommand extends CommandBase {
     }
     
     @Override
+    public boolean isFinished() {
+        return !_climb.getSensorOveride();
+    }
+
+    @Override
     public void end(boolean interrupted) {
-        _climb.setSensorOverride(false);
+        if(interrupted){
+            _climb.setSensorOverride(false);
+        }
     }
 
 }
