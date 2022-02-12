@@ -30,95 +30,91 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	/**
 	 * The table that contains all controls and outputs for the Limelight
 	 */
-	private NetworkTable limeTable;
+	private NetworkTable _limeTable;
 	/**
 	 * The current vision pipeline the Limelight is set to
 	 */
-	private NetworkTableEntry limePipeline;
+	private NetworkTableEntry _limePipeline;
 	/**
 	 * How off the X axis (target coordinates) the target is from the crosshair in
 	 * degrees
 	 */
-	private NetworkTableEntry limeTX;
+	private NetworkTableEntry _limeTX;
 	/**
 	 * How off the Y axis (target coordinates) the target is from the crosshair in
 	 * degrees
 	 */
-	private NetworkTableEntry limeTY;
+	private NetworkTableEntry _limeTY;
 	/**
 	 * How much of the image the target covers (0%-100%)
 	 */
-	private NetworkTableEntry limeArea;
+	private NetworkTableEntry _limeArea;
 	/**
 	 * The horizontal (width) sidelength of the rough bounding box (0-320 pixels)
 	 */
-	private NetworkTableEntry limeHoriz;
+	private NetworkTableEntry _limeHoriz;
 	/**
 	 * The vertical (length) sidelength of the rough bounding box (0-320 pixels)
 	 */
-	private NetworkTableEntry limeVert;
+	private NetworkTableEntry _limeVert;
 	/**
 	 * Indicates if the Limelight has a target. 1 for yes, 0 for no.
 	 */
-	private NetworkTableEntry limeValidTargets;
+	private NetworkTableEntry _limeValidTargets;
 	/**
 	 * Control for LED. 1 is off, 2 is blink, 3 is on, and 0 is default for pipeline
 	 */
-	private NetworkTableEntry limeLED;
+	private NetworkTableEntry _limeLED;
 
-	private NetworkTableEntry[] limeRawX = new NetworkTableEntry[3];
-	private NetworkTableEntry[] limeRawY = new NetworkTableEntry[3];
-	private NetworkTableEntry[] limeRawArea = new NetworkTableEntry[3];
+	private NetworkTableEntry[] _limeRawX = new NetworkTableEntry[3];
+	private NetworkTableEntry[] _limeRawY = new NetworkTableEntry[3];
+	private NetworkTableEntry[] _limeRawArea = new NetworkTableEntry[3];
 
 	/**
 	 * The last target that was reported by the Limelight
 	 */
-	private LimeTargetInfo lastTarget = LimeTargetInfo.empty;
+	private LimeTargetInfo _lastTarget = LimeTargetInfo.empty;
+
 
 	/**
 	 * Keeps track of how many systems are requesting the LED. Each system should be
 	 * turning off the LED when they are done. e.g. VisionRotateCommand turns the
 	 * LED on while the command is active and then turns it off when deactivated.
 	 */
-	private int ledQueries = 0;
+	private int _ledQueries = 0;
 
 	public VisionSubsystem() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 
 		// Set tables for easy getting
-		limeTable = NetworkTableInstance.getDefault().getTable("limelight");
-		limePipeline = limeTable.getEntry("pipeline");
-		limeTX = limeTable.getEntry("tx");
-		limeTY = limeTable.getEntry("ty");
-		limeArea = limeTable.getEntry("ta");
-		limeHoriz = limeTable.getEntry("thor");
-		limeVert = limeTable.getEntry("tvert");
-		limeValidTargets = limeTable.getEntry("tv");
-		limeLED = limeTable.getEntry("ledMode");
+		_limeTable = NetworkTableInstance.getDefault().getTable("limelight");
+		_limePipeline = _limeTable.getEntry("pipeline");
+		_limeTX = _limeTable.getEntry("tx");
+		_limeTY = _limeTable.getEntry("ty");
+		_limeArea = _limeTable.getEntry("ta");
+		_limeHoriz = _limeTable.getEntry("thor");
+		_limeVert = _limeTable.getEntry("tvert");
+		_limeValidTargets = _limeTable.getEntry("tv");
+		_limeLED = _limeTable.getEntry("ledMode");
 		for (int i = 0; i < 3; i++) {
-			limeRawX[i] = limeTable.getEntry("tx" + i);
-			limeRawY[i] = limeTable.getEntry("ty" + i);
-			limeRawArea[i] = limeTable.getEntry("ta" + i);
+			_limeRawX[i] = _limeTable.getEntry("tx" + i);
+			_limeRawY[i] = _limeTable.getEntry("ty" + i);
+			_limeRawArea[i] = _limeTable.getEntry("ta" + i);
 		}
 
 		// Keep the light off so we don't blind unfortunate spectators
 		disableLED(false);
-
-		SmartDashboard.putString("SelectedGalactic", "None");
 	}
 
 	@Override
 	public void periodic() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 
 		// Report target when one is valid
 		if (hasTarget()) {
-			lastTarget = new LimeTargetInfo(limeTX.getDouble(0), limeTY.getDouble(0), limeArea.getDouble(0),
-					limeVert.getDouble(0), limeHoriz.getDouble(0), Timer.getFPGATimestamp());
+			_lastTarget = new LimeTargetInfo(_limeTX.getDouble(0), _limeTY.getDouble(0), _limeArea.getDouble(0),
+					_limeVert.getDouble(0), _limeHoriz.getDouble(0), Timer.getFPGATimestamp());
+		}
 		}
 
 		UpdateSmartDashboard();
@@ -134,7 +130,7 @@ public class VisionSubsystem extends ToggleableSubsystem {
 
 		SmartDashboard.putBoolean("Vis_HasTarget", hasTarget());
 		SmartDashboard.putString("Vis_TargetPos",
-				hasTarget() ? lastTarget.getY() + ", " + lastTarget.getZ() : "N/A");
+				hasTarget() ? _lastTarget.getY() + ", " + _lastTarget.getZ() : "N/A");
 	}
 
 	/**
@@ -143,11 +139,9 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 * @return The last target reported by the Limelight
 	 */
 	public LimeTargetInfo getLastPortPos() {
-		if(isDisabled()){
-			return LimeTargetInfo.empty;
-		}
+		if(isDisabled()) return LimeTargetInfo.empty;
 
-		return lastTarget;
+		return _lastTarget;
 	}
 
 	/**
@@ -156,11 +150,9 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 * @return Whether or not the Limelight has any valid targets
 	 */
 	public boolean hasTarget() {
-		if(isDisabled()){
-			return false;
-		}
+		if(isDisabled()) return false;
 
-		return limeValidTargets.getDouble(0) > 0;
+		return _limeValidTargets.getDouble(0) > 0;
 	}
 
 	/**
@@ -171,8 +163,8 @@ public class VisionSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		limeLED.setNumber(3);
-		ledQueries++;
+		_limeLED.setNumber(3);
+		_ledQueries++;
 	}
 
 	/**
@@ -180,9 +172,7 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 * LED, it is turned off
 	 */
 	public void disableLED() {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 
 		disableLED(true);
 	}
@@ -197,33 +187,20 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 *                   turn off.
 	 */
 	private void disableLED(boolean trackQuery) {
-		if(isDisabled()){
-			return;
-		}
+		if(isDisabled()) return;
 
 		if (trackQuery) {
-			ledQueries--;
+			_ledQueries--;
 		}
 
-		if (ledQueries <= 0 && trackQuery) {
-			limeLED.setNumber(0);
+		if (_ledQueries <= 0 && trackQuery) {
+			_limeLED.setNumber(0);
 		}
 	}
 
 	private double getDistance(Translation2d pos1, Translation2d pos2) {
-		if(isDisabled()){
-			return 0;
-		}
+		if(isDisabled()) return 0;
 
 		return Math.sqrt(Math.pow(pos2.getX() - pos1.getX(), 2) + Math.pow(pos2.getY() - pos1.getY(), 2));
-	}
-
-	private double getDistance(Translation2d pos1, LimeTargetInfo targetPos) {
-		if(isDisabled()){
-			return 0;
-		}
-
-		Translation2d pos2 = new Translation2d(targetPos.getY(), targetPos.getZ());
-		return getDistance(pos1, pos2);
 	}
 }
