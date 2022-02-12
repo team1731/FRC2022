@@ -47,6 +47,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private final RelativeEncoder _encoderSlave;
 
 	private double _timer = System.currentTimeMillis();
+	private boolean _sensorOverride = false;
 
 	//#region Enums
 
@@ -205,6 +206,12 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_inputDirection = value;
 	}
 
+	public void setSensorOverride(boolean value){
+		if(isDisabled()) return;
+
+		_sensorOverride = value;
+	}
+
 	//#region Controls
 
 	private void setExtenders(boolean up){
@@ -269,7 +276,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		stopSwing();
 
 		//TODO: Test the sensor
-		return _northSensor.isTriggered();
+		return _sensorOverride || (_northSensor != null && _northSensor.isTriggered());
 	}
 
 	private boolean handleGrabBar(){
@@ -292,7 +299,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		startSwing();
 
 		//TODO: Test the timing of this
-		return _southSensor.isTriggered();
+		return _sensorOverride || (_southSensor != null && _southSensor.isTriggered());
 	}
 
 	private boolean handleGrabNextBar(){

@@ -18,6 +18,7 @@ import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
+import frc.robot.commands.climb.OverrideSensorCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -117,6 +118,7 @@ public class RobotContainer {
 		//#region Climb Subsystem
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride).whenHeld(new OverrideSensorCommand(m_climb));
 		//#endregion
 		
 		//#region Intake Subsystem

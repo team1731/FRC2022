@@ -134,8 +134,8 @@ public final class Constants {
 		public static final int kGrabberNorth2ID = 3;
 		public static final int kGrabberSouth1ID = 4;
 		public static final int kGrabberSouth2ID = 5;
-		public static final int kLeftSwingerMotorID = 6;
-		public static final int kRightSwingerMotorID = 7;
+		public static final int kLeftSwingerMotorID = 9;
+		public static final int kRightSwingerMotorID = 10;
 		public static final int kNorthSensorID = 0;
 		public static final int kSouthSensorID = 1;
 
@@ -256,6 +256,10 @@ public final class Constants {
 		 */
 		public static final int kClimbUp = 6;
 		public static final int kClimbDown = 7;
+		/**
+		 * Climb sensor override button - Select Spinner Press: 16
+		 */
+		public static final int kClimbSensorOverride = 16;
 		
 		/**
 		 * Robot Mode Buttons - Front Right front toggle(R/L): 8, 9
