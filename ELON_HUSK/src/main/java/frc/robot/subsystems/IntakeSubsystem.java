@@ -2,18 +2,14 @@ package frc.robot.subsystems;
 
 import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
-import frc.robot.commands.intake.LeftIntakeCommand;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Solenoid;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-
-import org.ejml.masks.FMaskSparse;
 
 /**
  * The way intake works is there is a motor for left intake, a motor for right intake, and a conveyor motor which takes the balls from intake and pulls
@@ -37,7 +33,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 	private boolean _LeftEnabled = false;
 	private boolean _RightEnabled = false;
-	//private boolean _ConveyorEnabled = false;
 
 	/**
 	 * Creates a new IntakeSubsystem.
@@ -58,23 +53,18 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.kRBottomB, OpConstants.kRTopA);
 		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeL);
 		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.kLBottomB, OpConstants.kLTopA);
-		//_ConveyorMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeConveyor);
 
 		//Defaulting the Motors
 		_RightMotorIntake.configFactoryDefault();
 		_LeftMotorIntake.configFactoryDefault();
-		//_ConveyorMotorIntake.configFactoryDefault();
 
 		_RightMotorIntake.configNeutralDeadband(0.001);
 		_LeftMotorIntake.configNeutralDeadband(0.001);
-		//_ConveyorMotorIntake.configNeutralDeadband(0.001);
 
 		_RightMotorIntake.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,OpConstants.kPIDLoopIdx,
 		 OpConstants.kTimeoutMs);
 		_LeftMotorIntake.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,OpConstants.kPIDLoopIdx,
 		OpConstants.kTimeoutMs);
-		/*_ConveyorMotorIntake.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,OpConstants.kPIDLoopIdx,
-		OpConstants.kTimeoutMs);*/
 
 		_RightMotorIntake.configNominalOutputForward(0, OpConstants.kTimeoutMs);
 		_RightMotorIntake.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
@@ -86,12 +76,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_LeftMotorIntake.configPeakOutputForward(1, OpConstants.kTimeoutMs);
 		_LeftMotorIntake.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
 		
-		/*
-		_ConveyorMotorIntake.configNominalOutputForward(0, OpConstants.kTimeoutMs);
-		_ConveyorMotorIntake.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
-		_ConveyorMotorIntake.configPeakOutputForward(1, OpConstants.kTimeoutMs);
-		_ConveyorMotorIntake.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);*/
-
 		_RightMotorIntake.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
 		_RightMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
 		_RightMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
@@ -102,16 +86,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_LeftMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
 		_LeftMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
 
-		/*
-		_ConveyorMotorIntake.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_ConveyorMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
-		_ConveyorMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
-		_ConveyorMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
-		*/
-		
 		_RightMotorIntake.setNeutralMode(NeutralMode.Coast);
 		_LeftMotorIntake.setNeutralMode(NeutralMode.Coast);
-		//_ConveyorMotorIntake.setNeutralMode(NeutralMode.Coast);
 
 		_RightMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
 		_RightMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
@@ -137,11 +113,9 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		SmartDashboard.putNumber("RightIntakeVelocity", _RightMotorIntake.getSelectedSensorVelocity());
 		SmartDashboard.putNumber("LeftIntakeVelocity", _LeftMotorIntake.getSelectedSensorVelocity());
-		//SmartDashboard.putNumber("ConveyorVelocity", _ConveyorMotorIntake.getSelectedSensorVelocity());
 
 		SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
 		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
-		//SmartDashboard.putBoolean("ConveyorEnabled", _ConveyorEnabled);
 
 		// This method will be called once per scheduler run
 	}
@@ -211,7 +185,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		//_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
-		//activateConveyor();
 		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2);
 		_RightEnabled = true;
 	}
@@ -224,9 +197,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_RightMotorIntake.set(0);
 		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
-		if(_LeftEnabled == false){
-			//deActivateConveyor();
-		}
 
 		_RightEnabled = false;
 	}
@@ -239,7 +209,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		//_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
-		//activateConveyor();
 		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2 );
 		_LeftEnabled = true;
 	}
@@ -252,31 +221,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_LeftMotorIntake.set(0);
 		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
-		if(_RightEnabled == false){
-			//deActivateConveyor();
-		}
 		_LeftEnabled = false;
 	}
 
-	/* Conveyor idea got scrapped but im gonna keep it just in case
-	//Enables the conveyor motor
-	public void activateConveyor(){
-		if(isDisabled()){
-			return;
-		}
-
-		_ConveyorMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorCANIntakeConveyor * 2000.0 * 2048.0 / 600.0);
-		//_ConveyorMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorCANIntakeConveyor * 0.2);
-		_ConveyorEnabled = true;
-	}
-
-	//Disables the conveyor motor
-	public void deActivateConveyor(){
-		if(isDisabled()){
-			return;
-		}
-
-		_ConveyorMotorIntake.set(0);
-		_ConveyorEnabled = false;
-	}*/
 }
