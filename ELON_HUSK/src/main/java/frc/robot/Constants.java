@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -109,15 +108,15 @@ public final class Constants {
 		public static final int kMotorCANRange = 6;
 
 		//Climber CAN IDs
-		public static final int kMotorCANClimber1 = 5;
-		public static final int kMotorCANClimber2 = 8;
+		public static final int kMotorCANClimber1 = 9;
+		public static final int kMotorCANClimber2 = 10;
 
 		//Sequencer CAN IDs
-		public static final int kMotorCanSequencer1 = 9;
-		public static final int kMotorCanSequencer2 = 10;
+		public static final int kMotorCanSequencer1 = 18;
+		public static final int kMotorCanSequencer2 = 19;
 
 		//Intake CAN IDs
-		public static final int kMotorCANIntakeR = 6;
+		public static final int kMotorCANIntakeR = 8;
 		public static final int kMotorCANIntakeL = 7;
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
@@ -127,7 +126,8 @@ public final class Constants {
 		//Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 21;
 		
-		public static final double kMotorIntakeFwdSpeed = 0.5; // forward or backward
+		public static final double kMotorLeftIntakeSpeed = -0.5; // backward
+		public static final double kMotorRightIntakeSpeed = 0.3; // forward
 
 		public static final double kMotorConveyorSpeed = 0.1;
 

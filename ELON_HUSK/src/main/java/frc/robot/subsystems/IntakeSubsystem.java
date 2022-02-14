@@ -50,9 +50,9 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		//kIntakeRetract = Bottom pneumatic, kIntakeExtend = top pneumatic
 		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeR);
-		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.kRBottomB, OpConstants.kRTopA);
+		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(21, OpConstants.kRBottomB, OpConstants.kRTopA);
 		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeL);
-		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(1, OpConstants.kLBottomB, OpConstants.kLTopA);
+		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(21, OpConstants.kLBottomB, OpConstants.kLTopA);
 
 		//Defaulting the Motors
 		_RightMotorIntake.configFactoryDefault();
@@ -185,7 +185,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		//_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
-		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2);
+		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorRightIntakeSpeed);
 		_RightEnabled = true;
 	}
 
@@ -209,7 +209,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		//_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
-		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorIntakeFwdSpeed * 0.2 );
+		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorLeftIntakeSpeed);
 		_LeftEnabled = true;
 	}
 
