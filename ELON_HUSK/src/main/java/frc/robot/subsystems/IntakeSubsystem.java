@@ -23,7 +23,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 
 	private final WPI_TalonFX _RightMotorIntake;
