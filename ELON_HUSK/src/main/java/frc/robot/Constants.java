@@ -11,13 +11,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
  * purpose. All constants should be declared globally (i.e. public static). Do
- * not put anything functional in this class.
+ * not put anything functional in this class.	
  *
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
@@ -109,15 +108,15 @@ public final class Constants {
 		public static final int kMotorCANRange = 6;
 
 		//Climber CAN IDs
-		public static final int kMotorCANClimber1 = 5;
-		public static final int kMotorCANClimber2 = 8;
+		public static final int kMotorCANClimber1 = 9;
+		public static final int kMotorCANClimber2 = 10;
 
 		//Sequencer CAN IDs
-		public static final int kMotorCanSequencer1 = 9;
-		public static final int kMotorCanSequencer2 = 10;
+		public static final int kMotorCanSequencer1 = 18;
+		public static final int kMotorCanSequencer2 = 19;
 
 		//Intake CAN IDs
-		public static final int kMotorCANIntakeR = 6;
+		public static final int kMotorCANIntakeR = 8;
 		public static final int kMotorCANIntakeL = 7;
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
@@ -127,7 +126,8 @@ public final class Constants {
 		//Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 21;
 		
-		public static final double kMotorIntakeFwdSpeed = 0.5; // forward or backward
+		public static final double kMotorLeftIntakeSpeed = -0.5; // backward
+		public static final double kMotorRightIntakeSpeed = 0.3; // forward
 
 		public static final double kMotorConveyorSpeed = 0.1;
 
@@ -164,12 +164,12 @@ public final class Constants {
 		///// End TalonFX
 
 		///// Begin Pneumatics Constants
-		public final static int lTopA = 13;
-		public final static int lBottomB = 10;
-		public final static int rTopA = 14;
-		public final static int rBottomB = 11;
-		public final static int fTop = 15;
-		public final static int fBottomB = 12;
+		public final static int kLTopA = 13;
+		public final static int kLBottomB = 10;
+		public final static int kRTopA = 14;
+		public final static int kRBottomB = 11;
+		public final static int kFTop = 15;
+		public final static int kFBottomB = 12;
 
 		//ltop = left intake top pneumatics: 			13
 		//lbottom = left intake bottom pneumatics:  	10

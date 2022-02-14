@@ -122,8 +122,8 @@ public class RobotContainer {
 		
 		//#region Intake Subsystem
 		//Alternate code for Joystick testing as opposed to simulation
-		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake));
-		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake));
 		 
 
 		//left = button 1
