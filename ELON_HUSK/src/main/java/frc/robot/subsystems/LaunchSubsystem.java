@@ -21,7 +21,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
   	//#region ToggleableSubsystem
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 	//#endregion
 
@@ -169,7 +169,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * velocity setpoint is in units/100ms
 		 */
 		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
-		double velUnitsPer100ms = normalize_input(speed_0to1, 0.183, 0.795) * 6000.0 * 2048.0 / 600.0;		
+		/* multiply by -1.0 for direction */
+		double velUnitsPer100ms = -1.0 * normalize_input(speed_0to1, 0.183, 0.795) * 6000.0 * 2048.0 / 600.0;		
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 		SmartDashboard.putNumber("velUnitsPer100ms", velUnitsPer100ms);
 
