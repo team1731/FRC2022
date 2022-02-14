@@ -16,7 +16,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
  * them into the shooter.  When the left button is toggled, the left intake motor and conveyor activate; when the right button is toggled, the right intake
  * motor and conveyor activates; when both buttons are toggled, both intake motors and the conveyor activate.
  * TODO: 1. GET IT WORKING AGAIN
- * CAN Id 6 = Right Motor Intake
+ * CAN Id 8 = Right Motor Intake
  * Can Id 7 = Left Motor Intake
  */
 public class IntakeSubsystem extends ToggleableSubsystem{
@@ -50,9 +50,9 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		//kIntakeRetract = Bottom pneumatic, kIntakeExtend = top pneumatic
 		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeR);
-		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(21, OpConstants.kRBottomB, OpConstants.kRTopA);
+		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(OpConstants.kPneumaticsCanID, OpConstants.kRBottomB, OpConstants.kRTopA);
 		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeL);
-		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(21, OpConstants.kLBottomB, OpConstants.kLTopA);
+		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(OpConstants.kPneumaticsCanID, OpConstants.kLBottomB, OpConstants.kLTopA);
 
 		//Defaulting the Motors
 		_RightMotorIntake.configFactoryDefault();
@@ -121,49 +121,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 	}
 
 	/**
-	 * Enables the intake by extending solenoid & turning on motor.
-	 */
-	public void extend() {
-		if(isDisabled()){
-			return;
-		}
-
-		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-	}
-
-	public void active() {
-		if(isDisabled()){
-			return;
-		}
-
-		//_RightMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
-		//_LeftMotorIntake.set(OpConstants.kMotorIntakeFwdSpeed);
-		// m_ledstring.option(LedOption.INTAKE);
-	}
-
-	public void inactive() {
-		if(isDisabled()){
-			return;
-		}
-
-		//_RightMotorIntake.set(0);
-		//_LeftMotorIntake.set(0);
-	}
-
-	/**
-	 * Enables the intake by extending solenoid & turning on motor.
-	 */
-	public void eject() {
-		if(isDisabled()){
-			return;
-		}
-
-		//_RightMotorIntake.set(OpConstants.kMotorIntakeRevSpeed);
-		//_LeftMotorIntake.set(OpConstants.kMotorIntakeRevSpeed);
-	}
-
-	/**
 	 * Enables the intake by retracting solenoid & turning off motor.
 	 */
 	public void retract() {
@@ -171,10 +128,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		// _RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-		// _LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-		//_RightMotorIntake.set(0);
-		//_LeftMotorIntake.set(0);
+		retractRightIntake();
+		retractLeftIntake();
 	}
 
 	//Extends the Right intake and spins the motor to intake
