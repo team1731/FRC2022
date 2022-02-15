@@ -141,6 +141,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		//_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
 		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorRightIntakeSpeed);
+
 		_RightEnabled = true;
 	}
 
@@ -151,7 +152,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}
 
 		_RightMotorIntake.set(0);
-		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
+		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 
 		_RightEnabled = false;
 	}
@@ -165,6 +166,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		//_LeftMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600.0);
 		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorLeftIntakeSpeed);
+		
 		_LeftEnabled = true;
 	}
 
@@ -175,7 +177,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}
 
 		_LeftMotorIntake.set(0);
-		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kOff);
+		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 		_LeftEnabled = false;
 	}
 
