@@ -126,8 +126,8 @@ public final class Constants {
 		//Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 21;
 		
-		public static final double kMotorLeftIntakeSpeed = -0.5; // backward
-		public static final double kMotorRightIntakeSpeed = 0.3; // forward
+		public static final double kMotorLeftIntakeSpeed = -1; // backward
+		public static final double kMotorRightIntakeSpeed = 1; // forward
 
 		public static final double kMotorConveyorSpeed = 0.1;
 
@@ -164,8 +164,8 @@ public final class Constants {
 		///// End TalonFX
 
 		///// Begin Pneumatics Constants
-		public final static int kLTopA = 13;
-		public final static int kLBottomB = 10;
+		public final static int kLTopA = 10;
+		public final static int kLBottomB = 13;
 		public final static int kRTopA = 14;
 		public final static int kRBottomB = 11;
 		public final static int kFTop = 15;
