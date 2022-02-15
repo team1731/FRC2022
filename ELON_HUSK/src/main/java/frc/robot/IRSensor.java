@@ -7,7 +7,8 @@ import edu.wpi.first.wpilibj.AnalogTrigger;
 import frc.robot.Constants.OpConstants;
 
 /**
- * Driver for an analog Sharp IR sensor (or any distance sensor where output voltage is a function of range, really).
+ * Driver for an analog Sharp IR sensor (or any distance sensor where output
+ * voltage is a function of range, really).
  */
 public class IRSensor {
     protected final AnalogInput mAnalogInput;
@@ -19,14 +20,16 @@ public class IRSensor {
         mAnalogInput.setAverageBits(6);
         mAnalogTrigger = new AnalogTrigger(mAnalogInput);
         mAnalogTrigger.setAveraged(true);
-        //mAnalogTrigger.setFiltered(false);
-        //mAnalogTrigger.setLimitsVoltage(OpConstants.kMinIRVoltage, OpConstants.kMaxIRVoltage);
+        // mAnalogTrigger.setFiltered(false);
+        // mAnalogTrigger.setLimitsVoltage(OpConstants.kMinIRVoltage,
+        // OpConstants.kMaxIRVoltage);
         mAnalogTrigger.setLimitsVoltage(1.0, 1.5);
-        // mCounter = new Counter(mAnalogTrigger.createOutput(AnalogTriggerType.kState));
+        // mCounter = new
+        // Counter(mAnalogTrigger.createOutput(AnalogTriggerType.kState));
     }
 
     // public int getCount() {
-    //     return mCounter.get();
+    // return mCounter.get();
     // }
 
     public double getVoltage() {
@@ -38,6 +41,6 @@ public class IRSensor {
     }
 
     // public void resetCount() {
-    //     mCounter.reset();
+    // mCounter.reset();
     // }
 }

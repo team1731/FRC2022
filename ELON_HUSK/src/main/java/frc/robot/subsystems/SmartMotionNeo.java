@@ -32,7 +32,7 @@ public class SmartMotionNeo extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 
 	private DoubleSolenoid mBrakeSolenoid;
