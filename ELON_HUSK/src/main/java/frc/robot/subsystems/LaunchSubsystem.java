@@ -26,7 +26,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	//#endregion
 
 	private DoubleSolenoid _LaunchSolenoid;
-	//private final WPI_TalonFX _RangeMotor;
+	private final WPI_TalonFX _RangeMotor;
 	private final WPI_TalonFX _LaunchMotor;
 	private double lastPosition = -1.0;
 
@@ -34,21 +34,21 @@ public class LaunchSubsystem extends ToggleableSubsystem {
   	public LaunchSubsystem() {
 		if(isDisabled()){
 			_LaunchSolenoid = null;
-      		//_RangeMotor = null; 
+      		_RangeMotor = null; 
       		_LaunchMotor = null;
       		return;
 		}
 
 		_LaunchSolenoid = null;//Constants.makeDoubleSolenoidForIds(0, OpConstants.k0Launching, OpConstants.k0Climbing);
-		//_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange);
+		_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange);
 		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch);
 
 		/* Factory Default Hardware to prevent unexpected behaviour */
-		//_RangeMotor.configFactoryDefault();
+		_RangeMotor.configFactoryDefault();
 		_LaunchMotor.configFactoryDefault();
 
 		/* set deadband to super small 0.001 (0.1 %). The default deadband is 0.04 (4 %) */
-		//_RangeMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
+		_RangeMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
 
 		/**
 		 * Configure the current limits that will be used
@@ -60,17 +60,17 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * https://phoenix-documentation.readthedocs.io/en/latest/ch13_MC.html#current-limit
 		 * 
 		 * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
-		// _RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 12, 1.0));
-		// _RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
+		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 12, 1.0));
+		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
 
 		/* setup a basic closed loop */
-		// _RangeMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override 
+		_RangeMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override 
 		_LaunchMotor.setNeutralMode(NeutralMode.Coast); // Netural Mode override 
 
-		// _RangeMotor.configSelectedFeedbackSensor(
-		// 	TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
-		// 	OpConstants.kPIDLoopIdx,      			// PID Index
-		// 	OpConstants.kTimeoutMs);      			// Config Timeout
+		_RangeMotor.configSelectedFeedbackSensor(
+			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
+			OpConstants.kPIDLoopIdx,      			// PID Index
+			OpConstants.kTimeoutMs);      			// Config Timeout
 
 		_LaunchMotor.configSelectedFeedbackSensor(
 			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
@@ -84,17 +84,17 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			* 
 			* https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
 			*/
-		// _RangeMotor.setSensorPhase(true);
+		_RangeMotor.setSensorPhase(true);
 
-		// /* Set relevant frame periods to be at least as fast as periodic rate */
-		// _RangeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
-		// _RangeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
+		/* Set relevant frame periods to be at least as fast as periodic rate */
+		_RangeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
+		_RangeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
 		
-		// /* Gains for Position Closed Loop servo */
-		// _RangeMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Range.kP, OpConstants.kTimeoutMs);
-		// _RangeMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Range.kI, OpConstants.kTimeoutMs);
-		// _RangeMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Range.kD, OpConstants.kTimeoutMs);
-		// _RangeMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Range.kF, OpConstants.kTimeoutMs);
+		/* Gains for Position Closed Loop servo */
+		_RangeMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Range.kP, OpConstants.kTimeoutMs);
+		_RangeMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Range.kI, OpConstants.kTimeoutMs);
+		_RangeMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Range.kD, OpConstants.kTimeoutMs);
+		_RangeMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Range.kF, OpConstants.kTimeoutMs);
 		
 		/* Config the Velocity closed loop gains in slot0 */
 		_LaunchMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
@@ -112,13 +112,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_LaunchMotor.configPeakOutputForward(1, OpConstants.kTimeoutMs);
 		_LaunchMotor.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
 
-		// /* Set acceleration and vcruise velocity - see documentation */
-		// _RangeMotor.configMotionCruiseVelocity(OpConstants.MMCruiseVelocity, OpConstants.kTimeoutMs);
-		// _RangeMotor.configMotionAcceleration(OpConstants.MMAcceleration, OpConstants.kTimeoutMs);
+		/* Set acceleration and vcruise velocity - see documentation */
+		_RangeMotor.configMotionCruiseVelocity(OpConstants.MMCruiseVelocity, OpConstants.kTimeoutMs);
+		_RangeMotor.configMotionAcceleration(OpConstants.MMAcceleration, OpConstants.kTimeoutMs);
 
-		// /* Zero the sensor once on robot boot up */
-		// _RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
-		// _RangeMotor.configMotionSCurveStrength(OpConstants.MMScurve);
+		/* Zero the sensor once on robot boot up */
+		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
+		_RangeMotor.configMotionSCurveStrength(OpConstants.MMScurve);
 	}
 
 	@Override
@@ -147,7 +147,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 		// SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
 		// SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
-		//SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
+		SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
 		SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
 
 		/// Range, max range guess is 10000 - OpConstantsMaxRange
@@ -155,11 +155,11 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		double position = normalize_input(position_0to1, 0.140, 0.901) * OpConstants.MaxRange;
 		if (position < OpConstants.MinRange) { position = 0; }
 		if (range_update(position, .05 /* percent tolerance */)) {
-			//_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
+			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
 			lastPosition = position;
 		}
 		SmartDashboard.putNumber("_RangeLastPos", lastPosition);
-		//SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
 
 		/// Speed - max is 6000.0 RPMs
 		// launchMotorPercent_0_to_1 *= -1;
@@ -184,7 +184,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	}
 	
 	public void stopLaunch() {
-		//_RangeMotor.set(TalonFXControlMode.PercentOutput, 0);
+		_RangeMotor.set(TalonFXControlMode.PercentOutput, 0);
 		_LaunchMotor.set(TalonFXControlMode.PercentOutput, 0);
 		SmartDashboard.putNumber("_LaunchPostion", 0);
 		SmartDashboard.putNumber("_LaunchSpeed", 0);
