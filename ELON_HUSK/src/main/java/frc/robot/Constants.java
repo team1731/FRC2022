@@ -166,10 +166,10 @@ public final class Constants {
 		///// Begin Pneumatics Constants
 		public final static int kLTopA = 10;
 		public final static int kLBottomB = 13;
-		public final static int kRTopA = 14;
-		public final static int kRBottomB = 11;
-		public final static int kFTop = 15;
-		public final static int kFBottomB = 12;
+		public final static int kRTopA = 11;
+		public final static int kRBottomB = 14;
+		public final static int kFTop = 12;
+		public final static int kFBottomB = 15;
 
 		//ltop = left intake top pneumatics: 			13
 		//lbottom = left intake bottom pneumatics:  	10
