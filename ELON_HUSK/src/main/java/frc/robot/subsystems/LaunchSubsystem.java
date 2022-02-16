@@ -47,9 +47,6 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_RangeMotor.configFactoryDefault();
 		_LaunchMotor.configFactoryDefault();
 
-		/* set deadband to super small 0.001 (0.1 %). The default deadband is 0.04 (4 %) */
-		_RangeMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
-
 		/**
 		 * Configure the current limits that will be used
 		 * Stator Current is the current that passes through the motor stators.
@@ -77,6 +74,16 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			OpConstants.kPIDLoopIdx,      			// PID Index
 			OpConstants.kTimeoutMs);      			// Config Timeout
 
+		/* set deadband to super small 0.001 (0.1 %). The default deadband is 0.04 (4 %) */
+		_RangeMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
+
+		/**
+		 * Configure Talon FX Output and Sensor direction accordingly Invert Motor to
+		 * have green LEDs when driving Talon Forward / Requesting Postiive Output Phase
+		 * sensor to have positive increment when driving Talon Forward (Green LED)
+		 */
+		_RangeMotor.setSensorPhase(false);
+		_RangeMotor.setInverted(true);
 		/*
 			* Talon FX does not need sensor phase set for its integrated sensor
 			* This is because it will always be correct if the selected feedback device is integrated sensor (default value)
@@ -84,13 +91,14 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			* 
 			* https://phoenix-documentation.readthedocs.io/en/latest/ch14_MCSensor.html#sensor-phase
 			*/
-		_RangeMotor.setSensorPhase(true);
+		//_RangeMotor.setSensorPhase(true);
 
 		/* Set relevant frame periods to be at least as fast as periodic rate */
 		_RangeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
 		_RangeMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
 		
 		/* Gains for Position Closed Loop servo */
+		_RangeMotor.selectProfileSlot(OpConstants.SLOT_0, OpConstants.kPIDLoopIdx);
 		_RangeMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Range.kP, OpConstants.kTimeoutMs);
 		_RangeMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Range.kI, OpConstants.kTimeoutMs);
 		_RangeMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Range.kD, OpConstants.kTimeoutMs);
@@ -116,8 +124,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_RangeMotor.configMotionCruiseVelocity(OpConstants.MMCruiseVelocity, OpConstants.kTimeoutMs);
 		_RangeMotor.configMotionAcceleration(OpConstants.MMAcceleration, OpConstants.kTimeoutMs);
 
-		/* Zero the sensor once on robot boot up */
-		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
+		// done in robot.initSubsystems() _RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 		_RangeMotor.configMotionSCurveStrength(OpConstants.MMScurve);
 	}
 
@@ -140,6 +147,11 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if (_position > lastPosition * (1+_percent)) update = true;
 		else if (_position < lastPosition * (1 - _percent)) update = true;
 		return update;
+	}
+
+	public void resetEncoder() {
+		/* Zero the sensor once on robot boot up */
+		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 	}
 
 	public void runLaunch(double speed_0to1, double position_0to1) {
@@ -171,7 +183,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 */
 		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
 		/* multiply by -1.0 for direction */
-		double velUnitsPer100ms = -1.0 * normalize_input(speed_0to1, 0.183, 0.795) * 6000.0 * 2048.0 / 600.0;		
+		double velUnitsPer100ms = /*-1.0 * */ normalize_input(speed_0to1, 0.183, 0.795) * 6000.0 * 2048.0 / 600.0;		
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 		SmartDashboard.putNumber("velUnitsPer100ms", velUnitsPer100ms);
 

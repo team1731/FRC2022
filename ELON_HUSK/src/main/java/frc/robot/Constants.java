@@ -150,7 +150,7 @@ public final class Constants {
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
 		public final static Gains kGains_Velocity = new Gains(0.05, 0, 0, .06, 300, 1.00);
-		public final static Gains kGains_Range = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
+		public final static Gains kGains_Range = new Gains(0.4, 0.0, 0.0, 0.2, 0, 1.0);
 		
 		public final static int SLOT_0 = 0;
 		public final static int SLOT_1 = 1;

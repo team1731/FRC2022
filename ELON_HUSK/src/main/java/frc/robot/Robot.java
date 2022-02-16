@@ -63,6 +63,9 @@ public class Robot extends TimedRobot {
 		if (m_intake != null) {
 			m_intake.retract();
 		}
+		if (m_launch != null) {
+			m_launch.resetEncoder();
+		}
 	}
 
 	private void autoInitPreload() {
