@@ -21,7 +21,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
   	//#region ToggleableSubsystem
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 	//#endregion
 
@@ -151,6 +151,9 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	public void resetEncoder() {
 		/* Zero the sensor once on robot boot up */
+		if(isDisabled()){
+			return;
+		}
 		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 	}
 
