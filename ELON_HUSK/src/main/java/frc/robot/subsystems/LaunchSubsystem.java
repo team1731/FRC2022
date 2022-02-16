@@ -61,7 +61,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * 
 		 * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
 		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 4, 6, 1.0));
-		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
+		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 4, 0.5));
 
 		/* setup a basic closed loop */
 		_RangeMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override 
@@ -125,6 +125,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	public void periodic() {
 		// This method will be called once per scheduler run
 		if(isDisabled()){ return; }
+		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
 	}
 
 	private double normalize_input(double input, double min, double max) {
@@ -145,7 +146,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){
 			return;
 		}
-		// SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
+		SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
 		// SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
 		SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
 		SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());

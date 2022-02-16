@@ -158,7 +158,7 @@ public final class Constants {
 		public final static int MMCruiseVelocity = 15000;
 		public final static int MMAcceleration = 6000;
 		public final static int MMScurve = 4;
-		public final static int MaxRange = 10000;
+		public final static int MaxRange = 39000;
 		public final static int MinRange = 100;
 
 		///// End TalonFX

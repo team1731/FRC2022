@@ -24,7 +24,7 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return true;
+		return false;
 	}
 
 	/**
