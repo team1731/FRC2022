@@ -60,7 +60,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * https://phoenix-documentation.readthedocs.io/en/latest/ch13_MC.html#current-limit
 		 * 
 		 * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
-		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 12, 1.0));
+		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 4, 6, 1.0));
 		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
 
 		/* setup a basic closed loop */
