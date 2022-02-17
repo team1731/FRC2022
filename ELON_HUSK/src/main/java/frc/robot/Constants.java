@@ -32,6 +32,9 @@ public final class Constants {
 		return new DoubleSolenoid(pcmChannel, Constants.kPneumaticsType, forward_solenoidId, reverse_solenoidId);
 	}
 
+	public static final String kCAN_BUS_DEFAULT = "rio";
+	public static final String kCAN_BUS_CANIVORE = "Driver CAN Bus";
+
 	public static final PneumaticsModuleType kPneumaticsType = PneumaticsModuleType.REVPH;
 	
 	public static final int kTICKS = 33024; // 16.125 * 2048;

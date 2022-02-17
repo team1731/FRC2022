@@ -49,57 +49,63 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}
 
 		//kIntakeRetract = Bottom pneumatic, kIntakeExtend = top pneumatic
-		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeR);
+		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeR, Constants.kCAN_BUS_CANIVORE);
 		_RightIntakeSolenoid = Constants.makeDoubleSolenoidForIds(OpConstants.kPneumaticsCanID, OpConstants.kRBottomB, OpConstants.kRTopA);
-		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeL);
+		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeL, Constants.kCAN_BUS_CANIVORE);
 		_LeftIntakeSolenoid = Constants.makeDoubleSolenoidForIds(OpConstants.kPneumaticsCanID, OpConstants.kLBottomB, OpConstants.kLTopA);
 
 		//Defaulting the Motors
 		_RightMotorIntake.configFactoryDefault();
 		_LeftMotorIntake.configFactoryDefault();
 
-		_RightMotorIntake.configNeutralDeadband(0.001);
-		_LeftMotorIntake.configNeutralDeadband(0.001);
+		// direction
+		_RightMotorIntake.setSensorPhase(false);
+		_RightMotorIntake.setInverted(false);
+		_LeftMotorIntake.setSensorPhase(false);
+		_LeftMotorIntake.setInverted(false);
 
-		_RightMotorIntake.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,OpConstants.kPIDLoopIdx,
-		 OpConstants.kTimeoutMs);
-		_LeftMotorIntake.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,OpConstants.kPIDLoopIdx,
-		OpConstants.kTimeoutMs);
+		// _RightMotorIntake.configNeutralDeadband(0.001);
+		// _LeftMotorIntake.configNeutralDeadband(0.001);
 
-		_RightMotorIntake.configNominalOutputForward(0, OpConstants.kTimeoutMs);
-		_RightMotorIntake.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
-		_RightMotorIntake.configPeakOutputForward(1, OpConstants.kTimeoutMs);
-		_RightMotorIntake.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,OpConstants.kPIDLoopIdx,
+		//  OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,OpConstants.kPIDLoopIdx,
+		// OpConstants.kTimeoutMs);
 
-		_LeftMotorIntake.configNominalOutputForward(0, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.configPeakOutputForward(1, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.configNominalOutputForward(0, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.configPeakOutputForward(1, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
+
+		// _LeftMotorIntake.configNominalOutputForward(0, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.configNominalOutputReverse(0, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.configPeakOutputForward(1, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.configPeakOutputReverse(-1, OpConstants.kTimeoutMs);
 		
-		_RightMotorIntake.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_RightMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
-		_RightMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
-		_RightMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
 
-		_LeftMotorIntake.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.config_kF(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kF, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.config_kP(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kP, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.config_kI(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kI, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.config_kD(OpConstants.kPIDLoopIdx, OpConstants.kGains_Velocity.kD, OpConstants.kTimeoutMs);
 
-		_RightMotorIntake.setNeutralMode(NeutralMode.Coast);
-		_LeftMotorIntake.setNeutralMode(NeutralMode.Coast);
+		// _RightMotorIntake.setNeutralMode(NeutralMode.Coast);
+		// _LeftMotorIntake.setNeutralMode(NeutralMode.Coast);
 
-		_RightMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
-		_RightMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
 
-		_LeftMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
 
-		_RightMotorIntake.configMotionCruiseVelocity(15000, OpConstants.kTimeoutMs);
-		_RightMotorIntake.configMotionAcceleration(6000, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.configMotionCruiseVelocity(15000, OpConstants.kTimeoutMs);
+		// _RightMotorIntake.configMotionAcceleration(6000, OpConstants.kTimeoutMs);
 
-		_LeftMotorIntake.configMotionCruiseVelocity(15000, OpConstants.kTimeoutMs);
-		_LeftMotorIntake.configMotionAcceleration(5000, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.configMotionCruiseVelocity(15000, OpConstants.kTimeoutMs);
+		// _LeftMotorIntake.configMotionAcceleration(5000, OpConstants.kTimeoutMs);
 
 		SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
 		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
@@ -151,7 +157,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightMotorIntake.set(0);
+		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
 		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 
 		_RightEnabled = false;
@@ -176,7 +182,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_LeftMotorIntake.set(0);
+		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
 		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
 		_LeftEnabled = false;
 	}

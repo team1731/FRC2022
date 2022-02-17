@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants;
+import frc.robot.Constants.OpConstants;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -13,8 +15,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-
-import frc.robot.Constants.OpConstants;
 
 public class LaunchSubsystem extends ToggleableSubsystem {
 
@@ -40,8 +40,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 
 		_LaunchSolenoid = null;//Constants.makeDoubleSolenoidForIds(0, OpConstants.k0Launching, OpConstants.k0Climbing);
-		_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange);
-		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch);
+		_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange, Constants.kCAN_BUS_CANIVORE);
+		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch, Constants.kCAN_BUS_CANIVORE);
 
 		/* Factory Default Hardware to prevent unexpected behaviour */
 		_RangeMotor.configFactoryDefault();
