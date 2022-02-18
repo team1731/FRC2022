@@ -21,7 +21,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
   	//#region ToggleableSubsystem
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 	//#endregion
 
@@ -39,7 +39,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
       		return;
 		}
 
-		_LaunchSolenoid = null;//Constants.makeDoubleSolenoidForIds(0, OpConstants.k0Launching, OpConstants.k0Climbing);
+		_LaunchSolenoid = Constants.makeDoubleSolenoidForIds(OpConstants.kPneumaticsCanID, OpConstants.kLaunchOn, OpConstants.kLaunchOff);
 		_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange, Constants.kCAN_BUS_CANIVORE);
 		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch, Constants.kCAN_BUS_CANIVORE);
 
@@ -57,11 +57,11 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * https://phoenix-documentation.readthedocs.io/en/latest/ch13_MC.html#current-limit
 		 * 
 		 * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)  */
-		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 4, 6, 1.0));
-		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 4, 0.5));
+		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 15, 1.0));
+		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 6, 8, 0.5));
 
 		/* setup a basic closed loop */
-		_RangeMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override 
+		_RangeMotor.setNeutralMode(NeutralMode.Coast); // Netural Mode override 
 		_LaunchMotor.setNeutralMode(NeutralMode.Coast); // Netural Mode override 
 
 		_RangeMotor.configSelectedFeedbackSensor(
@@ -82,8 +82,10 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * have green LEDs when driving Talon Forward / Requesting Postiive Output Phase
 		 * sensor to have positive increment when driving Talon Forward (Green LED)
 		 */
-		_RangeMotor.setSensorPhase(false);
+		_RangeMotor.setSensorPhase(true);
 		_RangeMotor.setInverted(true);
+		_LaunchMotor.setSensorPhase(true);
+		_LaunchMotor.setInverted(true);
 		/*
 			* Talon FX does not need sensor phase set for its integrated sensor
 			* This is because it will always be correct if the selected feedback device is integrated sensor (default value)
@@ -204,6 +206,16 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_LaunchMotor.set(TalonFXControlMode.PercentOutput, 0);
 		SmartDashboard.putNumber("_LaunchPostion", 0);
 		SmartDashboard.putNumber("_LaunchSpeed", 0);
+
+	}
+
+	public void runLaunchBall() {
+
+		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
+	}
+
+	public void stopLaunchBall() {
+		_LaunchSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 
 	@Override
