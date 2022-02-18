@@ -5,17 +5,16 @@ import frc.robot.Constants.OpConstants;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+//import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+//import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+//import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 
 /**
  * The way intake works is there is a motor for left intake, a motor for right intake, and a conveyor motor which takes the balls from intake and pulls
  * them into the shooter.  When the left button is toggled, the left intake motor and conveyor activate; when the right button is toggled, the right intake
  * motor and conveyor activates; when both buttons are toggled, both intake motors and the conveyor activate.
- * TODO: 1. GET IT WORKING AGAIN
  * CAN Id 8 = Right Motor Intake
  * Can Id 7 = Left Motor Intake
  */
@@ -23,7 +22,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 
 	private final WPI_TalonFX _RightMotorIntake;

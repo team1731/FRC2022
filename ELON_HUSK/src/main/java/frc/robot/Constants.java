@@ -153,7 +153,7 @@ public final class Constants {
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
 		public final static Gains kGains_Velocity = new Gains(0.05, 0, 0, .06, 300, 1.00);
-		public final static Gains kGains_Range = new Gains(0.4, 0.0, 0.0, 0.2, 0, 1.0);
+		public final static Gains kGains_Range = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
 		
 		public final static int SLOT_0 = 0;
 		public final static int SLOT_1 = 1;
@@ -173,6 +173,8 @@ public final class Constants {
 		public final static int kRBottomB = 14;
 		public final static int kFTop = 12;
 		public final static int kFBottomB = 15;
+        public final static int kLaunchOn = 9;
+        public final static int kLaunchOff = 8;
 
 		//ltop = left intake top pneumatics: 			13
 		//lbottom = left intake bottom pneumatics:  	10
