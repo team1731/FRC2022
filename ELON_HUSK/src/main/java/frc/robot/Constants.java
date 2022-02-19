@@ -45,10 +45,10 @@ public final class Constants {
 	public static final class DriveConstants {
 
 		// Drive motor CAN IDs
-		public static final int kLeftFrontDriveMotorPort = 1;
-		public static final int kRightFrontDriveMotorPort = 2;
-		public static final int kLeftRearDriveMotorPort = 3;
-		public static final int kRightRearDriveMotorPort = 4;
+		public static final int kLeftFrontDriveMotorPort = 21;
+		public static final int kRightFrontDriveMotorPort = 22;
+		public static final int kLeftRearDriveMotorPort = 23;
+		public static final int kRightRearDriveMotorPort = 24;
 
 		// Turn motor CAN IDs
 		public static final int kLeftFrontTurningMotorPort = 11;
@@ -124,10 +124,10 @@ public final class Constants {
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
 		//Power Distribution Pannel CAN IDs
-		public static final int kPDPCanID = 20;
+		public static final int kPDPCanID = 1;
 
 		//Pneumatics Panel CAN IDs
-		public static final int kPneumaticsCanID = 21;
+		public static final int kPneumaticsCanID = 2;
 		
 		public static final double kMotorLeftIntakeSpeed = -1; // backward
 		public static final double kMotorRightIntakeSpeed = 1; // forward
