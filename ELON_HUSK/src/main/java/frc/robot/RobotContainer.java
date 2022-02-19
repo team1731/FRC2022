@@ -21,7 +21,6 @@ import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.commands.climb.OverrideSensorCommand;
-import frc.robot.commands.climb.StopClimbCommand;
 import frc.robot.commands.intake.LeftIntakeCommand;
 import frc.robot.commands.intake.LeftStopCommand;
 import frc.robot.commands.intake.RightIntakeCommand;
@@ -124,14 +123,9 @@ public class RobotContainer {
 		//#endregion
 	
 		//#region Climb Subsystem
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp)
-			.whenHeld(new ClimbUpCommand(m_climb))
-			.whenReleased(new StopClimbCommand(m_climb));
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown)
-			.whenHeld(new ClimbDownCommand(m_climb))
-			.whenReleased(new StopClimbCommand(m_climb));
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride)
-			.whenHeld(new OverrideSensorCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whileHeld(new ClimbUpCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whileHeld(new ClimbDownCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride).whileHeld(new OverrideSensorCommand(m_climb));
 		//#endregion
 		
 		//#region Intake Subsystem
