@@ -24,13 +24,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  */
 public final class Constants {
 
-	public static DoubleSolenoid makeDoubleSolenoidForIds(int pcmChannel, int forward_solenoidId,
-			int reverse_solenoidId) {
-		// System.out.println("creating solenoid ids " + forward_solenoidId + "-" +
-		// reverse_solenoidId + " PCM " + pcmChannel + " CHAN ");
-		//return new DoubleSolenoid(pcmChannel, moduleType, forward_solenoidId, reverse_solenoidId);
-		return new DoubleSolenoid(pcmChannel, Constants.kPneumaticsType, forward_solenoidId, reverse_solenoidId);
-	}
+	public static final String kCAN_BUS_DEFAULT = "rio";
+	public static final String kCAN_BUS_CANIVORE = "Driver CAN Bus";
 
 	public static final PneumaticsModuleType kPneumaticsType = PneumaticsModuleType.REVPH;
 	
@@ -42,10 +37,10 @@ public final class Constants {
 	public static final class DriveConstants {
 
 		// Drive motor CAN IDs
-		public static final int kLeftFrontDriveMotorPort = 1;
-		public static final int kRightFrontDriveMotorPort = 2;
-		public static final int kLeftRearDriveMotorPort = 3;
-		public static final int kRightRearDriveMotorPort = 4;
+		public static final int kLeftFrontDriveMotorPort = 21;
+		public static final int kRightFrontDriveMotorPort = 22;
+		public static final int kLeftRearDriveMotorPort = 23;
+		public static final int kRightRearDriveMotorPort = 24;
 
 		// Turn motor CAN IDs
 		public static final int kLeftFrontTurningMotorPort = 11;
@@ -124,7 +119,7 @@ public final class Constants {
 		public static final int kPDPCanID = 20;
 
 		//Pneumatics Panel CAN IDs
-		public static final int kPneumaticsCanID = 21;
+		public static final int kPneumaticsCanID = 2;
 		
 		public static final double kMotorLeftIntakeSpeed = -1; // backward
 		public static final double kMotorRightIntakeSpeed = 1; // forward
@@ -166,10 +161,12 @@ public final class Constants {
 		///// Begin Pneumatics Constants
 		public final static int kLTopA = 10;
 		public final static int kLBottomB = 13;
-		public final static int kRTopA = 14;
-		public final static int kRBottomB = 11;
-		public final static int kFTop = 15;
-		public final static int kFBottomB = 12;
+		public final static int kRTopA = 11;
+		public final static int kRBottomB = 14;
+		public final static int kFTop = 12;
+		public final static int kFBottomB = 15;
+        public final static int kLaunchOn = 9;
+        public final static int kLaunchOff = 8;
 
 		//ltop = left intake top pneumatics: 			13
 		//lbottom = left intake bottom pneumatics:  	10

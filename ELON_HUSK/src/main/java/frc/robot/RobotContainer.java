@@ -16,8 +16,11 @@ import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.intake.RightIntakeJoyconCommand;
+import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
+import frc.robot.commands.launch.LaunchBallCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -27,7 +30,7 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.intake.*;
+import frc.robot.Constants.XboxConstants;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -124,7 +127,9 @@ public class RobotContainer {
 		//Alternate code for Joystick testing as opposed to simulation
 		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake));
 		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake));
-		 
+		new JoystickButton(m_driverController, XboxConstants.kLBumper).whenHeld(new LaunchBallCommand(m_launch));
+		new HanTrigger(HanTriggers.DR_TRIG_LEFT).whileActiveContinuous(new LeftIntakeJoyconCommand(m_intake));
+		new HanTrigger(HanTriggers.DR_TRIG_RIGHT).whileActiveContinuous(new RightIntakeJoyconCommand(m_intake));	 
 
 		//left = button 1
 		//right = button 12
@@ -136,7 +141,7 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
 					(m_operatorController.getRawAxis(4)+1)/2, 	// speed
-					(m_operatorController.getRawAxis(5)+1)/2	// position
+					(m_operatorController.getRawAxis(1)+1)/2	// position
 				)
 			)
 			.whenInactive(() -> m_launch.stopLaunch());
