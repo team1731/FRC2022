@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -102,10 +101,6 @@ public final class Constants {
 		public static final int kMotorCANLaunch = 5;
 		public static final int kMotorCANRange = 6;
 
-		//Climber CAN IDs
-		public static final int kMotorCANClimber1 = 9;
-		public static final int kMotorCANClimber2 = 10;
-
 		//Sequencer CAN IDs
 		public static final int kMotorCanSequencer1 = 18;
 		public static final int kMotorCanSequencer2 = 19;
@@ -121,6 +116,28 @@ public final class Constants {
 		//Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 2;
 		
+		//ClimbSubsystem
+		public static final int kExtenderUpID = 15;
+		public static final int kExtenderDownID = 12;
+		public static final int kGrabberNorthFrontOpenID = 8;
+		public static final int kGrabberNorthFrontCloseID = 7;
+		public static final int kGrabberNorthBackOpenID = 1;
+		public static final int kGrabberNorthBackCloseID = 2;
+		public static final int kGrabberSouthFrontOpenID = 4;
+		public static final int kGrabberSouthFrontCloseID = 3;
+		public static final int kGrabberSouthBackOpenID = 6;
+		public static final int kGrabberSouthBackCloseID = 5;
+
+		public static final int kLeftSwingerMotorID = 9;
+		public static final int kRightSwingerMotorID = 10;
+		public static final int kNorthSensorID = 0; // NavX Analog Input Sensor 
+		public static final int kSouthSensorID = 1; // NavX Analog Input Sensor
+
+		//AnalogInputs
+		public static final double kMinIRVoltage = 1.0;
+		public static final double kMaxIRVoltage = 1.5;
+
+		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
 		public static final double kMotorLeftIntakeSpeed = -1; // backward
 		public static final double kMotorRightIntakeSpeed = 1; // forward
 
@@ -255,6 +272,10 @@ public final class Constants {
 		 */
 		public static final int kClimbUp = 6;
 		public static final int kClimbDown = 7;
+		/**
+		 * Climb sensor override button - Select Spinner Press: 16
+		 */
+		public static final int kClimbSensorOverride = 16;
 		
 		/**
 		 * Robot Mode Buttons - Front Right front toggle(R/L): 8, 9
@@ -293,5 +314,25 @@ public final class Constants {
 		 * Shooter Speed JoyStick - Right joystick(U/D): 4
 		 */
 		public static final int kJoyStickShooterSpeed = 4;
+	}
+
+	public static final class ClimbConstants {
+  		public static final double kP = 5e-5;
+		public static final double kI = 1e-6; 
+		public static final double kD = 0; 
+		public static final double kIz = 0; 
+		public static final double kFF = 0.000156; 
+		public static final double kMaxOutput = 1;
+		public static final double kMinOutput = -1;
+		public static final double maxRPM = 5700;
+
+		public static final double maxVel = 2000; //rpm
+		public static final double minVel = 0;
+		public static final double maxAcc = 1500;
+		public static final double allowedErr = 0;
+
+		public static final double kFwdSteps = 1000;
+
+		public static final int smartMotionSlot = 0;
 	}
 }

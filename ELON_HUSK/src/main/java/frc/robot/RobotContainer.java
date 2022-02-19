@@ -20,13 +20,18 @@ import frc.robot.commands.intake.RightIntakeJoyconCommand;
 import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
+import frc.robot.commands.climb.OverrideSensorCommand;
+import frc.robot.commands.climb.StopClimbCommand;
+import frc.robot.commands.intake.LeftIntakeCommand;
+import frc.robot.commands.intake.LeftStopCommand;
+import frc.robot.commands.intake.RightIntakeCommand;
+import frc.robot.commands.intake.RightStopCommand;
 import frc.robot.commands.launch.LaunchBallCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
-
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
@@ -119,8 +124,14 @@ public class RobotContainer {
 		//#endregion
 	
 		//#region Climb Subsystem
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp)
+			.whenHeld(new ClimbUpCommand(m_climb))
+			.whenReleased(new StopClimbCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown)
+			.whenHeld(new ClimbDownCommand(m_climb))
+			.whenReleased(new StopClimbCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride)
+			.whenHeld(new OverrideSensorCommand(m_climb));
 		//#endregion
 		
 		//#region Intake Subsystem
@@ -133,8 +144,8 @@ public class RobotContainer {
 
 		//left = button 1
 		//right = button 12
-		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
-		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenActive(new RightIntakeCommand(m_intake)).whenInactive(new RightStopCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenActive(new RightIntakeCommand(m_intake)).whenInactive(new RightStopCommand(m_intake));
 		//#endregion
 
 		//#region Launch Subsystem
