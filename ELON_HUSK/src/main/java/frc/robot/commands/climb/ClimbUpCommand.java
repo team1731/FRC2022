@@ -17,4 +17,9 @@ public class ClimbUpCommand extends InstantCommand {
 		_climb.setInputDirection(ClimbSubsystem.InputDirection.UP);
 	}
 
+	@Override
+	public void end(boolean interrupted) {
+		_climb.setInputDirection(ClimbSubsystem.InputDirection.NEUTRAL);
+	}
+
 }
