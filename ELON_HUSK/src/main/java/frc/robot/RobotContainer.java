@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.autonomous.P1_ShootThenPickupRandomShoot;
+import frc.robot.autonomous.L1_ShootThenPickupRandomShoot;
 import frc.robot.autonomous.P2_TaxiThenPickupRandomShoot;
 import frc.robot.autonomous.P3_PickupR1ShootThenPickupR2Shoot;
 import frc.robot.autonomous.P4_PickupR2ShootThenPickupR4R1Shoot;
@@ -207,7 +207,7 @@ public class RobotContainer {
 			case "T1": return new _NamedAutoMode(new T1_Taxi(m_drive));
 			case "T2": return new _NamedAutoMode(new T2_ShootThenTaxi(m_drive));
 			case "T3": return new _NamedAutoMode(new T3_TaxiThenShoot(m_drive));
-			case "P1": return new _NamedAutoMode(new P1_ShootThenPickupRandomShoot(m_drive));
+			case "L1": return new _NamedAutoMode(new L1_ShootThenPickupRandomShoot(m_drive));
 			case "P2": return new _NamedAutoMode(new P2_TaxiThenPickupRandomShoot(m_drive));
 			case "P3": return new _NamedAutoMode(new P3_PickupR1ShootThenPickupR2Shoot(m_drive));
 			case "P4": return new _NamedAutoMode(new P4_PickupR2ShootThenPickupR4R1Shoot(m_drive));
