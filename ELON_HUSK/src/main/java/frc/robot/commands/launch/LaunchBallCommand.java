@@ -8,7 +8,6 @@ public class LaunchBallCommand extends CommandBase {
 
     public LaunchBallCommand(LaunchSubsystem launch) {
         _launch = launch;
-        addRequirements(launch);
     }
 
     @Override

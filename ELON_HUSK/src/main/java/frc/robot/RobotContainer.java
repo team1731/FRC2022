@@ -141,7 +141,7 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
 					(m_operatorController.getRawAxis(4)+1)/2, 	// speed
-					(m_operatorController.getRawAxis(5)+1)/2	// position
+					(m_operatorController.getRawAxis(1)+1)/2	// position
 				)
 			)
 			.whenInactive(() -> m_launch.stopLaunch());

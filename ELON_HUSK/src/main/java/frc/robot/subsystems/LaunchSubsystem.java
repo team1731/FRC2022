@@ -39,7 +39,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
       		return;
 		}
 
-		_LaunchSolenoid = Constants.makeDoubleSolenoidForIds(OpConstants.kPneumaticsCanID, OpConstants.kLaunchOn, OpConstants.kLaunchOff);
+		_LaunchSolenoid = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kLaunchOn, OpConstants.kLaunchOff);
 		_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange, Constants.kCAN_BUS_CANIVORE);
 		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch, Constants.kCAN_BUS_CANIVORE);
 
@@ -134,7 +134,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	public void periodic() {
 		// This method will be called once per scheduler run
 		if(isDisabled()){ return; }
-		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+		//SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
 	}
 
 	private double normalize_input(double input, double min, double max) {
@@ -163,14 +163,16 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){
 			return;
 		}
-		SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
-		// SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
+		//SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
+		//SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
 		SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
+		SmartDashboard.putNumber("_RangeStick", position_0to1);
 		SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
+		SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
 
 		/// Range, max range guess is 10000 - OpConstantsMaxRange
 		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
-		double position = normalize_input(position_0to1, 0.140, 0.901) * OpConstants.MaxRange;
+		double position = normalize_input(position_0to1, 0.226, 0.826) * OpConstants.MaxRange;
 		if (position < OpConstants.MinRange) { position = 0; }
 		if (range_update(position, .05 /* percent tolerance */)) {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
@@ -188,7 +190,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 */
 		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
 		/* multiply by -1.0 for direction */
-		double velUnitsPer100ms = /*-1.0 * */ normalize_input(speed_0to1, 0.183, 0.795) * 6000.0 * 2048.0 / 600.0;		
+		double velUnitsPer100ms = /*-1.0 * */ normalize_input(speed_0to1, 0.156, 0.748) * 6000.0 * 2048.0 / 600.0;		
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 		SmartDashboard.putNumber("velUnitsPer100ms", velUnitsPer100ms);
 
@@ -205,7 +207,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){ return; }
 		_RangeMotor.set(TalonFXControlMode.PercentOutput, 0);
 		_LaunchMotor.set(TalonFXControlMode.PercentOutput, 0);
-		SmartDashboard.putNumber("_LaunchPostion", 0);
+		SmartDashboard.putNumber("_LaunchPosition", 0);
 		SmartDashboard.putNumber("_LaunchSpeed", 0);
 
 	}

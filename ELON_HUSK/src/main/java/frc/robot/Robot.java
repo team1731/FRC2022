@@ -15,6 +15,7 @@ import java.util.Scanner;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.OpConstants;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -44,8 +46,8 @@ public class Robot extends TimedRobot {
 	private Integer fieldOrientation;
 
 	// The robot's modules ** DOES NOT WORK with CAN Id of 21, needs to be 1 but drive motor is 1
-	//private PneumaticsControlModule m_pneu;
-	//private PowerDistribution m_pdp;
+	private PneumaticsControlModule m_pneu;
+	private PowerDistribution m_pdp;
 
 	// The robot's subsystems
 	public DriveSubsystem m_drive;
@@ -75,6 +77,7 @@ public class Robot extends TimedRobot {
 	}
 
 	private void autoInitPreload() {
+		//FIXME: SOMEWHERE IN THIS METHOD CAN ERRORS ARE SPAWNING WHILE DISABLED
 		System.out.println("autoInitPreload: Start");
 		m_autonomousCommand = null;
 		m_drive.resetOdometry(new Pose2d());
@@ -113,8 +116,8 @@ public class Robot extends TimedRobot {
 		// CameraServer camServer = CameraServer.getInstance();
 		// camServer.startAutomaticCapture();
 
-		//m_pneu = new PneumaticsControlModule();
-		//m_pdp = new PowerDistribution();
+		m_pneu = new PneumaticsControlModule(OpConstants.kPneumaticsCanID);
+		m_pdp = new PowerDistribution(OpConstants.kPDPCanID, ModuleType.kRev);
 
 		m_vision = new LimeLightSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
@@ -122,8 +125,8 @@ public class Robot extends TimedRobot {
 		m_intake = new IntakeSubsystem();
 		m_climb = new ClimbSubsystem();
 
-		//m_pdp.clearStickyFaults();
-		//m_pneu.clearAllStickyFaults();
+		m_pdp.clearStickyFaults();
+		m_pneu.clearAllStickyFaults();
 		m_drive.zeroHeading();
 
 		// Instantiate our RobotContainer. This will perform all our button bindings,
@@ -190,6 +193,8 @@ public class Robot extends TimedRobot {
 		CommandScheduler.getInstance().run();
 
 		m_drive.displayEncoders();
+
+		SmartDashboard.putNumber("PCM Current", m_pneu.getCompressorCurrent());
 	}
 
 	/**
@@ -212,26 +217,26 @@ public class Robot extends TimedRobot {
 			// SmartDashboard.putBoolean("HighSensor", m_sequencer.highSensorHasBall());
 		}
 
-		if (RobotBase.isReal()) {
-			String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
-			if (!newCode.equals(autoCode)) {
-				autoCode = newCode;
-				System.out.println("New Auto Code read from dashboard - initializing.");
-				autoInitPreload();
-			}
-			if (m_autonomousCommand != null) {
-				if (m_autonomousCommand.getName().startsWith("H0")) {
-					Integer newFieldOrientation = namedAutoMode.getFieldOrientation();
-					if (newFieldOrientation != null) {
-						if (!newFieldOrientation.equals(fieldOrientation)) {
-							System.out.println("New Field Orientation detected by LimeLight - initializing.");
-							fieldOrientation = newFieldOrientation;
-							autoInitPreload();
-						}
-					}
-				}
-			}
-		}
+		// if (RobotBase.isReal()) {
+		// 	String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
+		// 	if (!newCode.equals(autoCode)) {
+		// 		autoCode = newCode;
+		// 		System.out.println("New Auto Code read from dashboard - initializing.");
+		// 		autoInitPreload();
+		// 	}
+		// 	if (m_autonomousCommand != null) {
+		// 		if (m_autonomousCommand.getName().startsWith("H0")) {
+		// 			Integer newFieldOrientation = namedAutoMode.getFieldOrientation();
+		// 			if (newFieldOrientation != null) {
+		// 				if (!newFieldOrientation.equals(fieldOrientation)) {
+		// 					System.out.println("New Field Orientation detected by LimeLight - initializing.");
+		// 					fieldOrientation = newFieldOrientation;
+		// 					autoInitPreload();
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 	}
 
 	/**

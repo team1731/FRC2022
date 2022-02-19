@@ -8,7 +8,6 @@ public class LeftIntakeJoyconCommand extends CommandBase {
 
     public LeftIntakeJoyconCommand(IntakeSubsystem intake) {
         _intake = intake;
-        addRequirements(intake);
     }
 
     @Override

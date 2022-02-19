@@ -24,14 +24,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  */
 public final class Constants {
 
-	public static DoubleSolenoid makeDoubleSolenoidForIds(int pcmChannel, int forward_solenoidId,
-			int reverse_solenoidId) {
-		// System.out.println("creating solenoid ids " + forward_solenoidId + "-" +
-		// reverse_solenoidId + " PCM " + pcmChannel + " CHAN ");
-		//return new DoubleSolenoid(pcmChannel, moduleType, forward_solenoidId, reverse_solenoidId);
-		return new DoubleSolenoid(pcmChannel, Constants.kPneumaticsType, forward_solenoidId, reverse_solenoidId);
-	}
-
 	public static final String kCAN_BUS_DEFAULT = "rio";
 	public static final String kCAN_BUS_CANIVORE = "Driver CAN Bus";
 
@@ -124,7 +116,7 @@ public final class Constants {
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
 		//Power Distribution Pannel CAN IDs
-		public static final int kPDPCanID = 1;
+		public static final int kPDPCanID = 20;
 
 		//Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 2;
