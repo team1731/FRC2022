@@ -10,14 +10,13 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.IRSensor;
 import frc.robot.Constants.OpConstants;
-import frc.robot.Constants.CanSparkMaxConstants;
+import frc.robot.Constants.ClimbConstants;
 
 public class ClimbSubsystem extends ToggleableSubsystem {
 
@@ -171,17 +170,17 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_encoderMaster = _swingerMasterMotor.getEncoder();
 
 		// set PID coefficients
-		_pidMasterController.setP(CanSparkMaxConstants.kP);
-		_pidMasterController.setI(CanSparkMaxConstants.kI);
-		_pidMasterController.setD(CanSparkMaxConstants.kD);
-		_pidMasterController.setIZone(CanSparkMaxConstants.kIz);
-		_pidMasterController.setFF(CanSparkMaxConstants.kFF);
-		_pidMasterController.setOutputRange(CanSparkMaxConstants.kMinOutput, CanSparkMaxConstants.kMaxOutput);
+		_pidMasterController.setP(ClimbConstants.kP);
+		_pidMasterController.setI(ClimbConstants.kI);
+		_pidMasterController.setD(ClimbConstants.kD);
+		_pidMasterController.setIZone(ClimbConstants.kIz);
+		_pidMasterController.setFF(ClimbConstants.kFF);
+		_pidMasterController.setOutputRange(ClimbConstants.kMinOutput, ClimbConstants.kMaxOutput);
 
-    	_pidMasterController.setSmartMotionMaxVelocity(CanSparkMaxConstants.maxVel, CanSparkMaxConstants.smartMotionSlot);
-    	_pidMasterController.setSmartMotionMinOutputVelocity(CanSparkMaxConstants.minVel, CanSparkMaxConstants.smartMotionSlot);
-    	_pidMasterController.setSmartMotionMaxAccel(CanSparkMaxConstants.maxAcc, CanSparkMaxConstants.smartMotionSlot);
-    	_pidMasterController.setSmartMotionAllowedClosedLoopError(CanSparkMaxConstants.allowedErr, CanSparkMaxConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionMaxVelocity(ClimbConstants.maxVel, ClimbConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionMinOutputVelocity(ClimbConstants.minVel, ClimbConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionMaxAccel(ClimbConstants.maxAcc, ClimbConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionAllowedClosedLoopError(ClimbConstants.allowedErr, ClimbConstants.smartMotionSlot);
 
 		//Slave defaults
 		_swingerSlaveMotor.restoreFactoryDefaults();
@@ -190,17 +189,17 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_encoderSlave = _swingerSlaveMotor.getEncoder();
 
 		// set PID coefficients
-		_pidSlaveController.setP(CanSparkMaxConstants.kP);
-		_pidSlaveController.setI(CanSparkMaxConstants.kI);
-		_pidSlaveController.setD(CanSparkMaxConstants.kD);
-		_pidSlaveController.setIZone(CanSparkMaxConstants.kIz);
-		_pidSlaveController.setFF(CanSparkMaxConstants.kFF);
-		_pidSlaveController.setOutputRange(CanSparkMaxConstants.kMinOutput, CanSparkMaxConstants.kMaxOutput);
+		_pidSlaveController.setP(ClimbConstants.kP);
+		_pidSlaveController.setI(ClimbConstants.kI);
+		_pidSlaveController.setD(ClimbConstants.kD);
+		_pidSlaveController.setIZone(ClimbConstants.kIz);
+		_pidSlaveController.setFF(ClimbConstants.kFF);
+		_pidSlaveController.setOutputRange(ClimbConstants.kMinOutput, ClimbConstants.kMaxOutput);
 
-    	_pidSlaveController.setSmartMotionMaxVelocity(CanSparkMaxConstants.maxVel, CanSparkMaxConstants.smartMotionSlot);
-    	_pidSlaveController.setSmartMotionMinOutputVelocity(CanSparkMaxConstants.minVel, CanSparkMaxConstants.smartMotionSlot);
-    	_pidSlaveController.setSmartMotionMaxAccel(CanSparkMaxConstants.maxAcc, CanSparkMaxConstants.smartMotionSlot);
-    	_pidSlaveController.setSmartMotionAllowedClosedLoopError(CanSparkMaxConstants.allowedErr, CanSparkMaxConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionMaxVelocity(ClimbConstants.maxVel, ClimbConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionMinOutputVelocity(ClimbConstants.minVel, ClimbConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionMaxAccel(ClimbConstants.maxAcc, ClimbConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionAllowedClosedLoopError(ClimbConstants.allowedErr, ClimbConstants.smartMotionSlot);
 
 		updateSmartDashboard();
 	}
@@ -263,7 +262,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	private void startSwing(){
 		_pidMasterController.setReference(
-			CanSparkMaxConstants.kFwdSteps * _inputDirection.value,
+			ClimbConstants.kFwdSteps * _inputDirection.value,
 			CANSparkMax.ControlType.kSmartMotion
 		);
 	}

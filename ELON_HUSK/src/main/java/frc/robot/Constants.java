@@ -300,7 +300,7 @@ public final class Constants {
 		public static final int kJoyStickShooterSpeed = 4;
 	}
 
-	public static final class CanSparkMaxConstants {
+	public static final class ClimbConstants {
   		public static final double kP = 5e-5;
 		public static final double kI = 1e-6; 
 		public static final double kD = 0; 
