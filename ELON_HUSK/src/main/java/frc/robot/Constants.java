@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -16,7 +15,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
  * purpose. All constants should be declared globally (i.e. public static). Do
- * not put anything functional in this class.
+ * not put anything functional in this class.	
  *
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
@@ -24,13 +23,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  */
 public final class Constants {
 
-	public static DoubleSolenoid makeDoubleSolenoidForIds(int pcmChannel, int forward_solenoidId,
-			int reverse_solenoidId) {
-		// System.out.println("creating solenoid ids " + forward_solenoidId + "-" +
-		// reverse_solenoidId + " PCM " + pcmChannel + " CHAN ");
-		//return new DoubleSolenoid(pcmChannel, moduleType, forward_solenoidId, reverse_solenoidId);
-		return new DoubleSolenoid(pcmChannel, Constants.kPneumaticsType, forward_solenoidId, reverse_solenoidId);
-	}
+	public static final String kCAN_BUS_DEFAULT = "rio";
+	public static final String kCAN_BUS_CANIVORE = "Driver CAN Bus";
 
 	public static final PneumaticsModuleType kPneumaticsType = PneumaticsModuleType.REVPH;
 	
@@ -42,10 +36,10 @@ public final class Constants {
 	public static final class DriveConstants {
 
 		// Drive motor CAN IDs
-		public static final int kLeftFrontDriveMotorPort = 1;
-		public static final int kRightFrontDriveMotorPort = 2;
-		public static final int kLeftRearDriveMotorPort = 3;
-		public static final int kRightRearDriveMotorPort = 4;
+		public static final int kLeftFrontDriveMotorPort = 21;
+		public static final int kRightFrontDriveMotorPort = 22;
+		public static final int kLeftRearDriveMotorPort = 23;
+		public static final int kRightRearDriveMotorPort = 24;
 
 		// Turn motor CAN IDs
 		public static final int kLeftFrontTurningMotorPort = 11;
@@ -108,11 +102,11 @@ public final class Constants {
 		public static final int kMotorCANRange = 6;
 
 		//Sequencer CAN IDs
-		public static final int kMotorCanSequencer1 = 9;
-		public static final int kMotorCanSequencer2 = 10;
+		public static final int kMotorCanSequencer1 = 18;
+		public static final int kMotorCanSequencer2 = 19;
 
 		//Intake CAN IDs
-		public static final int kMotorCANIntakeR = 6;
+		public static final int kMotorCANIntakeR = 8;
 		public static final int kMotorCANIntakeL = 7;
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
@@ -120,7 +114,7 @@ public final class Constants {
 		public static final int kPDPCanID = 20;
 
 		//Pneumatics Panel CAN IDs
-		public static final int kPneumaticsCanID = 21;
+		public static final int kPneumaticsCanID = 2;
 		
 		//ClimbSubsystem
 		public static final int kExtenderUpID = 15;
@@ -144,6 +138,10 @@ public final class Constants {
 		public static final double kMaxIRVoltage = 1.5;
 
 		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
+		public static final double kMotorLeftIntakeSpeed = -1; // backward
+		public static final double kMotorRightIntakeSpeed = 1; // forward
+
+		public static final double kMotorConveyorSpeed = 0.1;
 
 		/////// TalonFX parameters
 		/**
@@ -172,10 +170,28 @@ public final class Constants {
 		public final static int MMCruiseVelocity = 15000;
 		public final static int MMAcceleration = 6000;
 		public final static int MMScurve = 4;
-		public final static int MaxRange = 10000;
+		public final static int MaxRange = 39000;
 		public final static int MinRange = 100;
 
 		///// End TalonFX
+
+		///// Begin Pneumatics Constants
+		public final static int kLTopA = 10;
+		public final static int kLBottomB = 13;
+		public final static int kRTopA = 11;
+		public final static int kRBottomB = 14;
+		public final static int kFTop = 12;
+		public final static int kFBottomB = 15;
+        public final static int kLaunchOn = 9;
+        public final static int kLaunchOff = 8;
+
+		//ltop = left intake top pneumatics: 			13
+		//lbottom = left intake bottom pneumatics:  	10
+		//rtop = right intake top pneumatics:	 		14
+		//rbottom = right intake bottom pneumatics:		11
+		//ftop = top climber pneumatics: 				15
+		//fbottom = bottom climber pneumatics: 			12
+
 	}
 
 	public static final class VisionConstants {
