@@ -62,7 +62,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 		SWING_TO_NEXT_BAR(3),    // Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
 		GRAB_NEXT_BAR(4),        // Extenders up, north grabber closed, south grabber closed
-		RELEASE_PREVIOUS_BAR(5); // Extenders up, north grabber open, south grabber closed
+		RELEASE_PREVIOUS_BAR(5), // Extenders up, north grabber open, south grabber closed
+
+		HANGING(6);              // Extenders up, north grabber open, south grabber closed
 
 		private final int _value;
 
@@ -353,6 +355,16 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		return Timer.getFPGATimestamp() - _timer >= 1;
 	}
 
+	private boolean handleHanging(){
+		// Extenders up, north grabber open, south grabber closed
+		setExtenders(true);
+		setNorthGrabbers(false);
+		setSouthGrabbers(true);
+		stopSwing();
+
+		return false;
+	}
+
 	//#endregion
 
 	private void updateSmartDashboard(){
@@ -417,13 +429,21 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			case RELEASE_PREVIOUS_BAR:
 				transition = handleReleasePreviousBar();
 				break;
+
+			case HANGING:
+				transition = handleHanging();
+				break;
 		}
 
 		if(transition){
 			_timer = Timer.getFPGATimestamp();
 			if(_currentState == State.RELEASE_PREVIOUS_BAR){
-				_currentState = State.SWING_TO_NEXT_BAR;
-				_climbCount++;
+				if(_climbCount == 1){
+					_currentState = State.HANGING;
+				} else {
+					_currentState = State.SWING_TO_NEXT_BAR;
+					_climbCount += _inputDirection.value;
+				}
 			} else {
 				_currentState = _currentState.next();
 			}
