@@ -202,6 +202,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	}
 	
 	public void stopLaunch() {
+		if(isDisabled()){ return; }
 		_RangeMotor.set(TalonFXControlMode.PercentOutput, 0);
 		_LaunchMotor.set(TalonFXControlMode.PercentOutput, 0);
 		SmartDashboard.putNumber("_LaunchPostion", 0);
@@ -210,11 +211,12 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	}
 
 	public void runLaunchBall() {
-
+		if(isDisabled()){ return; }
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
 	}
 
 	public void stopLaunchBall() {
+		if(isDisabled()){ return; }
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kReverse);
 	}
 

@@ -43,9 +43,9 @@ public class Robot extends TimedRobot {
 	private RobotContainer m_robotContainer;
 	private Integer fieldOrientation;
 
-	// The robot's modules
-	private PneumaticsControlModule m_pneu;
-	private PowerDistribution m_pdp;
+	// The robot's modules ** DOES NOT WORK with CAN Id of 21, needs to be 1 but drive motor is 1
+	//private PneumaticsControlModule m_pneu;
+	//private PowerDistribution m_pdp;
 
 	// The robot's subsystems
 	public DriveSubsystem m_drive;
@@ -113,8 +113,8 @@ public class Robot extends TimedRobot {
 		// CameraServer camServer = CameraServer.getInstance();
 		// camServer.startAutomaticCapture();
 
-		m_pneu = new PneumaticsControlModule();
-		m_pdp = new PowerDistribution();
+		//m_pneu = new PneumaticsControlModule();
+		//m_pdp = new PowerDistribution();
 
 		m_vision = new LimeLightSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
@@ -122,8 +122,8 @@ public class Robot extends TimedRobot {
 		m_intake = new IntakeSubsystem();
 		m_climb = new ClimbSubsystem();
 
-		m_pdp.clearStickyFaults();
-		m_pneu.clearAllStickyFaults();
+		//m_pdp.clearStickyFaults();
+		//m_pneu.clearAllStickyFaults();
 		m_drive.zeroHeading();
 
 		// Instantiate our RobotContainer. This will perform all our button bindings,
