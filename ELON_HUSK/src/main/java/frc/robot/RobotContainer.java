@@ -9,14 +9,23 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.F1_Move_Forward;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
+import frc.robot.commands.ResetEncodersCommand;
+import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.commands.climb.OverrideSensorCommand;
 import frc.robot.commands.climb.StopClimbCommand;
+import frc.robot.commands.intake.LeftIntakeCommand;
+import frc.robot.commands.intake.LeftIntakeJoyconCommand;
+import frc.robot.commands.intake.LeftStopCommand;
+import frc.robot.commands.intake.RightIntakeCommand;
+import frc.robot.commands.intake.RightIntakeJoyconCommand;
+import frc.robot.commands.intake.RightStopCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -72,32 +81,32 @@ public class RobotContainer {
 
 		// Configure default commands
 		// Set the default drive command to split-stick arcade drive
-		// m_drive.setDefaultCommand(
-		// 		// A split-stick arcade command, with forward/backward controlled by the left
-		// 		// hand, and turning controlled by the right.
-		// 		new RunCommand(() -> m_drive.drive(
-		// 				// Get the x speed. We are inverting this because Xbox controllers return
-		// 				// negative values when we push forward.
-		// 				-m_driverController.getLeftY() * Math.abs(m_driverController.getLeftY())
-		// 						* DriveConstants.kMaxSpeedMetersPerSecond,
+		m_drive.setDefaultCommand(
+				// A split-stick arcade command, with forward/backward controlled by the left
+				// hand, and turning controlled by the right.
+				new RunCommand(() -> m_drive.drive(
+						// Get the x speed. We are inverting this because Xbox controllers return
+						// negative values when we push forward.
+						-m_driverController.getLeftY() * Math.abs(m_driverController.getLeftY())
+								* DriveConstants.kMaxSpeedMetersPerSecond,
 
-		// 				// Get the y speed or sideways/strafe speed. We are inverting this because
-		// 				// we want a positive value when we pull to the left. Xbox controllers
-		// 				// return positive values when you pull to the right by default.
-		// 				-m_driverController.getLeftX() * Math.abs(m_driverController.getLeftX())
-		// 						* DriveConstants.kMaxSpeedMetersPerSecond,
+						// Get the y speed or sideways/strafe speed. We are inverting this because
+						// we want a positive value when we pull to the left. Xbox controllers
+						// return positive values when you pull to the right by default.
+						-m_driverController.getLeftX() * Math.abs(m_driverController.getLeftX())
+								* DriveConstants.kMaxSpeedMetersPerSecond,
 
-		// 				// Get the rate of angular rotation. We are inverting this because we want a
-		// 				// positive value when we pull to the left (remember, CCW is positive in
-		// 				// mathematics). Xbox controllers return positive values when you pull to
-		// 				// the right by default.
-		// 				-m_driverController.getRightX() * Math.abs(m_driverController.getRightX()),
+						// Get the rate of angular rotation. We are inverting this because we want a
+						// positive value when we pull to the left (remember, CCW is positive in
+						// mathematics). Xbox controllers return positive values when you pull to
+						// the right by default.
+						-m_driverController.getRightX() * Math.abs(m_driverController.getRightX()),
 
-		// 				-m_driverController.getRightY() * Math.abs(m_driverController.getRightY()),
+						-m_driverController.getRightY() * Math.abs(m_driverController.getRightY()),
 
-		// 				true),
+						true),
 
-		// 				m_drive));
+						m_drive));
 	}
 
 	/**
@@ -109,8 +118,8 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 
 		//#region Drive Subsystem
-		// new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
-		// new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
+		new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
+		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
 		//#endregion
 	
 		//#region Climb Subsystem
@@ -126,14 +135,14 @@ public class RobotContainer {
 		
 		//#region Intake Subsystem
 		//Alternate code for Joystick testing as opposed to simulation
-		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake));
-		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake));
 		 
 
 		//left = button 1
 		//right = button 12
-		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
-		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenActive(new RightIntakeCommand(m_intake)).whenInactive(new RightStopCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenActive(new RightIntakeCommand(m_intake)).whenInactive(new RightStopCommand(m_intake));
 		//#endregion
 
 		//#region Launch Subsystem
