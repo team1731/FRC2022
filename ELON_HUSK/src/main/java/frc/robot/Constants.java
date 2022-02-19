@@ -107,10 +107,6 @@ public final class Constants {
 		public static final int kMotorCANLaunch = 5;
 		public static final int kMotorCANRange = 6;
 
-		//Climber CAN IDs
-		public static final int kMotorCANClimber1 = 5;
-		public static final int kMotorCANClimber2 = 8;
-
 		//Sequencer CAN IDs
 		public static final int kMotorCanSequencer1 = 9;
 		public static final int kMotorCanSequencer2 = 10;
@@ -126,14 +122,18 @@ public final class Constants {
 		//Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 21;
 		
-		//FIXME: We need to assign IDs to all of these
-		//Solenoids
-		public static final int kLeftExtenderID = 0;
-		public static final int kRightExtenderID = 1;
-		public static final int kGrabberNorth1ID = 2;
-		public static final int kGrabberNorth2ID = 3;
-		public static final int kGrabberSouth1ID = 4;
-		public static final int kGrabberSouth2ID = 5;
+		//ClimbSubsystem
+		public static final int kExtenderUpID = 15;
+		public static final int kExtenderDownID = 12;
+		public static final int kGrabberNorthFrontOpenID = 8;
+		public static final int kGrabberNorthFrontCloseID = 7;
+		public static final int kGrabberNorthBackOpenID = 1;
+		public static final int kGrabberNorthBackCloseID = 2;
+		public static final int kGrabberSouthFrontOpenID = 4;
+		public static final int kGrabberSouthFrontCloseID = 3;
+		public static final int kGrabberSouthBackOpenID = 6;
+		public static final int kGrabberSouthBackCloseID = 5;
+
 		public static final int kLeftSwingerMotorID = 9;
 		public static final int kRightSwingerMotorID = 10;
 		public static final int kNorthSensorID = 0; // NavX Analog Input Sensor 

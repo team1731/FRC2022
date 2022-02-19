@@ -9,8 +9,10 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.IRSensor;
@@ -31,12 +33,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private State _currentState = State.READY;
 	private InputDirection _inputDirection = InputDirection.NEUTRAL;
 
-	private final Solenoid _leftExtender;
-	private final Solenoid _rightExtender;
-	private final Solenoid _grabberNorth1;
-	private final Solenoid _grabberNorth2;
-	private final Solenoid _grabberSouth1;
-	private final Solenoid _grabberSouth2;
+	private final DoubleSolenoid _extender;
+	private final DoubleSolenoid _grabberNorthFront;
+	private final DoubleSolenoid _grabberNorthBack;
+	private final DoubleSolenoid _grabberSouthFront;
+	private final DoubleSolenoid _grabberSouthBack;
 
 	private final CANSparkMax _swingerMasterMotor;
 	private final CANSparkMax _swingerSlaveMotor;
@@ -110,8 +111,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	}
 
 	private enum GrabberHalf {
-		EAST(1),
-		WEST(2),
+		FRONT(1),
+		BACK(2),
 		BOTH(3);
 
 		private final int value;
@@ -125,12 +126,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	public ClimbSubsystem() {
 		if(isDisabled()){ 
-			_leftExtender = null;
-			_rightExtender = null;
-			_grabberNorth1 = null;
-			_grabberNorth2 = null;
-			_grabberSouth1 = null;
-			_grabberSouth2 = null;
+			_extender = null;
+			_grabberNorthFront = null;
+			_grabberNorthBack = null;
+			_grabberSouthFront = null;
+			_grabberSouthBack = null;
 			_swingerMasterMotor = null;
 			_swingerSlaveMotor = null;
 			_northSensor = null;
@@ -142,16 +142,15 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		_leftExtender  = new Solenoid(Constants.kPneumaticsType, OpConstants.kLeftExtenderID);
-		_rightExtender = new Solenoid(Constants.kPneumaticsType, OpConstants.kRightExtenderID);
-		_grabberNorth1 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth1ID);
-		_grabberNorth2 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorth2ID);
-		_grabberSouth1 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth1ID);
-		_grabberSouth2 = new Solenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouth2ID);
+		_extender = new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kExtenderUpID, OpConstants.kExtenderDownID);
+		_grabberNorthFront = new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorthFrontCloseID, OpConstants.kGrabberNorthFrontOpenID);
+		_grabberNorthBack =  new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorthBackCloseID, OpConstants.kGrabberNorthBackOpenID);
+		_grabberSouthFront = new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouthFrontCloseID, OpConstants.kGrabberSouthFrontOpenID);
+		_grabberSouthBack =  new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouthBackCloseID, OpConstants.kGrabberSouthBackOpenID);
 
-		if(_leftExtender == null || _rightExtender == null){
+		if(_extender == null){
 			m_Enabled = false;
-			System.err.println("CLIMB FATAL: UNABLE TO INITIALIZE ONE OR BOTH EXTENDER SOLENOIDS!!!");
+			System.err.println("CLIMB FATAL: UNABLE TO INITIALIZE EXTENDER DOUBLESOLENOID!!!");
 			System.err.println("ClimbSubsystem will be DISABLED for mechanical safety until robot code restarts!");
 		}
 
@@ -233,16 +232,15 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	//#region Controls
 
 	private void setExtenders(boolean up){
-		_leftExtender.set(up);
-		_rightExtender.set(up);
+		_extender.set(up ? Value.kForward : Value.kReverse);
 	}
 
 	private void setNorthGrabber(GrabberHalf grabberHalf, boolean closed){
 		if(grabberHalf.value >= 1){
-			_grabberNorth1.set(closed);
+			_grabberNorthFront.set(closed ? Value.kForward : Value.kReverse);
 		}
 		if(grabberHalf.value >= 2){
-			_grabberNorth2.set(closed);
+			_grabberNorthBack.set(closed ? Value.kForward : Value.kReverse);
 		}
 	}
 
@@ -252,10 +250,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	private void setSouthGrabber(GrabberHalf grabberHalf, boolean closed){
 		if(grabberHalf.value >= 1){
-			_grabberSouth1.set(closed);
+			_grabberSouthFront.set(closed ? Value.kForward : Value.kReverse);
 		}
 		if(grabberHalf.value >= 2){
-			_grabberSouth2.set(closed);
+			_grabberSouthBack.set(closed ? Value.kForward : Value.kReverse);
 		}
 	}
 
@@ -292,7 +290,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		// Extenders up, north grabber one half closed, south grabbers closed
 		setExtenders(true);
 		if(_inputDirection == InputDirection.UP){
-			setNorthGrabber(GrabberHalf.EAST, true);
+			setNorthGrabber(GrabberHalf.FRONT, true);
 			setSouthGrabbers(true);
 			//TODO: Test the sensor
 			return _sensorOverride || (_northSensor != null && _northSensor.isTriggered());
@@ -320,11 +318,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setExtenders(true);
 		startSwing();
 		if(_inputDirection == InputDirection.UP){
-			setSouthGrabber(GrabberHalf.EAST, true);
+			setSouthGrabber(GrabberHalf.FRONT, true);
 			//TODO: Test the timing of this
 			return _sensorOverride || (_southSensor != null && _southSensor.isTriggered());
 		} else {
-			setNorthGrabber(GrabberHalf.EAST, true);
+			setNorthGrabber(GrabberHalf.FRONT, true);
 			return _sensorOverride || (_northSensor != null && _northSensor.isTriggered());
 		}
 	}
@@ -370,12 +368,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private void updateSmartDashboard(){
 		SmartDashboard.putString("climb_State", _currentState.name());
 		SmartDashboard.putString("climb_iDir", _inputDirection.name());
-		SmartDashboard.putBoolean("climb_GrbN1",  _grabberNorth1.get());
-		SmartDashboard.putBoolean("climb_GrbN2", _grabberNorth2.get());
-		SmartDashboard.putBoolean("climb_GrbS1", _grabberSouth1.get());
-		SmartDashboard.putBoolean("climb_GrbS2", _grabberSouth2.get());
-		SmartDashboard.putBoolean("climb_ExtR", _rightExtender.get());
-		SmartDashboard.putBoolean("climb_ExtL", _leftExtender.get());
+		SmartDashboard.putBoolean("climb_GrbNF Closed", _grabberNorthFront.get() == Value.kForward);
+		SmartDashboard.putBoolean("climb_GrbNB Closed", _grabberNorthBack.get() == Value.kForward);
+		SmartDashboard.putBoolean("climb_GrbSF Closed", _grabberSouthFront.get() == Value.kForward);
+		SmartDashboard.putBoolean("climb_GrbSB Closed", _grabberSouthBack.get() == Value.kForward);
+		SmartDashboard.putBoolean("climb_Extender", _extender.get() == Value.kForward);
 		SmartDashboard.putNumber("climb_encPos", _encoderMaster.getPosition());
 		SmartDashboard.putNumber("climb_North Sensor Voltage", _northSensor != null ? _northSensor.getVoltage() : 0);
 		SmartDashboard.putBoolean("climb_North Sensor Triggered", _northSensor != null ? _northSensor.isTriggered() : false);
