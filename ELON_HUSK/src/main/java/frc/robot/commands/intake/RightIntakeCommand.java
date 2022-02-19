@@ -18,6 +18,5 @@ public class RightIntakeCommand extends CommandBase {
 
 	@Override
 	public void end(boolean interrupted) {
-		_intake.retractRightIntake();
 	}
 }

@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-//import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -28,9 +27,13 @@ import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.intake.RightIntakeJoyconCommand;
+import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
+import frc.robot.commands.launch.LaunchBallCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LimeLightSubsystem;
@@ -38,8 +41,7 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.intake.LeftIntakeCommand;
-import frc.robot.commands.intake.RightIntakeCommand;
+import frc.robot.Constants.XboxConstants;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -53,6 +55,7 @@ public class RobotContainer {
 	Joystick m_operatorController = new Joystick(Constants.kOperatorControllerPort);
 
 	private DriveSubsystem m_drive;
+	private LaunchSubsystem m_launch;
 	private IntakeSubsystem m_intake;
 	private LimeLightSubsystem m_vision;
 	private ClimbSubsystem m_climb;
@@ -66,9 +69,16 @@ public class RobotContainer {
 	 * 
 	 * @throws _NotImplementedProperlyException
 	 */
-	public RobotContainer(ClimbSubsystem climb, DriveSubsystem drive, IntakeSubsystem intake, LimeLightSubsystem vision) {
+	public RobotContainer(
+			DriveSubsystem drive, 
+			ClimbSubsystem climb,
+			LaunchSubsystem launch, 
+			IntakeSubsystem intake, 
+			LimeLightSubsystem vision)
+		{
 		// this.m_ledstring = m_ledstring;
 		this.m_drive = drive;
+		this.m_launch = launch;
 		this.m_intake = intake;
 		this.m_vision = vision;
 		this.m_climb = climb;
@@ -118,16 +128,35 @@ public class RobotContainer {
 		new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
 		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
 		//#endregion
-		
+	
 		//#region Climb Subsystem
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whenHeld(new ClimbUpCommand(m_climb));
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whenHeld(new ClimbDownCommand(m_climb));
 		//#endregion
 		
+		//#region Intake Subsystem
+		//Alternate code for Joystick testing as opposed to simulation
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake));
+		new JoystickButton(m_driverController, XboxConstants.kLBumper).whenHeld(new LaunchBallCommand(m_launch));
+		new HanTrigger(HanTriggers.DR_TRIG_LEFT).whileActiveContinuous(new LeftIntakeJoyconCommand(m_intake));
+		new HanTrigger(HanTriggers.DR_TRIG_RIGHT).whileActiveContinuous(new RightIntakeJoyconCommand(m_intake));	 
+
 		//left = button 1
 		//right = button 12
-		new JoystickButton(m_operatorController, 1).whenHeld(new LeftIntakeCommand(m_intake));
-		new JoystickButton(m_operatorController, 12).whenHeld(new RightIntakeCommand(m_intake));
+		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
+		//new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenActive(new RightIntakeCommand(m_intake)).whenInactive(new RightStopCommand(m_intake));
+		//#endregion
+
+		//#region Launch Subsystem
+		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
+			.whileActiveContinuous(() -> m_launch.runLaunch(
+					(m_operatorController.getRawAxis(4)+1)/2, 	// speed
+					(m_operatorController.getRawAxis(1)+1)/2	// position
+				)
+			)
+			.whenInactive(() -> m_launch.stopLaunch());
+		//#endregion
 	}
 
 	public _NamedAutoMode getNamedAutonomousCommand(String autoSelected) {
@@ -229,3 +258,33 @@ public class RobotContainer {
 		}
 	}
 }
+
+//Driver Controls List
+
+//Operator controls List
+/*
+//AXES = JOYSTICKS/BACK WHEEL CONTROLS
+getRawAxis(0) = left joystick(L/R): Unspecified
+getRawAxis(1) = left joystick(U/D): Extend/Retract Intake
+getRawAxis(2) = left back wheel: Unspecified
+getRawAxis(3) = right joystick(L/R): Unspecified
+getRawAxis(4) = right joystick(U/D): shooter speed
+getRawAxis(5) = right back wheel: Unspecified
+
+//BUTTONS
+Button(1) = top Left back toggle: Left Intake (Towards Driver = ON);
+Button(2) = top Left front toggle: Unspecified (Toggle away from Driver)
+Button(3) = top Left front toggle: Unspecified (Toggle towards Driver)
+Button(4) = front Left front toggle(L): Unspecified (Toggle away from Driver)
+Button(5) = front Left front toggle(L): Unspecified (Toggle towards Driver)
+Button(6) = front Left front toggle(R): Climb Up (Toggle away from Driver)
+Button(7) = front Left front toggle(R): Climb Down (Toggle towards Driver)
+Button(8) = front Right front toggle(R): Shoot (Toggle towards Driver)
+Button(9) = front Right front toggle(R): Climb (Toggle away from Driver)
+Button(10) = top Right front toggle: Unspecified (Toggle towards Driver)
+Button(11) = top Right front toggle: Unspecified (Toggle away from Driver)
+Button(12) = top Right back toggle: Right Intake (Toggle towards Driver)
+Button(14) = Front Left Bottom(1): Eject (Top Button)
+Button(15) = front Left Bottom(2): Pickup (Bottom Button)
+Button(16) = front Right Bottom: Unspecified (Clicking the scrollwheel thing)
+*/
