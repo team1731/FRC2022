@@ -159,8 +159,6 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
 		_southSensor = new IRSensor(OpConstants.kSouthSensorID);
 
-
-
 		/**
 		 * Configuring Defaults for Master/Slave motors
 		 */
@@ -255,7 +253,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		if((grabberHalf.value == 1) || (grabberHalf.value == 3)) {
 			_grabberSouthFront.set(closed ? Value.kForward : Value.kReverse);
 		}
-		if((grabberHalf.value == 2)|| (grabberHalf.value ==3)) {
+		if((grabberHalf.value == 2)|| (grabberHalf.value == 3)) {
 			_grabberSouthBack.set(closed ? Value.kForward : Value.kReverse);
 		}
 	}
@@ -274,6 +272,12 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private void stopSwing(){
 		_swingerMasterMotor.set(0);
 		_encoderMaster.setPosition(0); // not sure if this is needed
+	}
+
+	//Function for properly releasing the previous par before hanging on the current bar
+	//Removes 10 ticks from the current revolution count to let the climber hang
+	private void releaseSwing(){
+		_pidMasterController.setReference(_encoderMaster.getPosition() - 10, CANSparkMax.ControlType.kSmartMotion);
 	}
 
 	//#endregion
@@ -350,7 +354,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			setNorthGrabbers(false);
 		} else if(_inputDirection == InputDirection.DOWN){
 			setNorthGrabbers(true);
-			stopSwing();
+			releaseSwing();
 		}
 		//TODO: Test this timing
 		return Timer.getFPGATimestamp() - _timer >= 1;
