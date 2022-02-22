@@ -141,11 +141,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		_extender = new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kExtenderUpID, OpConstants.kExtenderDownID);
-		_grabberNorthFront = new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorthFrontCloseID, OpConstants.kGrabberNorthFrontOpenID);
-		_grabberNorthBack =  new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kGrabberNorthBackCloseID, OpConstants.kGrabberNorthBackOpenID);
-		_grabberSouthFront = new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouthFrontCloseID, OpConstants.kGrabberSouthFrontOpenID);
-		_grabberSouthBack =  new DoubleSolenoid(Constants.kPneumaticsType, OpConstants.kGrabberSouthBackCloseID, OpConstants.kGrabberSouthBackOpenID);
+		_extender = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kExtenderUpID, OpConstants.kExtenderDownID);
+		_grabberNorthFront = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kGrabberNorthFrontCloseID, OpConstants.kGrabberNorthFrontOpenID);
+		_grabberNorthBack =  new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kGrabberNorthBackCloseID, OpConstants.kGrabberNorthBackOpenID);
+		_grabberSouthFront = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kGrabberSouthFrontCloseID, OpConstants.kGrabberSouthFrontOpenID);
+		_grabberSouthBack =  new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kGrabberSouthBackCloseID, OpConstants.kGrabberSouthBackOpenID);
 
 		if(_extender == null){
 			m_Enabled = false;
@@ -159,12 +159,13 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
 		_southSensor = new IRSensor(OpConstants.kSouthSensorID);
 
-		_swingerSlaveMotor.follow(_swingerMasterMotor);
+
 
 		/**
 		 * Configuring Defaults for Master/Slave motors
 		 */
 		_swingerMasterMotor.restoreFactoryDefaults();
+        _swingerMasterMotor.setInverted(true);
 
 		_pidMasterController = _swingerMasterMotor.getPIDController();
 		_encoderMaster = _swingerMasterMotor.getEncoder();
@@ -181,9 +182,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
     	_pidMasterController.setSmartMotionMinOutputVelocity(ClimbConstants.minVel, ClimbConstants.smartMotionSlot);
     	_pidMasterController.setSmartMotionMaxAccel(ClimbConstants.maxAcc, ClimbConstants.smartMotionSlot);
     	_pidMasterController.setSmartMotionAllowedClosedLoopError(ClimbConstants.allowedErr, ClimbConstants.smartMotionSlot);
-
+ 
 		//Slave defaults
 		_swingerSlaveMotor.restoreFactoryDefaults();
+
+		
 
 		_pidSlaveController = _swingerSlaveMotor.getPIDController();
 		_encoderSlave = _swingerSlaveMotor.getEncoder();
@@ -200,8 +203,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
     	_pidSlaveController.setSmartMotionMinOutputVelocity(ClimbConstants.minVel, ClimbConstants.smartMotionSlot);
     	_pidSlaveController.setSmartMotionMaxAccel(ClimbConstants.maxAcc, ClimbConstants.smartMotionSlot);
     	_pidSlaveController.setSmartMotionAllowedClosedLoopError(ClimbConstants.allowedErr, ClimbConstants.smartMotionSlot);
-
+		_swingerSlaveMotor.follow(_swingerMasterMotor,true);
 		updateSmartDashboard();
+		handleReady();
 	}
 
 	public State getState(){
@@ -235,23 +239,23 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	}
 
 	private void setNorthGrabber(GrabberHalf grabberHalf, boolean closed){
-		if(grabberHalf.value >= 1){
+		if((grabberHalf.value == 1) || (grabberHalf.value == 3)){
 			_grabberNorthFront.set(closed ? Value.kForward : Value.kReverse);
 		}
-		if(grabberHalf.value >= 2){
+		if((grabberHalf.value == 2) || (grabberHalf.value == 3)){
 			_grabberNorthBack.set(closed ? Value.kForward : Value.kReverse);
 		}
 	}
 
 	private void setNorthGrabbers(boolean closed){
 		setNorthGrabber(GrabberHalf.BOTH, closed);
-	}
+	} 
 
 	private void setSouthGrabber(GrabberHalf grabberHalf, boolean closed){
-		if(grabberHalf.value >= 1){
+		if((grabberHalf.value == 1) || (grabberHalf.value == 3)) {
 			_grabberSouthFront.set(closed ? Value.kForward : Value.kReverse);
 		}
-		if(grabberHalf.value >= 2){
+		if((grabberHalf.value == 2)|| (grabberHalf.value ==3)) {
 			_grabberSouthBack.set(closed ? Value.kForward : Value.kReverse);
 		}
 	}
@@ -280,7 +284,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		// Extenders down, north grabbers open, south grabbers closed
 		setExtenders(false);
 		setNorthGrabbers(false);
-		setSouthGrabbers(false);
+		setSouthGrabbers(true);
 		stopSwing();
 		return _inputDirection == InputDirection.UP;
 	}
@@ -317,7 +321,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setExtenders(true);
 		startSwing();
 		if(_inputDirection == InputDirection.UP){
-			setSouthGrabber(GrabberHalf.FRONT, true);
+			setSouthGrabber(GrabberHalf.BACK, false);
 			//TODO: Test the timing of this
 			return _sensorOverride || (_southSensor != null && _southSensor.isTriggered());
 		} else {
@@ -434,7 +438,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		if(transition){
 			_timer = Timer.getFPGATimestamp();
 			if(_currentState == State.RELEASE_PREVIOUS_BAR){
-				if(_climbCount == 1){
+				if(_climbCount == 0){
 					_currentState = State.HANGING;
 				} else {
 					_currentState = State.SWING_TO_NEXT_BAR;

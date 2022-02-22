@@ -119,19 +119,19 @@ public final class Constants {
 		//ClimbSubsystem
 		public static final int kExtenderUpID = 15;
 		public static final int kExtenderDownID = 12;
-		public static final int kGrabberNorthFrontOpenID = 8;
+		public static final int kGrabberNorthFrontOpenID = 6;
 		public static final int kGrabberNorthFrontCloseID = 7;
-		public static final int kGrabberNorthBackOpenID = 1;
-		public static final int kGrabberNorthBackCloseID = 2;
-		public static final int kGrabberSouthFrontOpenID = 4;
+		public static final int kGrabberNorthBackOpenID = 0;
+		public static final int kGrabberNorthBackCloseID = 1;
+		public static final int kGrabberSouthFrontOpenID = 2;
 		public static final int kGrabberSouthFrontCloseID = 3;
-		public static final int kGrabberSouthBackOpenID = 6;
+		public static final int kGrabberSouthBackOpenID = 4;
 		public static final int kGrabberSouthBackCloseID = 5;
 
 		public static final int kLeftSwingerMotorID = 9;
 		public static final int kRightSwingerMotorID = 10;
-		public static final int kNorthSensorID = 0; // NavX Analog Input Sensor 
-		public static final int kSouthSensorID = 1; // NavX Analog Input Sensor
+		public static final int kNorthSensorID = 1; // NavX Analog Input Sensor 
+		public static final int kSouthSensorID = 2; // NavX Analog Input Sensor
 
 		//AnalogInputs
 		public static final double kMinIRVoltage = 1.0;
@@ -331,7 +331,7 @@ public final class Constants {
 		public static final double maxAcc = 1500;
 		public static final double allowedErr = 0;
 
-		public static final double kFwdSteps = 1000;
+		public static final double kFwdSteps = 50;
 
 		public static final int smartMotionSlot = 0;
 	}
