@@ -332,6 +332,7 @@ public final class Constants {
 		public static final double allowedErr = 0;
 
 		public static final double kFwdSteps = 50;
+		public static final double kBckSteps = -10;
 
 		public static final int smartMotionSlot = 0;
 	}
