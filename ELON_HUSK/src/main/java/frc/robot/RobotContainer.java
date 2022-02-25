@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.F1_Move_Forward;
+import frc.robot.autonomous.L4_B3L2_B5B4L2;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
@@ -102,9 +103,9 @@ public class RobotContainer {
 						// the right by default.
 						-m_driverController.getRightX() * Math.abs(m_driverController.getRightX()),
 
-						-m_driverController.getRightY() * Math.abs(m_driverController.getRightY()),
+						-m_driverController.getRightY() * Math.abs(m_driverController.getRightY()), true,
 
-						true),
+						m_driverController.getRightBumper()),
 
 						m_drive));
 	}
@@ -146,7 +147,7 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
 					(m_operatorController.getRawAxis(4)+1)/2, 	// speed
-					(m_operatorController.getRawAxis(1)+1)/2	// position
+					(m_operatorController.getRawAxis(1)+1)/2    // position
 				)
 			)
 			.whenInactive(() -> m_launch.stopLaunch());
@@ -200,6 +201,8 @@ public class RobotContainer {
 		switch (autoModeName) {
 			case "F1":
 				return new _NamedAutoMode(new F1_Move_Forward(m_drive));
+			case "L4":
+			    return new _NamedAutoMode(new L4_B3L2_B5B4L2(m_drive, m_intake, m_launch));
 
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");

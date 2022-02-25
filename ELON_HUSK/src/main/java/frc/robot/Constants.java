@@ -60,7 +60,7 @@ public final class Constants {
 
 		public static final boolean kGyroReversed = true; // 09FEB false;
 
-		public static final double kMaxSpeedMetersPerSecond = 4.0; // tune
+		public static final double kMaxSpeedMetersPerSecond = 3.5; // tune
 
 		public static final double kTurnP = 0.1; // was 0.05
 		public static final double kTurnI = 0;
@@ -69,7 +69,7 @@ public final class Constants {
 	}
 
 	public static final class AutoConstants {
-		public static final String kDEFAULT_AUTO_CODE = "F1";
+		public static final String kDEFAULT_AUTO_CODE = "L4";
 		// DEFAULT AUTO MODE if Drive Team is unable to set the mode via Dashboard
 		// NOTE: also useful if trying to run in the simulator!
 		// XNDD (X=L,M,R,F) (N=1,2,3,4) (DD=0-99 [optional])
@@ -84,7 +84,7 @@ public final class Constants {
 		// M203 --> wait 0 seconds, run M2 with 3-sec delay after 1st shooting
 		// F12 --> wait 2 seconds, run "forward" auto mode (robot will drive forward a
 		// pre-programmed distance)
-
+		public static final String kPATH = "paths/output/";
 		public static final double kMaxSpeedMetersPerSecond = 2.6; // 2.6
 		public static final double kMaxAccelerationMetersPerSecondSquared = 2; // 2
 
@@ -111,7 +111,7 @@ public final class Constants {
 
 		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
 		//Power Distribution Pannel CAN IDs
-		public static final int kPDPCanID = 20;
+		public static final int kPDPCanID = 1;
 
 		//Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 2;
@@ -224,7 +224,7 @@ public final class Constants {
 		// #region TurnPID
 		public static final double kTurnP = 0.12;
 		public static final double kTurnI = 0;
-		public static final double kTurnD = 0.01;
+		public static final double kTurnD = 0.00;
 		public static final double kMaxTurnVelocity = 360;
 		public static final double kMaxTurnAcceleration = 360;
 		public static final double kTurnToleranceDeg = 5;

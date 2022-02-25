@@ -10,10 +10,12 @@ public class LimeTargetInfo {
 	private double area;
 	private double boxLength;
 	private double boxWidth;
+	private double targetDistance;
+	private double targetAngle;
 
-	public static LimeTargetInfo empty = new LimeTargetInfo(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	public static LimeTargetInfo empty = new LimeTargetInfo(0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0,0.0);
 
-	public LimeTargetInfo(double y, double z, double area, double hor, double vert, double timestamp) {
+	public LimeTargetInfo(double y, double z, double area, double hor, double vert, double targetDistance, double targetAngle, double timestamp) {
 		this.y = y;
 		this.z = z;
 		this.timestamp = timestamp;
@@ -21,6 +23,8 @@ public class LimeTargetInfo {
 		this.area = area;
 		this.boxLength = vert;
 		this.boxWidth = hor;
+		this.targetDistance = targetDistance;
+		this.targetAngle = targetAngle;
 	}
 
 	public LimeTargetInfo(double y, double z) {
@@ -91,6 +95,24 @@ public class LimeTargetInfo {
 	 */
 	public double getWidth() {
 		return boxWidth;
+	}
+
+		/**
+	 * Returns the width of the bounding box around the target in pixels.
+	 * 
+	 * @return
+	 */
+	public double getTargetDistance() {
+		return targetDistance;
+	}
+
+		/**
+	 * Returns the width of the bounding box around the target in pixels.
+	 * 
+	 * @return
+	 */
+	public double getTargetAngle() {
+		return targetAngle;
 	}
 
 }

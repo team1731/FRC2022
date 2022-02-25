@@ -26,7 +26,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		return m_Enabled;
 	}
 
-	private boolean m_Enabled = true;
+	private boolean m_Enabled = false;
 	//#endregion
 
 	private State _currentState = State.READY;

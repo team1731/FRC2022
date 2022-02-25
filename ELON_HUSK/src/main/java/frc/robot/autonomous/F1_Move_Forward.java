@@ -16,6 +16,6 @@ public class F1_Move_Forward extends _DelayableStrafingAutoMode {
 								{ 1.0, 0.0, 0.0 } } // final pose
 				));
 
-		command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+		command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0, 0, false, false));
 	}
 }

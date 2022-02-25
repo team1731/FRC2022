@@ -117,16 +117,17 @@ public class Robot extends TimedRobot {
 		// camServer.startAutomaticCapture();
 
 		m_pneu = new PneumaticsControlModule(OpConstants.kPneumaticsCanID);
-		m_pdp = new PowerDistribution(OpConstants.kPDPCanID, ModuleType.kRev);
+	//	m_pdp = new PowerDistribution(OpConstants.kPDPCanID, ModuleType.kRev);
+		
 
 		m_vision = new LimeLightSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
-		m_launch = new LaunchSubsystem();
+		m_launch = new LaunchSubsystem(m_drive);
 		m_intake = new IntakeSubsystem();
 		m_climb = new ClimbSubsystem();
 
-		m_pdp.clearStickyFaults();
-		m_pneu.clearAllStickyFaults();
+		//m_pdp.clearStickyFaults();
+		//m_pneu.clearAllStickyFaults();
 		m_drive.zeroHeading();
 
 		// Instantiate our RobotContainer. This will perform all our button bindings,
@@ -217,26 +218,26 @@ public class Robot extends TimedRobot {
 			// SmartDashboard.putBoolean("HighSensor", m_sequencer.highSensorHasBall());
 		}
 
-		// if (RobotBase.isReal()) {
-		// 	String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
-		// 	if (!newCode.equals(autoCode)) {
-		// 		autoCode = newCode;
-		// 		System.out.println("New Auto Code read from dashboard - initializing.");
-		// 		autoInitPreload();
-		// 	}
-		// 	if (m_autonomousCommand != null) {
-		// 		if (m_autonomousCommand.getName().startsWith("H0")) {
-		// 			Integer newFieldOrientation = namedAutoMode.getFieldOrientation();
-		// 			if (newFieldOrientation != null) {
-		// 				if (!newFieldOrientation.equals(fieldOrientation)) {
-		// 					System.out.println("New Field Orientation detected by LimeLight - initializing.");
-		// 					fieldOrientation = newFieldOrientation;
-		// 					autoInitPreload();
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
+		 if (RobotBase.isReal()) {
+		 	String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
+		 	if (!newCode.equals(autoCode)) {
+		 		autoCode = newCode;
+		 		System.out.println("New Auto Code read from dashboard - initializing.");
+		 		autoInitPreload();
+		 	}
+		 	if (m_autonomousCommand != null) {
+		 		if (m_autonomousCommand.getName().startsWith("H0")) {
+		 			Integer newFieldOrientation = namedAutoMode.getFieldOrientation();
+		 			if (newFieldOrientation != null) {
+		 				if (!newFieldOrientation.equals(fieldOrientation)) {
+		 					System.out.println("New Field Orientation detected by LimeLight - initializing.");
+		 					fieldOrientation = newFieldOrientation;
+		 					autoInitPreload();
+		 				}
+		 			}
+		 		}
+		 	}
+		 }
 	}
 
 	/**

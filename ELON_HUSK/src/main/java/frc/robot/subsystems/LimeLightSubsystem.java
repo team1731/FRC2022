@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.vision.LimeTargetInfo;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -24,7 +25,7 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 
 	/**
@@ -75,6 +76,16 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 	 */
 	private LimeTargetInfo lastTarget = LimeTargetInfo.empty;
 
+	private DriveSubsystem m_drive;
+	// how many degrees back is your limelight rotated from perfectly vertical?
+	double limelightMountAngleDegrees = 40;
+
+	// distance from the center of the Limelight lens to the floor
+	double limelightLensHeightMeters = .6858;
+
+	// distance from the target to the floor
+	double goalHeightMeters = 2.67;
+
 	/**
 	 * Keeps track of how many systems are requesting the LED. Each system should be
 	 * turning off the LED when they are done. e.g. VisionRotateCommand turns the
@@ -86,7 +97,7 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){
 			return;
 		}
-
+  
 		// Set tables for easy getting
 		limeTable = NetworkTableInstance.getDefault().getTable("limelight");
 		limePipeline = limeTable.getEntry("pipeline");
@@ -117,11 +128,22 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 
 		// Report target when one is valid
 		if (hasTarget()) {
+			double targetOffsetAngle_Vertical = limeTY.getDouble(0.0);
+			double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+			double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+			//calculate distance
+			double distanceFromLimelightToGoalMeters = (goalHeightMeters - limelightLensHeightMeters)/Math.tan(angleToGoalRadians);
+ 
 			lastTarget = new LimeTargetInfo(limeTX.getDouble(0), limeTY.getDouble(0), limeArea.getDouble(0),
-					limeVert.getDouble(0), limeHoriz.getDouble(0), Timer.getFPGATimestamp());
+					limeVert.getDouble(0), limeHoriz.getDouble(0), distanceFromLimelightToGoalMeters, limeTX.getDouble(0.0), Timer.getFPGATimestamp());
+
+
+       		// m_drive.updateVisionOdometry(distanceFromLimelightToGoalMeters, limeTX.getDouble(0.0));		
 		}
 
 		UpdateSmartDashboard();
+
 	}
 
 	/**
@@ -209,7 +231,7 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 			limeLED.setNumber(0);
 		}
 	}
-
+/*
 	private double getDistance(Translation2d pos1, Translation2d pos2) {
 		if(isDisabled()){
 			return 0;
@@ -226,4 +248,8 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 		Translation2d pos2 = new Translation2d(targetPos.getY(), targetPos.getZ());
 		return getDistance(pos1, pos2);
 	}
+*/
+
+
+
 }
