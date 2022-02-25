@@ -31,7 +31,7 @@ import frc.robot.subsystems.ToggleableSubsystem;
 import frc.robot.util.AutoSwerveDebug;
 import frc.robot.util.ReflectingCSVWriter;
 import frc.robot.util.SwerveModuleDebug;
-import frc.robot.util.Utils;;
+//import frc.robot.util.Utils;;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends ToggleableSubsystem {
@@ -237,8 +237,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 		}
 
-		mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
-				m_rightFront.getDebugValues(), m_leftRear.getDebugValues(), m_rightRear.getDebugValues()));
+	//	mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
+	//			m_rightFront.getDebugValues(), m_leftRear.getDebugValues(), m_rightRear.getDebugValues()));
 	}
 
 	/**
@@ -599,6 +599,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		lastVisionTimestamp = m_vision.getLastPortPos().getTimeCaptured();
 		}
 
+	}
+
+	public void setAngleOffsetDegrees(double degrees) {
+		m_gyro.setAngleAdjustment(degrees);
 	}
 
 

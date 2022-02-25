@@ -12,6 +12,7 @@ public class _NamedAutoMode {
 		return delayableStrafingAutoMode.getInitialPose();
 	}
 
+
 	public Integer getFieldOrientation() {
 		return delayableStrafingAutoMode.getFieldOrientation();
 	}
@@ -46,5 +47,9 @@ public class _NamedAutoMode {
 	public Command getCommand() {
 		return delayableStrafingAutoMode.getCommand();
 	}
+
+    public double getAngleOffset() {
+        return delayableStrafingAutoMode.getAngleOffset();
+    }
 
 }

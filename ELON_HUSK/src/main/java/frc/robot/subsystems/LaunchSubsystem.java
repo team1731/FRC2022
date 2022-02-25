@@ -15,7 +15,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+
 
 public class LaunchSubsystem extends ToggleableSubsystem {
 
@@ -176,13 +176,16 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
 		SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
 
+		double position;
 		if ( !m_drive.visionStale()) {    //this method also checks to see if we we are not manually shooting
 			speed_0to1 = getVisionSpeed();
 			position_0to1 = getVisionPosition();
+			position = position_0to1 * OpConstants.MaxRange;
+		} else {
+			/// Range, max range guess is 10000 - OpConstantsMaxRange
+			/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
+			position = normalize_input(position_0to1, 0.226, 0.826) * OpConstants.MaxRange;
 		}
-		/// Range, max range guess is 10000 - OpConstantsMaxRange
-		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
-		double position = normalize_input(position_0to1, 0.226, 0.826) * OpConstants.MaxRange;
 		if (position < OpConstants.MinRange) { position = 0; }
 		if (range_update(position, .05 /* percent tolerance */)) {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
@@ -200,7 +203,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 */
 		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
 		/* multiply by -1.0 for direction */
-		double velUnitsPer100ms = /*-1.0 * */ normalize_input(speed_0to1, 0.156, 0.748) * 6000.0 * 2048.0 / 600.0;		
+		double velUnitsPer100ms = /*-1.0 * */ (m_drive.visionStale() ? normalize_input(speed_0to1, 0.156, 0.748) : speed_0to1) * 6000.0 * 2048.0 / 600.0;		
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 		SmartDashboard.putNumber("velUnitsPer100ms", velUnitsPer100ms);
 
@@ -216,7 +219,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private double getVisionPosition() {
 		// returns a number between 0 and 1 based on distance to the target 
 
-		return (1 - (m_drive.getTargetDistance()/7.62));
+		return (1 - (m_drive.getTargetDistance()/7.62));   //making the last number smaller makes shallower shot
 	}
 
 	private double getVisionSpeed() {

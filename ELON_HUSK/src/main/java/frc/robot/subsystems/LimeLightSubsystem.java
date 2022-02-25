@@ -115,7 +115,7 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
 		}
 
 		// Keep the light off so we don't blind unfortunate spectators
-		disableLED(false);
+		disableLED(true);
 
 		SmartDashboard.putString("SelectedGalactic", "None");
 	}
@@ -142,7 +142,7 @@ public class LimeLightSubsystem extends ToggleableSubsystem {
        		// m_drive.updateVisionOdometry(distanceFromLimelightToGoalMeters, limeTX.getDouble(0.0));		
 		}
 
-		UpdateSmartDashboard();
+		//UpdateSmartDashboard();
 
 	}
 

@@ -37,10 +37,18 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 	private IntakeSubsystem m_intake;
 	private LaunchSubsystem m_launch;
 
+	private double angleOffset;
+
 	@Override
 	public Pose2d getInitialPose() {
 		return this._initPose;
 	}
+
+	@Override
+	public double getAngleOffset() {
+		return this.angleOffset;
+	}
+
 
 	public L4_B3L2_B5B4L2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
 
@@ -69,23 +77,27 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 
 
 		Pose2d unrotInitPose = trajectory0.getInitialPose();
-		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(46.5));
-
+		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(-46.0));
+		this.angleOffset = -46.0;   // this is the angle of the robot on the field. 
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
+
 			new ParallelCommandGroup(
 			new RightIntakeCommand(m_intake).withTimeout(2),                                   // Turn on Intake
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", 45, trajectory0)  // Drive to first ball	
-			),			
-			new LaunchBallCommand(m_launch).withTimeout(2),
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory0)), // Drive to first ball	
+				
+
+			new LaunchBallCommandStart(m_launch).withTimeout(4),
+			new LaunchBallCommandStop(m_launch).withTimeout(0.1),
+
 			new ParallelCommandGroup(
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", 45, trajectory1),  // Drive to second ball
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory1),  // Drive to second ball
 			new RightIntakeCommand(m_intake).withTimeout(2)),
 			
 			new RightStopCommand(m_intake),
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", 90, trajectory2),  // Drive to first ball				
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory2),  // Drive to first ball				
 			new LaunchBallCommandStart(m_launch),
 			new WaitCommand (3),			
 			new LaunchBallCommandStop(m_launch)

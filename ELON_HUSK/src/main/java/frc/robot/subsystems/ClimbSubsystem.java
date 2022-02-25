@@ -26,7 +26,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		return m_Enabled;
 	}
 
-	private boolean m_Enabled = false;
+	private boolean m_Enabled = true;
 	//#endregion
 
 	private State _currentState = State.READY;
@@ -187,7 +187,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 		_pidSlaveController = _swingerSlaveMotor.getPIDController();
 
-		// set PID coefficients
+		//set PID coefficients
 		_pidSlaveController.setP(ClimbConstants.kP);
 		_pidSlaveController.setI(ClimbConstants.kI);
 		_pidSlaveController.setD(ClimbConstants.kD);
@@ -397,7 +397,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		// This method will be called once per scheduler run
 		if(isDisabled()) return;
 
-		updateSmartDashboard();
+		//updateSmartDashboard();
 
 		if(_inputDirection == InputDirection.NEUTRAL){
 			_swingerMasterMotor.set(0);
