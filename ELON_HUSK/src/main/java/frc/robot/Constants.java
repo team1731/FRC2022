@@ -302,6 +302,7 @@ public final class Constants {
 		public static final int kVision = XboxConstants.kRBumper;
 		public static final int kResetGyro = XboxConstants.kAppMenu;
 		public static final int kResetEncoders = XboxConstants.kMenu;
+		public static final int kLaunchBall = XboxConstants.kLBumper;
 	}
 
 	public static final class JoyStickConstants {

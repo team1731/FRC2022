@@ -35,7 +35,6 @@ import frc.robot.subsystems.LimeLightSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.XboxConstants;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -133,7 +132,7 @@ public class RobotContainer {
 		//Alternate code for Joystick testing as opposed to simulation
 		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake));
 		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake));
-		new JoystickButton(m_driverController, XboxConstants.kLBumper).whenHeld(new LaunchBallCommand(m_launch));
+		new JoystickButton(m_driverController, ButtonConstants.kLaunchBall).whenHeld(new LaunchBallCommand(m_launch));
 		new HanTrigger(HanTriggers.DR_TRIG_LEFT).whileActiveContinuous(new LeftIntakeJoyconCommand(m_intake));
 		new HanTrigger(HanTriggers.DR_TRIG_RIGHT).whileActiveContinuous(new RightIntakeJoyconCommand(m_intake));	 
 
