@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.F1_Move_Forward;
+import frc.robot.autonomous.L4_B3L2_B5B4L2;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
@@ -21,7 +22,6 @@ import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.commands.climb.OverrideSensorCommand;
-import frc.robot.commands.climb.StopClimbCommand;
 import frc.robot.commands.intake.LeftIntakeCommand;
 import frc.robot.commands.intake.LeftStopCommand;
 import frc.robot.commands.intake.RightIntakeCommand;
@@ -103,9 +103,9 @@ public class RobotContainer {
 						// the right by default.
 						-m_driverController.getRightX() * Math.abs(m_driverController.getRightX()),
 
-						-m_driverController.getRightY() * Math.abs(m_driverController.getRightY()),
+						-m_driverController.getRightY() * Math.abs(m_driverController.getRightY()), true,
 
-						true),
+						m_driverController.getRightBumper()),
 
 						m_drive));
 	}
@@ -124,14 +124,9 @@ public class RobotContainer {
 		//#endregion
 	
 		//#region Climb Subsystem
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp)
-			.whenHeld(new ClimbUpCommand(m_climb))
-			.whenReleased(new StopClimbCommand(m_climb));
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown)
-			.whenHeld(new ClimbDownCommand(m_climb))
-			.whenReleased(new StopClimbCommand(m_climb));
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride)
-			.whenHeld(new OverrideSensorCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whileHeld(new ClimbUpCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whileHeld(new ClimbDownCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride).whileHeld(new OverrideSensorCommand(m_climb));
 		//#endregion
 		
 		//#region Intake Subsystem
@@ -152,7 +147,7 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
 					(m_operatorController.getRawAxis(4)+1)/2, 	// speed
-					(m_operatorController.getRawAxis(1)+1)/2	// position
+					(m_operatorController.getRawAxis(1)+1)/2    // position
 				)
 			)
 			.whenInactive(() -> m_launch.stopLaunch());
@@ -206,6 +201,8 @@ public class RobotContainer {
 		switch (autoModeName) {
 			case "F1":
 				return new _NamedAutoMode(new F1_Move_Forward(m_drive));
+			case "L4":
+			    return new _NamedAutoMode(new L4_B3L2_B5B4L2(m_drive, m_intake, m_launch));
 
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");

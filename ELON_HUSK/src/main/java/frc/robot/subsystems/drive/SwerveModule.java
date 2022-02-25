@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,7 +43,7 @@ public class SwerveModule {
 
 		if (RobotBase.isReal()) {
 
-			m_driveMotor = new TalonFX(driveMotorChannel);
+			m_driveMotor = new WPI_TalonFX(driveMotorChannel);
 			m_driveMotor.configFactoryDefault();
 
 			m_driveMotor.setInverted(true);
@@ -67,8 +68,8 @@ public class SwerveModule {
 
 			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 30);
 
-			m_turningMotor = new TalonFX(turningMotorChannel);
-			m_turningMotor.configFactoryDefault();
+			m_turningMotor = new WPI_TalonFX(turningMotorChannel);
+
 
 			/* Factory default hardware to prevent unexpected behavior */
 			m_turningMotor.configFactoryDefault();
@@ -204,14 +205,14 @@ public class SwerveModule {
 			/* 500 RPM in either direction */
 			m_driveMotor.set(TalonFXControlMode.Velocity, targetVelocity_UnitsPer100ms);
 
-			if (System.currentTimeMillis() % 100 == 0) {
-				SmartDashboard.putNumber("turningMotorOutput-" + id, turningMotorOutput);
-				SmartDashboard.putNumber("driveVelocityOutput-" + id, drive);
-			}
+		//	if (System.currentTimeMillis() % 100 == 0) {
+		//		SmartDashboard.putNumber("turningMotorOutput-" + id, turningMotorOutput);
+		//		SmartDashboard.putNumber("driveVelocityOutput-" + id, drive);
+		//	}
 
-			debugValues.update(drive, turningMotorOutput, m_turningMotor.getMotorOutputPercent(),
-					m_turningMotor.getSelectedSensorVelocity(0), m_driveMotor.getMotorOutputPercent(),
-					m_driveMotor.getSelectedSensorPosition());
+		//	debugValues.update(drive, turningMotorOutput, m_turningMotor.getMotorOutputPercent(),
+		//			m_turningMotor.getSelectedSensorVelocity(0), m_driveMotor.getMotorOutputPercent(),
+		//			m_driveMotor.getSelectedSensorPosition());
 		}
 
 		// SmartDashboard.putNumber("RelativeEncoder"+id,
@@ -234,9 +235,9 @@ public class SwerveModule {
 	}
 	// }
 
-	public DebugValues getDebugValues() {
-		return debugValues;
-	}
+	//public DebugValues getDebugValues() {
+	//	return debugValues;
+	//}
 
 	public class DebugValues {
 		public int id;

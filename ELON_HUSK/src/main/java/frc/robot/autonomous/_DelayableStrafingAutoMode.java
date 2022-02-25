@@ -25,6 +25,10 @@ public class _DelayableStrafingAutoMode {
 		return null;
 	}
 
+	public double getAngleOffset() {
+		return 0.0;
+	}
+
 	public Integer getFieldOrientation() {
 		return null;
 	}

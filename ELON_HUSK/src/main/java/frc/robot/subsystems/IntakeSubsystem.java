@@ -22,7 +22,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 
 	private final WPI_TalonFX _RightMotorIntake;
@@ -73,11 +73,11 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		SmartDashboard.putNumber("RightIntakeVelocity", _RightMotorIntake.getSelectedSensorVelocity());
-		SmartDashboard.putNumber("LeftIntakeVelocity", _LeftMotorIntake.getSelectedSensorVelocity());
+		// SmartDashboard.putNumber("RightIntakeVelocity", _RightMotorIntake.getSelectedSensorVelocity());
+		// SmartDashboard.putNumber("LeftIntakeVelocity", _LeftMotorIntake.getSelectedSensorVelocity());
 
-		SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
-		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
+		// SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
+		// SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
 
 		// This method will be called once per scheduler run
 	}

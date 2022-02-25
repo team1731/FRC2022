@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -115,18 +116,19 @@ public class Robot extends TimedRobot {
 
 		// CameraServer camServer = CameraServer.getInstance();
 		// camServer.startAutomaticCapture();
-
-		m_pneu = new PneumaticsControlModule(OpConstants.kPneumaticsCanID);
-		m_pdp = new PowerDistribution(OpConstants.kPDPCanID, ModuleType.kRev);
-
+     //   p_mod = new Compressor(PneumaticsModuleType.REVPH);
+	//	m_pneu = new PneumaticsControlModule(OpConstants.kPneumaticsCanID,pneumaticsModuleType.REVPH);
+	//	m_pdp = new PowerDistribution(OpConstants.kPDPCanID, ModuleType.kRev);
+		
+	  //  LiveWindow.disableAllTelemetry();
 		m_vision = new LimeLightSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
-		m_launch = new LaunchSubsystem();
+		m_launch = new LaunchSubsystem(m_drive);
 		m_intake = new IntakeSubsystem();
 		m_climb = new ClimbSubsystem();
 
-		m_pdp.clearStickyFaults();
-		m_pneu.clearAllStickyFaults();
+		//m_pdp.clearStickyFaults();
+		//m_pneu.clearAllStickyFaults();
 		m_drive.zeroHeading();
 
 		// Instantiate our RobotContainer. This will perform all our button bindings,
@@ -170,6 +172,8 @@ public class Robot extends TimedRobot {
 			System.err.println("DeployedBranchInfo.txt not found");
 			fnf.printStackTrace();
 		}
+    
+		
 	}
 
 	/**
@@ -194,7 +198,7 @@ public class Robot extends TimedRobot {
 
 		m_drive.displayEncoders();
 
-		SmartDashboard.putNumber("PCM Current", m_pneu.getCompressorCurrent());
+	//	SmartDashboard.putNumber("PCM Current", m_pneu.getCompressorCurrent());
 	}
 
 	/**
@@ -217,26 +221,26 @@ public class Robot extends TimedRobot {
 			// SmartDashboard.putBoolean("HighSensor", m_sequencer.highSensorHasBall());
 		}
 
-		// if (RobotBase.isReal()) {
-		// 	String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
-		// 	if (!newCode.equals(autoCode)) {
-		// 		autoCode = newCode;
-		// 		System.out.println("New Auto Code read from dashboard - initializing.");
-		// 		autoInitPreload();
-		// 	}
-		// 	if (m_autonomousCommand != null) {
-		// 		if (m_autonomousCommand.getName().startsWith("H0")) {
-		// 			Integer newFieldOrientation = namedAutoMode.getFieldOrientation();
-		// 			if (newFieldOrientation != null) {
-		// 				if (!newFieldOrientation.equals(fieldOrientation)) {
-		// 					System.out.println("New Field Orientation detected by LimeLight - initializing.");
-		// 					fieldOrientation = newFieldOrientation;
-		// 					autoInitPreload();
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
+		 if (RobotBase.isReal()) {
+		 	String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
+		 	if (!newCode.equals(autoCode)) {
+		 		autoCode = newCode;
+		 		System.out.println("New Auto Code read from dashboard - initializing.");
+		 		autoInitPreload();
+		 	}
+		 	if (m_autonomousCommand != null) {
+		 		if (m_autonomousCommand.getName().startsWith("H0")) {
+		 			Integer newFieldOrientation = namedAutoMode.getFieldOrientation();
+		 			if (newFieldOrientation != null) {
+		 				if (!newFieldOrientation.equals(fieldOrientation)) {
+		 					System.out.println("New Field Orientation detected by LimeLight - initializing.");
+		 					fieldOrientation = newFieldOrientation;
+		 					autoInitPreload();
+		 				}
+		 			}
+		 		}
+		 	}
+		 }
 	}
 
 	/**
@@ -254,14 +258,18 @@ public class Robot extends TimedRobot {
 			System.err.println("SOMETHING WENT WRONG - UNABLE TO RUN AUTONOMOUS! CHECK SOFTWARE!");
 		} else {
 			System.out.println("Running actual autonomous mode --> " + namedAutoMode.name);
+
 			m_drive.zeroHeading();
+
+			m_drive.setAngleOffsetDegrees(namedAutoMode.getAngleOffset());
+		
 			Pose2d initialPose = namedAutoMode.getInitialPose();
 			if (initialPose != null) {
 				m_drive.resetOdometry(initialPose);
 				System.out.println("Initial Pose: " + initialPose.toString());
 			}
 			m_autonomousCommand.schedule();
-		}
+		}		
 		System.out.println("autonomousInit: End");
 	}
 
@@ -278,7 +286,7 @@ public class Robot extends TimedRobot {
 		
 		m_drive.resumeCSVWriter();
 
-		initSubsystems();
+		initSubsystems();	
 
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
