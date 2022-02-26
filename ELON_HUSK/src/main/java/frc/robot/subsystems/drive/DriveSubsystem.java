@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -30,14 +31,14 @@ import frc.robot.subsystems.ToggleableSubsystem;
 import frc.robot.util.AutoSwerveDebug;
 import frc.robot.util.ReflectingCSVWriter;
 import frc.robot.util.SwerveModuleDebug;
-import frc.robot.util.Utils;;
+//import frc.robot.util.Utils;;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends ToggleableSubsystem {
 
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return true;
 	}
 
 	private final Timer m_timer = new Timer();
@@ -59,7 +60,6 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	private boolean headingOverride = true;
 	private boolean visionHeadingOverride = false;
-	private boolean visionDistanceOverride = false;
 
 	private final AnalogInput leftFrontAbsEncoder;
 	private final AnalogInput rightFrontAbsEncoder;
@@ -70,12 +70,15 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	private Double lockedHeading = null;
 	private double m_heading;
+	private boolean m_drivePolar = false;
+	private double lastVisionTimestamp = 0;
 
 	// Robot swerve modules
 	private final SwerveModule m_leftFront;
 	private final SwerveModule m_rightFront;
 	private final SwerveModule m_leftRear;
 	private final SwerveModule m_rightRear;
+	private double angleOffset;
 
 	// The gyro sensor
 	// private final Gyro a_gyro = new ADXRS450_Gyro();
@@ -98,8 +101,9 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	/**
 	 * Creates a new DriveSubsystem.
+	 * @param m_drive
 	 */
-	public DriveSubsystem(VisionSubsystem m_vision) {
+	public DriveSubsystem(VisionSubsystem vision) {
 		if(isDisabled()){
 			leftFrontAbsEncoder = null;
 			rightFrontAbsEncoder = null;
@@ -139,7 +143,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 				VisionConstants.kDriveAccelerationTolerance);
 		visionDistanceController.setGoal(0);
 		headingController.enableContinuousInput(-180, 180);
-
+        m_vision = vision;
 		mCSVWriter1 = new ReflectingCSVWriter<>(AutoSwerveDebug.class);
 		mCSVWriter2 = new ReflectingCSVWriter<>(SwerveModuleDebug.class);
 		m_timer.reset();
@@ -152,7 +156,6 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		 * SmartDashboard.putNumber("VisionD", VisionConstants.kTurnD);
 		 */
 
-		this.m_vision = m_vision;
 	}
 
 	public void setDriveSpeedScaler(double axis) {
@@ -196,6 +199,13 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
 			SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
 			SmartDashboard.putNumber("Heading", m_heading);
+			SmartDashboard.putNumber("targetAngle", getTargetAngle());
+			SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getTargetAngle());
+			SmartDashboard.putNumber("AngleOffset", angleOffset);
+			SmartDashboard.putNumber("targetDistance", getTargetDistance());
+			SmartDashboard.putBoolean("VisionStale", visionStale());
+			SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
+
 			SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
 			SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
 			SmartDashboard.putNumber("LF turn Position", m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
@@ -208,8 +218,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 		}
 
-		mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
-				m_rightFront.getDebugValues(), m_leftRear.getDebugValues(), m_rightRear.getDebugValues()));
+	//	mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
+	//			m_rightFront.getDebugValues(), m_leftRear.getDebugValues(), m_rightRear.getDebugValues()));
 	}
 
 	/**
@@ -243,12 +253,13 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * @param fieldRelative Whether the provided x and y speeds are relative to the
 	 *                      field.
 	 */
-	@SuppressWarnings("ParameterName")
+	/*@SuppressWarnings("ParameterName")
 	public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 		if(isDisabled()) return;
 		
 		drive(xSpeed, ySpeed, 0, 0, fieldRelative);
 	}
+	*/
 
 	/**
 	 * Method to drive the robot using joystick info.
@@ -256,13 +267,35 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	 * @param xSpeed        Speed of the robot in the x direction (forward).
 	 * @param ySpeed        Speed of the robot in the y direction (sideways).
 	 * @param rot           Angular rate of the robot.
-	 * @param fieldRelative Whether the provided x and y speeds are relative to the
-	 *                      field.
+	 * @param fieldRelative
+	 * @param polardrive Whether we are driving in polar coordinates around to goal
 	 */
 	@SuppressWarnings("ParameterName")
-	public void drive(double xSpeed, double ySpeed, double rightX, double rightY, boolean fieldRelative) {
-		if(isDisabled()) return;
-		
+	public void drive(double xSpeed, double ySpeed, double rightX, double rightY, boolean fieldRelative, boolean fieldPolar) {
+		if(isDisabled()){
+			return;
+		}
+
+		m_drivePolar = fieldPolar;
+
+		if ((fieldPolar) && (m_vision != null )) {
+			//updateVisionOdometry();
+			m_vision.enableLED();
+			if (m_vision.hasTarget()) {
+				updateVisionOdometry();
+				setVisionHeadingGoal(-angleOffset + getHeading());
+				setVisionHeadingOverride(true);
+			} else {
+				setVisionHeadingOverride(false);
+			}
+		} else if( m_vision != null) {
+		   m_vision.disableLED();
+		   setVisionHeadingOverride(false);
+		}
+
+	
+
+
 		double xSpeedAdjusted = xSpeed;
 		double ySpeedAdjusted = ySpeed;
 		// double rotAdjusted = rightX;
@@ -317,7 +350,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		/*
 		 * if(Math.abs(rotationalOutput) < 0.1){ rotationalOutput = 0; }
 		 */
-
+/*
 		if (visionDistanceOverride && m_vision != null) {
 			// This allows the driver to still have forward/backward control of the robot
 			// while getting to optimal shooting in case something is in the way
@@ -327,7 +360,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		} else if (m_vision != null) {
 			visionDistanceController.reset(m_vision.getLastTarget().getZ());
 		}
-
+*/
 		var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(fieldRelative
 				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle())
 				: new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput));
@@ -461,7 +494,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	public void setVisionDistanceOverride(boolean visionOverride) {
 		if(isDisabled()) return;
 		
-		visionDistanceOverride = visionOverride;
+	//	visionDistanceOverride = visionOverride;
 	}
 
 	public void setVisionHeadingGoal(double newGoal) {
@@ -502,5 +535,47 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	public double getYVelocity() {
 		return 0;
 	}
+
+   public void updateVisionOdometry() {
+	if (m_drivePolar && m_vision.hasTarget()) {
+
+		//m_gyro.setAngleAdjustment(-m_vision.getLastPortPos().getTargetAngle());
+        angleOffset = m_vision.getLastPortPos().getTargetAngle();
+		resetOdometry(new Pose2d(new Translation2d(-m_vision.getLastPortPos().getTargetDistance(), 0),
+		new Rotation2d(Math.toRadians(m_vision.getLastPortPos().getTargetAngle()))));	
+		lastVisionTimestamp = m_vision.getLastPortPos().getTimeCaptured();
+		}
+
+	}
+
+	public void setAngleOffsetDegrees(double degrees) {
+		m_gyro.setAngleAdjustment(degrees);
+	}
+
+
+
+	public double getTargetDistance() {
+
+		return Math.sqrt(Math.pow(m_odometry.getPoseMeters().getY(),2) + Math.pow(m_odometry.getPoseMeters().getX(),2));
+	}
+
+	public double getTargetAngle() {
+		return  Math.toDegrees(Math.atan(m_odometry.getPoseMeters().getY()/m_odometry.getPoseMeters().getX()));
+
+	}
+
+
+    public boolean visionStale() {
+        return (Timer.getFPGATimestamp() - lastVisionTimestamp >=15 || !m_drivePolar);
+    }
+
+
+
+
+
+
+
+
+
 
 }

@@ -1,51 +1,73 @@
 package frc.robot.subsystems;
 
+
 import java.util.Arrays;
 import java.util.Optional;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.IRSensor;
 import frc.robot.Constants.OpConstants;
-import com.ctre.phoenix.motorcontrol.*;
-
+import frc.robot.Constants.ClimbConstants;
 
 public class ClimbSubsystem extends ToggleableSubsystem {
 
 	//#region ToggleableSubsystem
 	@Override
 	protected boolean getEnabled(){
-		return false;
+		return m_Enabled;
 	}
+
+	private boolean m_Enabled = true;
 	//#endregion
 
 	private State _currentState = State.READY;
 	private InputDirection _inputDirection = InputDirection.NEUTRAL;
 
-	private final Solenoid _extender1;
-	private final Solenoid _extender2;
-	private final Solenoid _grabber1;
-	private final Solenoid _grabber2;
+	private final DoubleSolenoid _extender;
+	private final DoubleSolenoid _grabberNorthFront;
+	private final DoubleSolenoid _grabberNorthBack;
+	private final DoubleSolenoid _grabberSouthFront;
+	private final DoubleSolenoid _grabberSouthBack;
 
-	private final TalonFX _swingerMasterMotor;
-	private final TalonFX _swingerSlaveMotor;
+	private final CANSparkMax _swingerMasterMotor;
+	private final CANSparkMax _swingerSlaveMotor;
+
+	private final IRSensor _northSensor;
+	private final IRSensor _southSensor;
+
+	private final SparkMaxPIDController _pidMasterController;
+	private final RelativeEncoder _encoderMaster;
+	private final SparkMaxPIDController _pidSlaveController;
+
+	private double _timer = System.currentTimeMillis();
+	private int _climbCount = 0;
+	private boolean _sensorOverride = false;
 
 	//#region Enums
 
 	public enum State {
-		READY(0),
-		EXTEND(1),
-		GRAB_FIRST(2),
-		SWING_FIRST(3),
-		GRAB_SECOND(4),
-		RELEASE_FIRST(5),
-		SWING_SECOND(6),
-		GRAB_LAST(7),
-		RELEASE_SECOND(8),
-		SWING_LAST(9),
-		FINISHED(10);
+		READY(0),                // Extenders down, north grabbers open, south grabbers closed
+		EXTEND(1),               // Extenders up, north grabber one half closed, south grabbers closed
+		GRAB_FIRST_BAR(2),       // Extenders up, north grabber closed, south grabber closed
+
+		SWING_TO_SECOND_BAR(3),  // Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
+		GRAB_SECOND_BAR(4),      // Extenders up, north grabber closed, south grabber closed
+		RELEASE_FIRST_BAR(5),    // Extenders up, north grabber open, south grabber closed
+
+		SWING_TO_THIRD_BAR(6),
+		GRAB_THIRD_BAR(7),
+		RELEASE_SECOND_BAR(8),
+
+		HANG(9);                 // Extenders up, north grabber open, south grabber closed
 
 		private final int _value;
 
@@ -79,300 +101,319 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	}
 
 	public enum InputDirection {
-		UP(1),
-		NEUTRAL(0),
-		DOWN(-1);
+		UP,
+		NEUTRAL,
+		
+		// UP(1),
+		// NEUTRAL(0),
+		// DOWN(-1);
 
-		public final int value;
+		// public final int value;
 
-		InputDirection(int value){
-			this.value = value;
-		}
+		// InputDirection(int value){
+		// 	this.value = value;
+		// }
+	}
+
+	private enum GrabberHalf {
+		FRONT,
+		BACK,
+		BOTH;
 	}
 
 	//#endregion
 
 	public ClimbSubsystem() {
 		if(isDisabled()){ 
-			_extender1 = null;
-			_extender2 = null;
-			_grabber1 = null;
-			_grabber2 = null;
+			_extender = null;
+			_grabberNorthFront = null;
+			_grabberNorthBack = null;
+			_grabberSouthFront = null;
+			_grabberSouthBack = null;
 			_swingerMasterMotor = null;
 			_swingerSlaveMotor = null;
+			_northSensor = null;
+			_southSensor = null;
+			_pidMasterController = null;
+			_encoderMaster = null;
+			_pidSlaveController = null;
 			return;
 		}
 
-		//Change the range to Master/Slave motor
+		_extender = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kExtenderUpID, OpConstants.kExtenderDownID);
+		_grabberNorthFront = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kGrabberNorthFrontCloseID, OpConstants.kGrabberNorthFrontOpenID);
+		_grabberNorthBack =  new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kGrabberNorthBackCloseID, OpConstants.kGrabberNorthBackOpenID);
+		_grabberSouthFront = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kGrabberSouthFrontCloseID, OpConstants.kGrabberSouthFrontOpenID);
+		_grabberSouthBack =  new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kGrabberSouthBackCloseID, OpConstants.kGrabberSouthBackOpenID);
 
-		_extender1 = new Solenoid(Constants.kPneumaticsType, 0);
-		_extender2 = new Solenoid(Constants.kPneumaticsType, 0);
-		_grabber1 = new Solenoid(Constants.kPneumaticsType, 0);
-		_grabber2 = new Solenoid(Constants.kPneumaticsType, 0);
+		if(_extender == null){
+			m_Enabled = false;
+			System.err.println("CLIMB FATAL: UNABLE TO INITIALIZE EXTENDER DOUBLESOLENOID!!!");
+			System.err.println("ClimbSubsystem will be DISABLED for mechanical safety until robot code restarts!");
+		}
 
-		_swingerMasterMotor = new TalonFX(0);
-		_swingerSlaveMotor = new TalonFX(0);
+		_swingerMasterMotor = new CANSparkMax(OpConstants.kLeftSwingerMotorID, MotorType.kBrushless);
+		_swingerSlaveMotor = new CANSparkMax(OpConstants.kRightSwingerMotorID, MotorType.kBrushless);
 
-		_swingerSlaveMotor.follow(_swingerMasterMotor);
+		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
+		_southSensor = new IRSensor(OpConstants.kSouthSensorID);
 
 		/**
 		 * Configuring Defaults for Master/Slave motors
 		 */
-		_swingerMasterMotor.configFactoryDefault();
+		_swingerMasterMotor.restoreFactoryDefaults();
+        _swingerMasterMotor.setInverted(true);
 
-		_swingerMasterMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
+		_pidMasterController = _swingerMasterMotor.getPIDController();
+		_encoderMaster = _swingerMasterMotor.getEncoder();
 
-		_swingerMasterMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 12, 1.0));
-		_swingerMasterMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
+		// set PID coefficients
+		_pidMasterController.setP(ClimbConstants.kP);
+		_pidMasterController.setI(ClimbConstants.kI);
+		_pidMasterController.setD(ClimbConstants.kD);
+		_pidMasterController.setIZone(ClimbConstants.kIz);
+		_pidMasterController.setFF(ClimbConstants.kFF);
+		_pidMasterController.setOutputRange(ClimbConstants.kMinOutput, ClimbConstants.kMaxOutput);
 
-		_swingerMasterMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override
+    	_pidMasterController.setSmartMotionMaxVelocity(ClimbConstants.maxVel, ClimbConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionMinOutputVelocity(ClimbConstants.minVel, ClimbConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionMaxAccel(ClimbConstants.maxAcc, ClimbConstants.smartMotionSlot);
+    	_pidMasterController.setSmartMotionAllowedClosedLoopError(ClimbConstants.allowedErr, ClimbConstants.smartMotionSlot);
+ 
+		//Slave defaults
+		_swingerSlaveMotor.restoreFactoryDefaults();
 
-		_swingerMasterMotor.configSelectedFeedbackSensor(
-			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
-			OpConstants.kPIDLoopIdx,      			// PID Index
-			OpConstants.kTimeoutMs);      			// Config Timeout
-
-		/* Set relevant frame periods to be at least as fast as periodic rate */
-		_swingerMasterMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
-		_swingerMasterMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
 		
-		/* Gains for Position Closed Loop servo */
-		_swingerMasterMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Range.kP, OpConstants.kTimeoutMs);
-		_swingerMasterMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Range.kI, OpConstants.kTimeoutMs);
-		_swingerMasterMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Range.kD, OpConstants.kTimeoutMs);
-		_swingerMasterMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Range.kF, OpConstants.kTimeoutMs);
 
-		/* Set acceleration and vcruise velocity - see documentation */
-		_swingerMasterMotor.configMotionCruiseVelocity(OpConstants.MMCruiseVelocity, OpConstants.kTimeoutMs);
-		_swingerMasterMotor.configMotionAcceleration(OpConstants.MMAcceleration, OpConstants.kTimeoutMs);
+		_pidSlaveController = _swingerSlaveMotor.getPIDController();
 
-		/* Zero the sensor once on robot boot up */
-		_swingerMasterMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
-		_swingerMasterMotor.configMotionSCurveStrength(OpConstants.MMScurve);
+		//set PID coefficients
+		_pidSlaveController.setP(ClimbConstants.kP);
+		_pidSlaveController.setI(ClimbConstants.kI);
+		_pidSlaveController.setD(ClimbConstants.kD);
+		_pidSlaveController.setIZone(ClimbConstants.kIz);
+		_pidSlaveController.setFF(ClimbConstants.kFF);
+		_pidSlaveController.setOutputRange(ClimbConstants.kMinOutput, ClimbConstants.kMaxOutput);
 
-		//Slave Branch
-
-		_swingerSlaveMotor.configFactoryDefault();
-
-		_swingerSlaveMotor.configNeutralDeadband(0.001, OpConstants.kTimeoutMs);
-
-		_swingerSlaveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 12, 1.0));
-		_swingerSlaveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 2, 3, 0.5));
-
-		_swingerSlaveMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override
-
-		_swingerSlaveMotor.configSelectedFeedbackSensor(
-			TalonFXFeedbackDevice.IntegratedSensor, // Sensor Type 
-			OpConstants.kPIDLoopIdx,      			// PID Index
-			OpConstants.kTimeoutMs);      			// Config Timeout
-
-		/* Set relevant frame periods to be at least as fast as periodic rate */
-		_swingerSlaveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, OpConstants.kTimeoutMs);
-		_swingerSlaveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, OpConstants.kTimeoutMs);
-		
-		/* Gains for Position Closed Loop servo */
-		_swingerSlaveMotor.config_kP(OpConstants.SLOT_0, OpConstants.kGains_Range.kP, OpConstants.kTimeoutMs);
-		_swingerSlaveMotor.config_kI(OpConstants.SLOT_0, OpConstants.kGains_Range.kI, OpConstants.kTimeoutMs);
-		_swingerSlaveMotor.config_kD(OpConstants.SLOT_0, OpConstants.kGains_Range.kD, OpConstants.kTimeoutMs);
-		_swingerSlaveMotor.config_kF(OpConstants.SLOT_0, OpConstants.kGains_Range.kF, OpConstants.kTimeoutMs);
-
-		/* Set acceleration and vcruise velocity - see documentation */
-		_swingerSlaveMotor.configMotionCruiseVelocity(OpConstants.MMCruiseVelocity, OpConstants.kTimeoutMs);
-		_swingerSlaveMotor.configMotionAcceleration(OpConstants.MMAcceleration, OpConstants.kTimeoutMs);
-
-		/* Zero the sensor once on robot boot up */
-		_swingerSlaveMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
-		_swingerSlaveMotor.configMotionSCurveStrength(OpConstants.MMScurve);
+    	_pidSlaveController.setSmartMotionMaxVelocity(ClimbConstants.maxVel, ClimbConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionMinOutputVelocity(ClimbConstants.minVel, ClimbConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionMaxAccel(ClimbConstants.maxAcc, ClimbConstants.smartMotionSlot);
+    	_pidSlaveController.setSmartMotionAllowedClosedLoopError(ClimbConstants.allowedErr, ClimbConstants.smartMotionSlot);
+		_swingerSlaveMotor.follow(_swingerMasterMotor, true);
+		updateSmartDashboard();
+		handleReady();
 	}
 
 	public State getState(){
-		if(isDisabled()){
-			return State.READY;
-		}
+		if(isDisabled()) return State.READY;
 
 		return _currentState;
 	}
 
 	public void setInputDirection(InputDirection value){
-		if(isDisabled()){ return; }
+		if(isDisabled()) return; 
 		
 		_inputDirection = value;
 	}
 
-	private void setExtenders(boolean on){
-		_extender1.set(on);
-		_extender2.set(on);
+	public boolean getSensorOveride(){
+		if(isDisabled()) return false;
+
+		return _sensorOverride;
 	}
 
-	private void grab(int id){
-		if(id == 1){
-			_grabber1.set(_inputDirection == InputDirection.UP);
-		} else {
-			_grabber2.set(_inputDirection == InputDirection.UP);
+	public void setSensorOverride(boolean value){
+		if(isDisabled()) return;
+
+		_sensorOverride = value;
+	}
+
+	//#region Controls
+
+	private void setExtenders(boolean up){
+		_extender.set(up ? Value.kForward : Value.kReverse);
+	}
+
+	private void setNorthGrabber(GrabberHalf grabberHalf, boolean closed){
+		if(grabberHalf == GrabberHalf.FRONT || grabberHalf == GrabberHalf.BOTH) {
+			_grabberNorthFront.set(closed ? Value.kForward : Value.kReverse);
+		}
+		if(grabberHalf == GrabberHalf.BACK || grabberHalf == GrabberHalf.BOTH) {
+			_grabberNorthBack.set(closed ? Value.kForward : Value.kReverse);
 		}
 	}
 
-	private void release(int id){
-		if(_inputDirection == InputDirection.DOWN){
-			grab(id);
-			return;
-		}
+	private void setNorthGrabbers(boolean closed){
+		setNorthGrabber(GrabberHalf.BOTH, closed);
+	} 
 
-		if(id == 1){
-			_grabber1.set(_inputDirection == InputDirection.DOWN);
-		} else {
-			_grabber2.set(_inputDirection == InputDirection.DOWN);
+	private void setSouthGrabber(GrabberHalf grabberHalf, boolean closed){
+		if(grabberHalf == GrabberHalf.FRONT || grabberHalf == GrabberHalf.BOTH) {
+			_grabberSouthFront.set(closed ? Value.kForward : Value.kReverse);
+		}
+		if(grabberHalf == GrabberHalf.BACK || grabberHalf == GrabberHalf.BOTH) {
+			_grabberSouthBack.set(closed ? Value.kForward : Value.kReverse);
 		}
 	}
-	
+
+	private void setSouthGrabbers(boolean closed){
+		setSouthGrabber(GrabberHalf.BOTH, closed);
+	}
+
 	private void startSwing(){
-		_swingerMasterMotor.set(ControlMode.PercentOutput, 100 * _inputDirection.value);
+		_pidMasterController.setReference(
+			ClimbConstants.kFwdSteps, // * _inputDirection.value,
+			CANSparkMax.ControlType.kSmartMotion
+		);
 	}
 
 	private void stopSwing(){
-		_swingerMasterMotor.set(ControlMode.PercentOutput, 0);
+		_swingerMasterMotor.set(0);
+		_encoderMaster.setPosition(0); // not sure if this is needed
 	}
 
-	//#region State Handlers
-
-	private boolean handleReady(){
-		setExtenders(false);
-		release(1);
-		release(2);
-		_swingerMasterMotor.set(ControlMode.PercentOutput, 0);
-		return true;
-	}
-
-	private boolean handleExtend(){
-		//Make extender motors go _inputDirection.value
-
-		setExtenders(_inputDirection == InputDirection.UP);
-
-		// if(doneExtending){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleGrabFirst(){
-		//Make first grabber go _inputDirection.value
-
-		grab(1);
-		stopSwing();
-
-		// if(doneGrabbing){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleSwingFirst(){
-		//Make swing motor go _inputDirection.value
-
-		startSwing();
-
-		// if(doneSwinging){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleGrabSecond(){
-		//Make second grabber go _inputDirection.value
-
-		grab(2);
-		stopSwing();
-
-		// if(doneGrabbing){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleReleaseFirst(){
-		//Make first grabber go negative _inputDirection.value
-
-		release(1);
-		stopSwing();
-
-		// if(doneReleasing){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleSwingSecond(){
-		//Make swing motor go _inputDirection.value
-
-		startSwing();
-
-		// if(doneSwinging){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleGrabLast(){
-		//Make first grabber go _inputDirection.value
-
-		stopSwing();
-		grab(2);
-
-		// if(doneGrabbing){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleReleaseSecond(){
-		//Make second grabber go negative _inputDirection.value
-
-		release(1);
-
-		// if(doneSwinging){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleSwingLast(){
-		//Make swing motor go _inputDirection.value
-
-		startSwing();
-
-		// if(doneSwinging){
-		// 	return true;
-		// }
-
-		return false;
-	}
-
-	private boolean handleFinished(){
-		stopSwing();
-		
-		return _inputDirection == InputDirection.DOWN;
+	//Function for properly releasing the previous par before hanging on the current bar
+	//Removes 10 ticks from the current revolution count to let the climber hang
+	private void releaseSwing(){
+		_pidMasterController.setReference(
+			ClimbConstants.kBckSteps,
+			CANSparkMax.ControlType.kSmartMotion
+		);
 	}
 
 	//#endregion
 
+	//#region State Handlers
+
+	private boolean handleReady(){
+		// Extenders down, north grabbers open, south grabbers closed
+		setExtenders(false);
+		setNorthGrabbers(false);
+		setSouthGrabbers(true);
+		stopSwing();
+		return _inputDirection == InputDirection.UP;
+	}
+
+	private boolean handleExtend(){
+		// Extenders up, north grabber one half closed, south grabbers closed
+		setExtenders(true);
+		setNorthGrabber(GrabberHalf.FRONT, true);
+		setSouthGrabbers(true);
+		
+		return _sensorOverride || (_northSensor != null && _northSensor.isTriggered());
+	}
+
+	private boolean handleGrabFirstBar(){
+		// Extenders up, north grabber closed, south grabber closed
+		setExtenders(true);
+		setNorthGrabbers(true);
+
+		return Timer.getFPGATimestamp() - _timer >= 1;
+	}
+
+	private boolean handleSwingToSecondBar(){
+		// Extenders up, north grabber closed, south grabber half open, swinger motors spinning+
+		setExtenders(true);
+		startSwing();
+		setSouthGrabber(GrabberHalf.BACK, false);
+
+		return _sensorOverride || (_southSensor != null && _southSensor.isTriggered());
+	}
+
+	private boolean handleGrabSecondBar(){
+		// Extenders up, north grabber closed, south grabber closed
+		setExtenders(true);
+		setSouthGrabbers(true);
+		stopSwing();
+
+		return Timer.getFPGATimestamp() - _timer >= 1;
+	}
+
+	private boolean handleReleaseFirstBar(){
+		// Extenders up, north grabber open, south grabber closed
+		setExtenders(true);
+		setNorthGrabbers(false);
+		releaseSwing();
+
+		return Timer.getFPGATimestamp() - _timer >= 1;
+	}
+
+	private boolean handleSwingToThirdBar(){
+		setExtenders(true);
+		startSwing();
+		setNorthGrabber(GrabberHalf.FRONT, false);
+
+		return _sensorOverride || (_northSensor != null && _northSensor.isTriggered());
+	}
+
+	private boolean handleGrabThirdBar(){
+		setExtenders(true);
+		setNorthGrabbers(true);
+		stopSwing();
+
+		return Timer.getFPGATimestamp() - _timer >= 1;
+	}
+
+	private boolean handleReleaseSecondBar(){
+		setExtenders(true);
+		setSouthGrabbers(false);
+		releaseSwing();
+
+		return Timer.getFPGATimestamp() - _timer >= 1;
+	}
+
+	private void handleHang(){
+		// Extenders up, north grabber open, south grabber closed
+		setExtenders(true);
+		setNorthGrabbers(false);
+		setSouthGrabbers(true);
+		_pidMasterController.setReference(
+			ClimbConstants.kFwdSteps / 2,
+			CANSparkMax.ControlType.kSmartMotion
+		);
+	}
+
+	//#endregion
+
+	private void updateSmartDashboard(){
+		SmartDashboard.putString("climb_State", _currentState.name());
+		SmartDashboard.putString("climb_iDir", _inputDirection.name());
+		SmartDashboard.putBoolean("climb_GrbNF Closed", _grabberNorthFront.get() == Value.kForward);
+		SmartDashboard.putBoolean("climb_GrbNB Closed", _grabberNorthBack.get() == Value.kForward);
+		SmartDashboard.putBoolean("climb_GrbSF Closed", _grabberSouthFront.get() == Value.kForward);
+		SmartDashboard.putBoolean("climb_GrbSB Closed", _grabberSouthBack.get() == Value.kForward);
+		SmartDashboard.putBoolean("climb_Extender", _extender.get() == Value.kForward);
+		SmartDashboard.putNumber("climb_encPos", _encoderMaster.getPosition());
+		SmartDashboard.putNumber("climb_North Sensor Voltage", _northSensor != null ? _northSensor.getVoltage() : 0);
+		SmartDashboard.putBoolean("climb_North Sensor Triggered", _northSensor != null ? _northSensor.isTriggered() : false);
+		SmartDashboard.putNumber("climb_South Sensor Voltage", _southSensor != null ? _southSensor.getVoltage() : 0);
+		SmartDashboard.putBoolean("climb_South Sensor Triggered", _southSensor != null ? _southSensor.isTriggered() : false);
+		SmartDashboard.putBoolean("climb_Sensor Override", _sensorOverride);
+		SmartDashboard.putNumber("climb_Count", _climbCount);
+	}
+
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
-		if(isDisabled()){ return; }
+		if(isDisabled()) return;
+
+		//updateSmartDashboard();
 
 		if(_inputDirection == InputDirection.NEUTRAL){
-			_swingerMasterMotor.set(ControlMode.PercentOutput, 0);
+			_swingerMasterMotor.set(0);
+			_timer = Timer.getFPGATimestamp();
 			return;
 		}
 
+		/*
+		READY(0),                // Extenders down, north grabbers open, south grabbers closed
+		EXTEND(1),               // Extenders up, north grabber one half closed, south grabbers closed
+		GRAB_BAR(2),             // Extenders up, north grabber closed, south grabber closed
+
+		SWING_TO_NEXT_BAR(3),    // Extenders up, north grabber closed, south grabber closed, swinger motors spinning+
+		GRAB_NEXT_BAR(4),        // Extenders up, north grabber closed, south grabber closed
+		RELEASE_PREVIOUS_BAR(5); // Extenders up, north grabber open, south grabber closed
+		*/
 		boolean transition = false;
 		switch(_currentState){
 			case READY:
@@ -381,38 +422,42 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			case EXTEND:
 				transition = handleExtend();
 				break;
-			case GRAB_FIRST:
-				transition = handleGrabFirst();
+			case GRAB_FIRST_BAR:
+				transition = handleGrabFirstBar();
 				break;
-			case SWING_FIRST:
-				transition = handleSwingFirst();
+
+			//Loop these to climb all the way up to the top
+			case SWING_TO_SECOND_BAR:
+				transition = handleSwingToSecondBar();
 				break;
-			case GRAB_SECOND:
-				transition = handleGrabSecond();
+			case GRAB_SECOND_BAR:
+				transition = handleGrabSecondBar();
 				break;
-			case RELEASE_FIRST:
-				transition = handleReleaseFirst();
+			case RELEASE_FIRST_BAR:
+				transition = handleReleaseFirstBar();
 				break;
-			case SWING_SECOND:
-				transition = handleSwingSecond();
+
+			case SWING_TO_THIRD_BAR:
+				transition = handleSwingToThirdBar();
 				break;
-			case GRAB_LAST:
-				transition = handleGrabLast();
+			case GRAB_THIRD_BAR:
+				transition = handleGrabThirdBar();
 				break;
-			case RELEASE_SECOND:
-				transition = handleReleaseSecond();
+			case RELEASE_SECOND_BAR:
+				transition = handleReleaseSecondBar();
 				break;
-			case SWING_LAST:
-				transition = handleSwingLast();
-				break;
-			case FINISHED:
-				transition = handleFinished();
+
+			case HANG:
+				handleHang();
 				break;
 		}
 
 		if(transition){
-			_currentState = _inputDirection == InputDirection.UP ? _currentState.next()
-				: _currentState.previous();
+			_timer = Timer.getFPGATimestamp();
+			_currentState = _currentState.next();
+			_sensorOverride = false;
+			// _currentState = _inputDirection == InputDirection.UP ? _currentState.next()
+			// 	: _currentState.previous();
 		}
 	}
 

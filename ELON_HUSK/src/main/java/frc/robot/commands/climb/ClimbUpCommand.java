@@ -5,7 +5,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 
 public class ClimbUpCommand extends CommandBase {
 
-	protected final ClimbSubsystem _climb;
+	private final ClimbSubsystem _climb;
 
 	public ClimbUpCommand(ClimbSubsystem climb) {
 		_climb = climb;
@@ -18,8 +18,8 @@ public class ClimbUpCommand extends CommandBase {
 	}
 
 	@Override
-    public void end(boolean interrupted) {
-        _climb.setInputDirection(ClimbSubsystem.InputDirection.NEUTRAL);
-    }
+	public void end(boolean interrupted) {
+		_climb.setInputDirection(ClimbSubsystem.InputDirection.NEUTRAL);
+	}
 
 }
