@@ -17,6 +17,7 @@ import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.VisionRotateCommand;
 import frc.robot.commands.intake.RightIntakeJoyconCommand;
 import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
@@ -31,7 +32,8 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ButtonConstants;
 import frc.robot.Constants.DriveConstants;
@@ -50,7 +52,7 @@ public class RobotContainer {
 	private DriveSubsystem m_drive;
 	private LaunchSubsystem m_launch;
 	private IntakeSubsystem m_intake;
-	private LimeLightSubsystem m_vision;
+	private VisionSubsystem m_vision;
 	private ClimbSubsystem m_climb;
 
 	public enum HanMode {
@@ -67,7 +69,7 @@ public class RobotContainer {
 			ClimbSubsystem climb,
 			LaunchSubsystem launch, 
 			IntakeSubsystem intake, 
-			LimeLightSubsystem vision)
+			VisionSubsystem vision)
 		{
 		// this.m_ledstring = m_ledstring;
 		this.m_drive = drive;
@@ -126,6 +128,10 @@ public class RobotContainer {
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whileHeld(new ClimbUpCommand(m_climb));
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whileHeld(new ClimbDownCommand(m_climb));
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride).whileHeld(new OverrideSensorCommand(m_climb));
+		//#endregion
+
+		//#region Vision Subsystem
+		new JoystickButton(m_driverController, ButtonConstants.kVision).whenHeld(new VisionRotateCommand(m_vision, m_drive));
 		//#endregion
 		
 		//#region Intake Subsystem

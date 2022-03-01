@@ -196,20 +196,17 @@ public final class Constants {
 
 	public static final class VisionConstants {
 		// Ensure measurements are in METERS
-		public static final double kBoilerTargetTopHeight = 0;
-		public static final double kCameraDeadband = 0.0;
-		public static final double kEpsilon = 1E-9;
 		public static final double kMaxTrackerDistance = 18.0;
 		public static final double kMaxGoalTrackAge = 1.0; // cp had 1.0
-		public static final double kCameraFrameRate = 30.0;
-		public static final int kCameraBaudRate = 115200;
+		public static final double kGoalHeight = 2.67;
 
 		// Ensure measurements are in METERS
 		public static final double kCameraXOffset = 0;
 		public static final double kCameraYOffset = 0;
 		public static final double kCameraZOffset = 0;
-		public static final double kCameraPitchAngleDegrees = 0;
+		public static final double kCameraPitchAngleDegrees = 33.5;
 		public static final double kCameraYawAngleDegrees = 0;
+		public static final double kCameraLensHeightMeters = 0.6858;
 
 		// #region DrivePID
 		public static final double kDriveP = 0.05;
@@ -231,16 +228,8 @@ public final class Constants {
 		public static final double kTurnRateToleranceDegPerS = 10; // degrees per second
 		// #endregion
 
-	}
-
-	public static final class DriveConstantsOrig {
-		public static final double kTurnP = 0.5;
-		public static final double kTurnI = 0;
-		public static final double kTurnD = 0;
-		public static final double kTurnToleranceDeg = 5;
-		public static final double kTurnRateToleranceDegPerS = 10; // degrees per second
-		public static final double kMaxTurnRateDegPerS = 10;
-		public static final double kMaxTurnAccelerationDegPerSSquared = 30;
+		public static final double kAverageKeepTime = 0.2;
+		
 
 	}
 

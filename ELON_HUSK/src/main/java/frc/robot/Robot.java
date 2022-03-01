@@ -29,7 +29,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OpConstants;
 import frc.robot.autonomous._NamedAutoMode;
-import frc.robot.subsystems.LimeLightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 
 /**
@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
 
 	// The robot's subsystems
 	public DriveSubsystem m_drive;
-	public LimeLightSubsystem m_vision;
+	public VisionSubsystem m_vision;
 	public LaunchSubsystem m_launch;
 	public IntakeSubsystem m_intake;
 	public ClimbSubsystem m_climb;
@@ -116,12 +116,8 @@ public class Robot extends TimedRobot {
 
 		// CameraServer camServer = CameraServer.getInstance();
 		// camServer.startAutomaticCapture();
-     //   p_mod = new Compressor(PneumaticsModuleType.REVPH);
-	//	m_pneu = new PneumaticsControlModule(OpConstants.kPneumaticsCanID,pneumaticsModuleType.REVPH);
-	//	m_pdp = new PowerDistribution(OpConstants.kPDPCanID, ModuleType.kRev);
-		
-	  //  LiveWindow.disableAllTelemetry();
-		m_vision = new LimeLightSubsystem();
+
+		m_vision = new VisionSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
 		m_launch = new LaunchSubsystem(m_drive);
 		m_intake = new IntakeSubsystem();
@@ -207,6 +203,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		m_drive.suspendCSVWriter();
+		m_vision.disableLED();
 	}
 
 	@Override
@@ -347,5 +344,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 
+	}
+
+	@Override
+	public void disabledExit(){
+		m_vision.enableLED();
 	}
 }
