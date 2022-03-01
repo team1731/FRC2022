@@ -200,7 +200,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
 			SmartDashboard.putNumber("Heading", m_heading);
 			SmartDashboard.putNumber("targetAngle", getTargetAngle());
-			SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getTargetAngle());
+			SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getX());
 			SmartDashboard.putNumber("AngleOffset", angleOffset);
 			SmartDashboard.putNumber("targetDistance", getTargetDistance());
 			SmartDashboard.putBoolean("VisionStale", visionStale());
@@ -540,10 +540,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	if (m_drivePolar && m_vision.hasTarget()) {
 
 		//m_gyro.setAngleAdjustment(-m_vision.getLastPortPos().getTargetAngle());
-        angleOffset = m_vision.getLastPortPos().getTargetAngle();
-		resetOdometry(new Pose2d(new Translation2d(-m_vision.getLastPortPos().getTargetDistance(), 0),
-		new Rotation2d(Math.toRadians(m_vision.getLastPortPos().getTargetAngle()))));	
-		lastVisionTimestamp = m_vision.getLastPortPos().getTimeCaptured();
+        angleOffset = m_vision.getLastTarget().getX();
+		resetOdometry(new Pose2d(new Translation2d(-m_vision.getLastTarget().getTargetDistance(), 0),
+		new Rotation2d(Math.toRadians(m_vision.getLastTarget().getX()))));	
+		lastVisionTimestamp = m_vision.getLastTarget().getTimeCaptured();
 		}
 
 	}
