@@ -1,35 +1,36 @@
 package frc.robot.vision;
 
+import frc.robot.Constants.VisionConstants;
+
 public class LimeTargetInfo {
 
-	private double x = 1.0;
-	private double y;
-	private double z;
-	private double timestamp;
+	private double _x = 1.0;
+	private double _y;
+	private double _z;
+	private double _timestamp;
 
-	private double area;
-	private double boxLength;
-	private double boxWidth;
-	private double targetDistance;
-	private double targetAngle;
+	private double _area;
+	private double _boxLength;
+	private double _boxWidth;
+	private double _targetDistance;
 
-	public static LimeTargetInfo empty = new LimeTargetInfo(0.0, 0.0, 0.0, 0.0, 0.0, 0.0,0.0,0.0);
+	public static LimeTargetInfo empty = new LimeTargetInfo(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-	public LimeTargetInfo(double y, double z, double area, double hor, double vert, double targetDistance, double targetAngle, double timestamp) {
-		this.y = y;
-		this.z = z;
-		this.timestamp = timestamp;
+	public LimeTargetInfo(double y, double z, double area, double hor, double vert, double timestamp) {
+		this._y = y;
+		this._z = z;
+		this._timestamp = timestamp;
 
-		this.area = area;
-		this.boxLength = vert;
-		this.boxWidth = hor;
-		this.targetDistance = targetDistance;
-		this.targetAngle = targetAngle;
-	}
+		this._area = area;
+		this._boxLength = vert;
+		this._boxWidth = hor;
+		
+		double angleToGoalDegrees = VisionConstants.kCameraPitchAngleDegrees + y;
+		double angleToGoalRadians = Math.toRadians(angleToGoalDegrees); // angleToGoalDegrees * (Math.PI / 180.0);
 
-	public LimeTargetInfo(double y, double z) {
-		this.y = y;
-		this.z = z;
+		//calculate distance
+		double distanceFromLimelightToGoalMeters = (VisionConstants.kGoalHeight - VisionConstants.kCameraLensHeightMeters)/Math.tan(angleToGoalRadians);
+		this._targetDistance = distanceFromLimelightToGoalMeters;
 	}
 
 	/**
@@ -39,7 +40,7 @@ public class LimeTargetInfo {
 	 * @return
 	 */
 	public double getX() {
-		return x;
+		return _x;
 	}
 
 	/**
@@ -48,7 +49,7 @@ public class LimeTargetInfo {
 	 * @return
 	 */
 	public double getY() {
-		return y;
+		return _y;
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class LimeTargetInfo {
 	 * @return
 	 */
 	public double getZ() {
-		return z;
+		return _z;
 	}
 
 	/**
@@ -66,7 +67,7 @@ public class LimeTargetInfo {
 	 * @return
 	 */
 	public double getTimeCaptured() {
-		return timestamp;
+		return _timestamp;
 	}
 
 	/**
@@ -76,7 +77,7 @@ public class LimeTargetInfo {
 	 * @return
 	 */
 	public double getArea() {
-		return area;
+		return _area;
 	}
 
 	/**
@@ -85,7 +86,7 @@ public class LimeTargetInfo {
 	 * @return
 	 */
 	public double getLength() {
-		return boxLength;
+		return _boxLength;
 	}
 
 	/**
@@ -94,7 +95,7 @@ public class LimeTargetInfo {
 	 * @return
 	 */
 	public double getWidth() {
-		return boxWidth;
+		return _boxWidth;
 	}
 
 		/**
@@ -103,16 +104,7 @@ public class LimeTargetInfo {
 	 * @return
 	 */
 	public double getTargetDistance() {
-		return targetDistance;
-	}
-
-		/**
-	 * Returns the width of the bounding box around the target in pixels.
-	 * 
-	 * @return
-	 */
-	public double getTargetAngle() {
-		return targetAngle;
+		return _targetDistance;
 	}
 
 }
