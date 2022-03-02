@@ -535,9 +535,9 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
    public void updateVisionOdometry() {
 	if (m_drivePolar && m_vision.hasTarget()) {
-        // determine position on the field and set odometry
-		double y = (4.15 - (m_vision.getLastTarget().getTargetDistance())* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getX())));
-		double x = (8.188 - (m_vision.getLastTarget().getTargetDistance())* Math.cos(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getX())));
+        // determine position on the field and set odometry 4.15,8.188 is goal location in meters and .675 is goal radius
+		double y = (4.15 - ((0.675 + m_vision.getLastTarget().getTargetDistance()))* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getX())));
+		double x = (8.188 - ((0.675 + m_vision.getLastTarget().getTargetDistance()))* Math.cos(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getX())));
 		resetOdometry(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(getHeading()))));	
 		lastVisionTimestamp = m_vision.getLastTarget().getTimeCaptured();
 		}

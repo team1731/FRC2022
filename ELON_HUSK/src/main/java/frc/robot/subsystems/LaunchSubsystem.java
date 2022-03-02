@@ -146,7 +146,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	
 		stopLaunchBall();  // make sure plunger is out when we start
 
-		calibrateBasket();
+	
 
 	}
 
@@ -177,7 +177,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){
 			return;
 		}
-		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
+		calibrateBasket();
+
 	}
 
 	public void runLaunch(double joystick_0to1) {
@@ -270,7 +271,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	}
 
 	public void calibrateBasket() {
-		_RangeMotor.setSelectedSensorPosition(39000*_absoluteRange.getOutput());
+
+		_RangeMotor.setSelectedSensorPosition(39000*_absoluteRange.getOutput(), OpConstants.kPIDLoopIdx, 0);
 	}
 
 	@Override
