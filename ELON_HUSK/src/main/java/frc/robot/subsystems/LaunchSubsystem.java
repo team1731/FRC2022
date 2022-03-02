@@ -189,12 +189,12 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		int index = 0;
 		double fraction = 0;
 
-		if ( !m_drive.visionStale()) {    //this method also checks to see if we we are not manually shooting
+		if ( !m_drive.approximationStale()) {    //this method also checks to see if we we are not manually shooting
 			//speed_0to1 = getVisionSpeed();
 			//position_0to1 = getVisionPosition();
 			//position = position_0to1 * OpConstants.MaxRange;
-			index = (int)m_drive.getApproximateHubPosition();
-			fraction = m_drive.getApproximateHubPosition() - index;
+			index = (int)m_drive.getApproximateHubDistance();
+			fraction = m_drive.getApproximateHubDistance() - index;
 		} else {
 			fraction = normalize_input(joystick_0to1, 0.226, 0.826) * 7.62;
 			index = (int)fraction;
