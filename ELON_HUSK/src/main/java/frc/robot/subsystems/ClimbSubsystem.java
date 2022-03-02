@@ -168,6 +168,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerMasterMotor.setSmartCurrentLimit(50);
 		_swingerSlaveMotor.setSmartCurrentLimit(50);
 
+
 		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
 		_southSensor = new IRSensor(OpConstants.kSouthSensorID);
 
@@ -284,9 +285,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private void startSwing(double steps){
 		_pidMasterController.setReference(
 			steps, // * _inputDirection.value,
-			CANSparkMax.ControlType.kSmartMotion
+			CANSparkMax.ControlType.kPosition
 		);
-		_pidSlaveController.setReference(-steps, CANSparkMax.ControlType.kSmartMotion );
+		_pidSlaveController.setReference(-steps, CANSparkMax.ControlType.kPosition );
 	}
 
 	private void stopSwing(){
@@ -300,7 +301,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private void releaseSwing(double steps){
 		_pidMasterController.setReference(
 			steps,
-			CANSparkMax.ControlType.kSmartMotion
+			CANSparkMax.ControlType.kPosition
+		);
+		_pidSlaveController.setReference(
+			-steps,
+			CANSparkMax.ControlType.kPosition
 		);
 	}
 
@@ -417,6 +422,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		SmartDashboard.putBoolean("climb_North_Back_Cylinder", _northBackCylinderSensor.get());
 		SmartDashboard.putBoolean("climb_North_Front_Cylinder", _northFrontCylinderSensor.get());
 		SmartDashboard.putNumber("climb_Count", _climbCount);
+		SmartDashboard.putNumber("SlaveOutput", _swingerMasterMotor.getAppliedOutput());
+		SmartDashboard.putNumber("MasterOutput", _swingerSlaveMotor.getAppliedOutput());
+		SmartDashboard.putNumber("SlaveVelocity", _encoderMaster.getVelocity());
+		SmartDashboard.putNumber("MasterVelocity", _encoderSlave.getVelocity());
 	}
 
 	@Override
