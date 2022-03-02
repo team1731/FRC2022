@@ -219,12 +219,12 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private double getVisionPosition() {
 		// returns a number between 0 and 1 based on distance to the target 
 
-		return (1 - (m_drive.getTargetDistance()/7.62));   //making the last number smaller makes shallower shot
+		return (1 - (m_drive.getApproximateHubPosition()/7.62));   //making the last number smaller makes shallower shot
 	}
 
 	private double getVisionSpeed() {
 		// returns a number between .5 and 1 based on 7.62 meters to 0 meters away from the target. This was just based on what I heard someone say that the shooter speed was beetween .5 and full power
-		 return  0.5 + (0.5 * (m_drive.getTargetDistance()/7.62));
+		 return  0.5 + (0.5 * (m_drive.getApproximateHubPosition()/7.62));
 	}
 
 	public void stopLaunch() {

@@ -202,7 +202,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			SmartDashboard.putNumber("targetAngle", getTargetAngle());
 			SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getX());
 			SmartDashboard.putNumber("AngleOffset", angleOffset);
-			SmartDashboard.putNumber("targetDistance", getTargetDistance());
+			SmartDashboard.putNumber("targetDistance", getApproximateHubPosition());
 			SmartDashboard.putBoolean("VisionStale", visionStale());
 			SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
 
@@ -554,7 +554,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 
 
-	public double getTargetDistance() {
+	public double getApproximateHubPosition() {
 
 		return Math.sqrt(Math.pow(m_odometry.getPoseMeters().getY(),2) + Math.pow(m_odometry.getPoseMeters().getX(),2));
 	}
