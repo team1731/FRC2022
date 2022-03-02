@@ -323,7 +323,7 @@ public final class Constants {
 
 
 		public static final double kBckSteps = -10;
-		public static final double kSecondBarSteps = 90;
+		public static final double kSecondBarSteps = 60;
 		public static final double kThirdBarSteps = 120;
 
 		public static final int smartMotionSlot = 0;

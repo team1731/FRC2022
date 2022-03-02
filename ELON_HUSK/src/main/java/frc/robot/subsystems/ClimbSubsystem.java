@@ -165,8 +165,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerSlaveMotor = new CANSparkMax(OpConstants.kRightSwingerMotorID, MotorType.kBrushless);
 
 
-		_swingerMasterMotor.setSmartCurrentLimit(50);
-		_swingerSlaveMotor.setSmartCurrentLimit(50);
+		_swingerMasterMotor.setSmartCurrentLimit(50,40);
+		_swingerSlaveMotor.setSmartCurrentLimit(50,40);
+		_swingerMasterMotor.setClosedLoopRampRate(1);
+		_swingerSlaveMotor.setClosedLoopRampRate(1);
 
 
 		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
