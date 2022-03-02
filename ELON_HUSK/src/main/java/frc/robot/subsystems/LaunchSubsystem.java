@@ -8,7 +8,9 @@ import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -31,7 +33,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private DoubleSolenoid _LaunchSolenoid;
 	private final WPI_TalonFX _RangeMotor;
 	private final WPI_TalonFX _LaunchMotor;
-	private DutyCycleEncoder _absoluteRange;
+	private DutyCycle _absoluteRange;
 	private double lastPosition = -1.0;
 
 	private DriveSubsystem m_drive;
@@ -138,7 +140,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		// done in robot.initSubsystems() _RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 		_RangeMotor.configMotionSCurveStrength(OpConstants.MMScurve);
 
-		_absoluteRange = new DutyCycleEncoder(0);
+    
+		_absoluteRange = new DutyCycle(new DigitalInput(4));
+
+	
+		stopLaunchBall();  // make sure plunger is out when we start
+
+		calibrateBasket();
 
 	}
 
@@ -147,7 +155,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		// This method will be called once per scheduler run
 		if(isDisabled()){ return; }
 		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
-		SmartDashboard.putNumber("_absoluteRange", _absoluteRange.getFrequency());
+		SmartDashboard.putNumber("_absoluteRange", _absoluteRange.getOutput());
 	}
 
 	private double normalize_input(double input, double min, double max) {
@@ -259,6 +267,10 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	public void stopLaunchBall() {
 		if(isDisabled()){ return; }
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kReverse);
+	}
+
+	public void calibrateBasket() {
+		_RangeMotor.setSelectedSensorPosition(39000*_absoluteRange.getOutput());
 	}
 
 	@Override
