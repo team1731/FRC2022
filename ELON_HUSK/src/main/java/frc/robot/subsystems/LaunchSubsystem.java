@@ -7,7 +7,9 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
@@ -29,6 +31,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private DoubleSolenoid _LaunchSolenoid;
 	private final WPI_TalonFX _RangeMotor;
 	private final WPI_TalonFX _LaunchMotor;
+	private DutyCycleEncoder _absoluteRange;
 	private double lastPosition = -1.0;
 
 	private DriveSubsystem m_drive;
@@ -134,13 +137,17 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 		// done in robot.initSubsystems() _RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 		_RangeMotor.configMotionSCurveStrength(OpConstants.MMScurve);
+
+		_absoluteRange = new DutyCycleEncoder(0);
+
 	}
 
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
 		if(isDisabled()){ return; }
-		//SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+		SmartDashboard.putNumber("_absoluteRange", _absoluteRange.getFrequency());
 	}
 
 	private double normalize_input(double input, double min, double max) {
@@ -175,6 +182,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		SmartDashboard.putNumber("_RangeStick", joystick_0to1);
 		SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
 		SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
+
 
 		double position = 0.0;
 		double velUnitsPer100ms = 0.0;
