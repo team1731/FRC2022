@@ -422,16 +422,16 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			return;
 		}
 		
-		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.269); // leftFront, rightFront, leftRear,
+		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.32); // leftFront, rightFront, leftRear,
 																				// rightRear
-		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.275);// nope! took it back out!// had taken out
+		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.31);// nope! took it back out!// had taken out
 																				// but it started working again
 																				// 7mar2020. // took this one out -- bad
 																				// hardware encoder!!!
 		// m_rightFront.resetEncoders(0);// had taken out but it started working again
 		// 7mar2020. // took this one out -- bad hardware encoder!!!
-		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.265);
-		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.289);
+		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.35);
+		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.32);
 		resetOdometry(new Pose2d());
 	}
 

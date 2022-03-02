@@ -78,7 +78,7 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 
 		Pose2d unrotInitPose = trajectory0.getInitialPose();
 		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(-46.0));
-		this.angleOffset = -46.0;   // this is the angle of the robot on the field. 
+		this.angleOffset = 0;   // this is the angle of the robot on the field. 
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
@@ -90,17 +90,17 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 				
 
 			new LaunchBallCommandStart(m_launch).withTimeout(4),
-			new LaunchBallCommandStop(m_launch).withTimeout(0.1),
+			new LaunchBallCommandStop(m_launch).withTimeout(0.1)
 
-			new ParallelCommandGroup(
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory1),  // Drive to second ball
-			new RightIntakeCommand(m_intake).withTimeout(2)),
+			// new ParallelCommandGroup(
+			// createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory1),  // Drive to second ball
+			// new RightIntakeCommand(m_intake).withTimeout(2)),
 			
-			new RightStopCommand(m_intake),
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory2),  // Drive to first ball				
-			new LaunchBallCommandStart(m_launch),
-			new WaitCommand (3),			
-			new LaunchBallCommandStop(m_launch)
+			// new RightStopCommand(m_intake),
+			// createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory2),  // Drive to first ball				
+			// new LaunchBallCommandStart(m_launch),
+			// new WaitCommand (3),			
+			// new LaunchBallCommandStop(m_launch)
 					     
 		);
 

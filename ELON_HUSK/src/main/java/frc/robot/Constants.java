@@ -326,13 +326,15 @@ public final class Constants {
 		public static final double kMinOutput = -1;
 		public static final double maxRPM = 5700;
 
-		public static final double maxVel = 2000; //rpm
+		public static final double maxVel = 1000; //rpm
 		public static final double minVel = 0;
 		public static final double maxAcc = 1500;
 		public static final double allowedErr = 0;
 
-		public static final double kFwdSteps = 50;
+
 		public static final double kBckSteps = -10;
+		public static final double kSecondBarSteps = 90;
+		public static final double kThirdBarSteps = 120;
 
 		public static final int smartMotionSlot = 0;
 	}
