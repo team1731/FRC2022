@@ -195,26 +195,25 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			SmartDashboard.putNumber("pose x", m_odometry.getPoseMeters().getTranslation().getX());
 			SmartDashboard.putNumber("pose y", m_odometry.getPoseMeters().getTranslation().getY());
 			SmartDashboard.putNumber("rot deg", m_odometry.getPoseMeters().getRotation().getDegrees());
-			SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));
-			SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
-			SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
+			// SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));
+			// SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
+			// SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
 			SmartDashboard.putNumber("Heading", m_heading);
-			SmartDashboard.putNumber("targetAngle", getTargetAngle());
 			SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getX());
-			SmartDashboard.putNumber("AngleOffset", angleOffset);
-			SmartDashboard.putNumber("targetDistance", getApproximateHubPosition());
-			SmartDashboard.putBoolean("VisionStale", visionStale());
+			SmartDashboard.putNumber("ApproximateHubAngle", getApproximateHubAngle());
+			SmartDashboard.putNumber("ApproximateHubAngle", getApproximateHubDistance());
+
 			SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
 
-			SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
-			SmartDashboard.putNumber("LF turn Position", m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("LF turn Velocity", m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
-			SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
-			SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
-			SmartDashboard.putNumber("RF turn Position", m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("LR turn Position", m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("RR turn Position", m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
+			// SmartDashboard.putNumber("LF turn Position", m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("LF turn Velocity", m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
+			// SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
+			// SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
+			// SmartDashboard.putNumber("RF turn Position", m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("LR turn Position", m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("RR turn Position", m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
 
 		}
 
@@ -277,18 +276,16 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		}
 
 		m_drivePolar = fieldPolar;
-
-		if ((fieldPolar) && (m_vision != null )) {
-			//updateVisionOdometry();
+        updateVisionOdometry(); // for autonomous may need ot shut off
+		if ((fieldPolar)) {
 			m_vision.enableLED();
-			if (m_vision.hasTarget()) {
-				updateVisionOdometry();
-				setVisionHeadingGoal(-angleOffset + getHeading());
+			if (!approximationStale()) {
+				setVisionHeadingGoal(getApproximateHubAngle());
 				setVisionHeadingOverride(true);
 			} else {
 				setVisionHeadingOverride(false);
 			}
-		} else if( m_vision != null) {
+		} else  {
 		   m_vision.disableLED();
 		   setVisionHeadingOverride(false);
 		}
@@ -538,34 +535,35 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
    public void updateVisionOdometry() {
 	if (m_drivePolar && m_vision.hasTarget()) {
-
-		//m_gyro.setAngleAdjustment(-m_vision.getLastPortPos().getTargetAngle());
-        angleOffset = m_vision.getLastTarget().getX();
-		resetOdometry(new Pose2d(new Translation2d(-m_vision.getLastTarget().getTargetDistance(), 0),
-		new Rotation2d(Math.toRadians(m_vision.getLastTarget().getX()))));	
+        // determine position on the field and set odometry
+		double y = (4.15 - (m_vision.getLastTarget().getTargetDistance())* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getX())));
+		double x = (8.188 - (m_vision.getLastTarget().getTargetDistance())* Math.cos(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getX())));
+		resetOdometry(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(getHeading()))));	
 		lastVisionTimestamp = m_vision.getLastTarget().getTimeCaptured();
 		}
 
 	}
 
-	public void setAngleOffsetDegrees(double degrees) {
-		m_gyro.setAngleAdjustment(degrees);
+	// public void setAngleOffsetDegrees(double degrees) {
+	// 	m_gyro.setAngleAdjustment(degrees);
+	// }
+
+
+
+	public double getApproximateHubDistance() {
+
+		return Math.sqrt(Math.pow(4.155 -m_odometry.getPoseMeters().getY(),2) + Math.pow(8.188 - m_odometry.getPoseMeters().getX(),2));
 	}
 
 
 
-	public double getApproximateHubPosition() {
-
-		return Math.sqrt(Math.pow(m_odometry.getPoseMeters().getY(),2) + Math.pow(m_odometry.getPoseMeters().getX(),2));
-	}
-
-	public double getTargetAngle() {
-		return  Math.toDegrees(Math.atan(m_odometry.getPoseMeters().getY()/m_odometry.getPoseMeters().getX()));
+	public double getApproximateHubAngle () {
+		return  Math.toDegrees(Math.atan((4.155 - m_odometry.getPoseMeters().getY())/(8.188 - m_odometry.getPoseMeters().getX())));
 
 	}
 
 
-    public boolean visionStale() {
+    public boolean approximationStale() {
         return (Timer.getFPGATimestamp() - lastVisionTimestamp >=15 || !m_drivePolar);
     }
 

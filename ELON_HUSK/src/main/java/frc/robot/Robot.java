@@ -258,7 +258,7 @@ public class Robot extends TimedRobot {
 
 			m_drive.zeroHeading();
 
-			m_drive.setAngleOffsetDegrees(namedAutoMode.getAngleOffset());
+			//m_drive.setAngleOffsetDegrees(namedAutoMode.getAngleOffset());
 		
 			Pose2d initialPose = namedAutoMode.getInitialPose();
 			if (initialPose != null) {

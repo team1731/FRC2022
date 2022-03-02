@@ -37,17 +37,14 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 	private IntakeSubsystem m_intake;
 	private LaunchSubsystem m_launch;
 
-	private double angleOffset;
+
 
 	@Override
 	public Pose2d getInitialPose() {
 		return this._initPose;
 	}
 
-	@Override
-	public double getAngleOffset() {
-		return this.angleOffset;
-	}
+
 
 
 	public L4_B3L2_B5B4L2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
@@ -78,7 +75,7 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 
 		Pose2d unrotInitPose = trajectory0.getInitialPose();
 		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(-46.0));
-		this.angleOffset = -46.0;   // this is the angle of the robot on the field. 
+
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 

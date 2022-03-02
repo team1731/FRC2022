@@ -177,7 +177,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
 
 		double position;
-		if ( !m_drive.visionStale()) {    //this method also checks to see if we we are not manually shooting
+		if ( !m_drive.approximationStale()) {    //this method also checks to see if we we are not manually shooting
 			speed_0to1 = getVisionSpeed();
 			position_0to1 = getVisionPosition();
 			position = position_0to1 * OpConstants.MaxRange;
@@ -203,7 +203,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 */
 		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
 		/* multiply by -1.0 for direction */
-		double velUnitsPer100ms = /*-1.0 * */ (m_drive.visionStale() ? normalize_input(speed_0to1, 0.156, 0.748) : speed_0to1) * 6000.0 * 2048.0 / 600.0;		
+		double velUnitsPer100ms = /*-1.0 * */ (m_drive.approximationStale() ? normalize_input(speed_0to1, 0.156, 0.748) : speed_0to1) * 6000.0 * 2048.0 / 600.0;		
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 		SmartDashboard.putNumber("velUnitsPer100ms", velUnitsPer100ms);
 
@@ -219,12 +219,12 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private double getVisionPosition() {
 		// returns a number between 0 and 1 based on distance to the target 
 
-		return (1 - (m_drive.getApproximateHubPosition()/7.62));   //making the last number smaller makes shallower shot
+		return (1 - (m_drive.getApproximateHubDistance()/7.62));   //making the last number smaller makes shallower shot
 	}
 
 	private double getVisionSpeed() {
 		// returns a number between .5 and 1 based on 7.62 meters to 0 meters away from the target. This was just based on what I heard someone say that the shooter speed was beetween .5 and full power
-		 return  0.5 + (0.5 * (m_drive.getApproximateHubPosition()/7.62));
+		 return  0.5 + (0.5 * (m_drive.getApproximateHubDistance()/7.62));
 	}
 
 	public void stopLaunch() {
