@@ -79,6 +79,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private final SwerveModule m_leftRear;
 	private final SwerveModule m_rightRear;
 	private double angleOffset;
+	private int _sdCount = 0;
 
 	// The gyro sensor
 	// private final Gyro a_gyro = new ADXRS450_Gyro();
@@ -186,12 +187,12 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	public void periodic() {
 		if(isDisabled()) return;
 
-		resumeCSVWriter();
+		//resumeCSVWriter();
 
 		// Update the odometry in the periodic block
 		// updateOdometry();
 
-		if (Robot.doSD()) {
+		if (_sdCount++ > 50) {
 			SmartDashboard.putNumber("pose x", m_odometry.getPoseMeters().getTranslation().getX());
 			SmartDashboard.putNumber("pose y", m_odometry.getPoseMeters().getTranslation().getY());
 			SmartDashboard.putNumber("rot deg", m_odometry.getPoseMeters().getRotation().getDegrees());
@@ -199,11 +200,22 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			// SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
 			// SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
 			SmartDashboard.putNumber("Heading", m_heading);
-			SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getX());
+			SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getY());
+			SmartDashboard.putNumber("TargetDistanceFromVision", m_vision.getLastTarget().getTargetDistance());
 			SmartDashboard.putNumber("ApproximateHubAngle", getApproximateHubAngle());
-			SmartDashboard.putNumber("ApproximateHubAngle", getApproximateHubDistance());
+			SmartDashboard.putNumber("ApproximateHubDistance", getApproximateHubDistance());
+			SmartDashboard.putBoolean("ApproximationStale", approximationStale());
+			SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+			SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+			SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+			SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
 
 			SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
+
+			SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
+			SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
+			SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
+			SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
 
 			// SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
 			// SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
@@ -214,8 +226,9 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			// SmartDashboard.putNumber("RF turn Position", m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
 			// SmartDashboard.putNumber("LR turn Position", m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
 			// SmartDashboard.putNumber("RR turn Position", m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
+			_sdCount = 0;
 
-		}
+	}
 
 	//	mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
 	//			m_rightFront.getDebugValues(), m_leftRear.getDebugValues(), m_rightRear.getDebugValues()));
@@ -274,9 +287,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){
 			return;
 		}
-
+     //   System.out.println("drivepolar" + m_drivePolar);
 		m_drivePolar = fieldPolar;
-        updateVisionOdometry(); // for autonomous may need ot shut off
+	//	SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
+       updateVisionOdometry(); // for autonomous may need ot shut off
 		if ((fieldPolar)) {
 			m_vision.enableLED();
 			if (!approximationStale()) {
@@ -286,7 +300,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 				setVisionHeadingOverride(false);
 			}
 		} else  {
-		   m_vision.disableLED();
+		   m_vision.disableLED(false);
 		   setVisionHeadingOverride(false);
 		}
 
@@ -334,13 +348,13 @@ public class DriveSubsystem extends ToggleableSubsystem {
 				rotationalOutput = headingController.calculate(getHeading());
 				desiredHeading = getHeading();
 				lockedHeading = getHeading();
-				SmartDashboard.putNumber("headingController Output", rotationalOutput);
+			//	SmartDashboard.putNumber("headingController Output", rotationalOutput);
 			} else {
 				// headingController.reset(getHeading());
 				// desiredHeading += rotationalOutput*2.5;
 				rotationalOutput = headingController.calculate(getHeading(), desiredHeading);
-				SmartDashboard.putNumber("desiredHeading", desiredHeading);
-				SmartDashboard.putNumber("headingController Output", rotationalOutput);
+			//	SmartDashboard.putNumber("desiredHeading", desiredHeading);
+			//	SmartDashboard.putNumber("headingController Output", rotationalOutput);
 			}
 		}
 
@@ -362,7 +376,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle())
 				: new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput));
 		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-		SmartDashboard.putNumber("SwerveModuleAzimuthState", swerveModuleStates[0].angle.getDegrees());
+	//	SmartDashboard.putNumber("SwerveModuleAzimuthState", swerveModuleStates[0].angle.getDegrees());
 		m_leftFront.setDesiredState(swerveModuleStates[0]); // leftFront, rightFront, leftRear, rightRear
 		m_rightFront.setDesiredState(swerveModuleStates[1]);
 		m_leftRear.setDesiredState(swerveModuleStates[2]);
@@ -422,9 +436,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		
 		if (m_gyro != null) {
 			m_heading = Math.IEEEremainder(m_gyro.getAngle(), 360) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-			if (System.currentTimeMillis() % 100 == 0) {
-				SmartDashboard.putNumber("Heading", m_heading);
-			}
+
 		}
 		return m_heading;
 	}
@@ -500,20 +512,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		headingController.setGoal(newGoal);
 	}
 
-	public void displayEncoders() {
-		if(isDisabled()) return;
-		
-		SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-		SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-		SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-		SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-		if (RobotBase.isReal()) {
-			SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
-			SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
-			SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
-			SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
-		}
-	}
+	
 
 	public void resetGyro() {
 		if(isDisabled()) return;
@@ -536,8 +535,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
    public void updateVisionOdometry() {
 	if (m_drivePolar && m_vision.hasTarget()) {
         // determine position on the field and set odometry
-		double y = (4.15 - (m_vision.getLastTarget().getTargetDistance())* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getX())));
-		double x = (8.188 - (m_vision.getLastTarget().getTargetDistance())* Math.cos(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getX())));
+		double y = (4.15 - (m_vision.getLastTarget().getTargetDistance())* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
+		double x = (8.188 - (m_vision.getLastTarget().getTargetDistance())* Math.cos(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
 		resetOdometry(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(getHeading()))));	
 		lastVisionTimestamp = m_vision.getLastTarget().getTimeCaptured();
 		}

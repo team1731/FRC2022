@@ -113,7 +113,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-
+        LiveWindow.disableAllTelemetry();
 		// CameraServer camServer = CameraServer.getInstance();
 		// camServer.startAutomaticCapture();
 
@@ -192,7 +192,7 @@ public class Robot extends TimedRobot {
 		// block in order for anything in the Command-based framework to work.
 		CommandScheduler.getInstance().run();
 
-		m_drive.displayEncoders();
+		
 
 	//	SmartDashboard.putNumber("PCM Current", m_pneu.getCompressorCurrent());
 	}
@@ -203,7 +203,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		m_drive.suspendCSVWriter();
-		m_vision.disableLED();
+		m_vision.disableLED(false);
 	}
 
 	@Override

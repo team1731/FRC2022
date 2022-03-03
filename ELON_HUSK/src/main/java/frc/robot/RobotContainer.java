@@ -131,7 +131,7 @@ public class RobotContainer {
 		//#endregion
 
 		//#region Vision Subsystem
-		new JoystickButton(m_driverController, ButtonConstants.kVision).whenHeld(new VisionRotateCommand(m_vision, m_drive));
+	//	new JoystickButton(m_driverController, ButtonConstants.kVision).whenHeld(new VisionRotateCommand(m_vision, m_drive));
 		//#endregion
 		
 		//#region Intake Subsystem
