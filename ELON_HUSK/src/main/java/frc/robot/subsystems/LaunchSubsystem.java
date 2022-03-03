@@ -181,37 +181,42 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	}
 
-	public void runLaunch(double joystick_0to1) {
+	public void runLaunch(double joystick_0to1, double joystick1_0to1) {
 		if(isDisabled()){
 			return;
 		}
 		//SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
 		//SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
-		SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
+	//	SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
 		SmartDashboard.putNumber("_RangeStick", joystick_0to1);
-		SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
-		SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
+	//	SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
+	//	SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
 
 
 		double position = 0.0;
 		double velUnitsPer100ms = 0.0;
 		int index = 0;
 		double fraction = 0;
+        boolean calibrating = true;
 
-		if ( !m_drive.approximationStale()) {    //this method also checks to see if we we are not manually shooting
-			//speed_0to1 = getVisionSpeed();
-			//position_0to1 = getVisionPosition();
-			//position = position_0to1 * OpConstants.MaxRange;
-			index = (int)m_drive.getApproximateHubDistance();
+
+		if (!m_drive.approximationStale()) { // this method also checks to see if we we are not manually shooting
+			// speed_0to1 = getVisionSpeed();
+			// position_0to1 = getVisionPosition();
+			// position = position_0to1 * OpConstants.MaxRange;
+			index = (int) m_drive.getApproximateHubDistance();
 			fraction = m_drive.getApproximateHubDistance() - index;
 		} else {
 			fraction = normalize_input(joystick_0to1, 0.226, 0.826) * 7.62;
-			index = (int)fraction;
+			index = (int) fraction;
 			fraction = fraction - index;
 		}
 
-		position = OpConstants.kRangeArray[index][0] + ((OpConstants.kRangeArray[index+1][0]-OpConstants.kRangeArray[index][0])*fraction);
-
+        if (!calibrating) {
+			position = OpConstants.kRangeArray[index][0] + ((OpConstants.kRangeArray[index+1][0]-OpConstants.kRangeArray[index][0])*fraction);
+		} else {
+			position = normalize_input(joystick1_0to1, 0.226, 0.826) * 39000;
+		}
 		if (position < OpConstants.MinRange) { position = 0; }
 		if (range_update(position, .05 /* percent tolerance */)) {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
@@ -228,8 +233,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * velocity setpoint is in units/100ms
 		 */
 		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
+		if (!calibrating) {
 		velUnitsPer100ms = OpConstants.kRangeArray[index][1] + ((OpConstants.kRangeArray[index+1][1]-OpConstants.kRangeArray[index][1])*fraction);
+		} else {
+			velUnitsPer100ms = normalize_input(joystick_0to1, 0.226, 0.826) * 6000* OpConstants.kVelocity;
+		}
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
+
 		SmartDashboard.putNumber("velUnitsPer100ms", velUnitsPer100ms);
 
 		/**
