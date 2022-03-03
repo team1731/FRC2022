@@ -204,9 +204,9 @@ public final class Constants {
 		public static final double kCameraXOffset = 0;
 		public static final double kCameraYOffset = 0;
 		public static final double kCameraZOffset = 0;
-		public static final double kCameraPitchAngleDegrees = 33.5;
+		public static final double kCameraPitchAngleDegrees = 41.67;
 		public static final double kCameraYawAngleDegrees = 0;
-		public static final double kCameraLensHeightMeters = 0.6858;
+		public static final double kCameraLensHeightMeters = 0.7142;
 
 		// #region DrivePID
 		public static final double kDriveP = 0.05;

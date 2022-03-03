@@ -404,17 +404,19 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	public void resetEncoders() {
 		if(isDisabled()) return;
 		
-		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.269); // leftFront, rightFront, leftRear,
+		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.32); // leftFront, rightFront, leftRear,
 																				// rightRear
-		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.275);// nope! took it back out!// had taken out
+		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.27);// nope! took it back out!// had taken out
 																				// but it started working again
 																				// 7mar2020. // took this one out -- bad
 																				// hardware encoder!!!
 		// m_rightFront.resetEncoders(0);// had taken out but it started working again
 		// 7mar2020. // took this one out -- bad hardware encoder!!!
-		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.265);
-		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.289);
+		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.26);
+		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.32);
 		resetOdometry(new Pose2d());
+
+	
 	}
 
 	/**
@@ -535,8 +537,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
    public void updateVisionOdometry() {
 	if (m_drivePolar && m_vision.hasTarget()) {
         // determine position on the field and set odometry
-		double y = (4.15 - (m_vision.getLastTarget().getTargetDistance())* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
-		double x = (8.188 - (m_vision.getLastTarget().getTargetDistance())* Math.cos(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
+		double y = (4.15  - (m_vision.getLastTarget().getTargetDistance() + .67)* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
+		double x = (8.188  - (m_vision.getLastTarget().getTargetDistance() + .67)* Math.cos(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
 		resetOdometry(new Pose2d(new Translation2d(x, y), new Rotation2d(Math.toRadians(getHeading()))));	
 		lastVisionTimestamp = m_vision.getLastTarget().getTimeCaptured();
 		}
@@ -557,7 +559,12 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 
 	public double getApproximateHubAngle () {
-		return  Math.toDegrees(Math.atan((4.155 - m_odometry.getPoseMeters().getY())/(8.188 - m_odometry.getPoseMeters().getX())));
+		double x =  m_odometry.getPoseMeters().getX();
+		double angle =  Math.toDegrees(Math.atan((4.155 - m_odometry.getPoseMeters().getY())/(8.188 - x)));
+		if (x > 4.155) {
+			angle = angle + 180;
+		}
+		return angle;
 
 	}
 
