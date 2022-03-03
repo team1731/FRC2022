@@ -55,6 +55,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	private double _timer = System.currentTimeMillis();
 	private int _climbCount = 0;
+	private int _sdCount = 0;
 	private boolean _sensorOverride = false;
 
 	//#region Enums
@@ -165,10 +166,14 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerSlaveMotor = new CANSparkMax(OpConstants.kRightSwingerMotorID, MotorType.kBrushless);
 
 
-		_swingerMasterMotor.setSmartCurrentLimit(50,40);
-		_swingerSlaveMotor.setSmartCurrentLimit(50,40);
-		_swingerMasterMotor.setClosedLoopRampRate(1);
-		_swingerSlaveMotor.setClosedLoopRampRate(1);
+		_swingerMasterMotor.setSmartCurrentLimit(90,90,0);
+		_swingerSlaveMotor.setSmartCurrentLimit(90,90,0);
+		_swingerMasterMotor.setClosedLoopRampRate(2);
+		_swingerSlaveMotor.setClosedLoopRampRate(2);
+		_swingerMasterMotor.setOpenLoopRampRate(2);
+		_swingerSlaveMotor.setOpenLoopRampRate(2);
+	
+	
 
 
 		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
@@ -223,7 +228,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
     	_pidSlaveController.setSmartMotionMaxAccel(ClimbConstants.maxAcc, ClimbConstants.smartMotionSlot);
     	_pidSlaveController.setSmartMotionAllowedClosedLoopError(ClimbConstants.allowedErr, ClimbConstants.smartMotionSlot);
 		//_swingerSlaveMotor.follow(_swingerMasterMotor, true);
-		updateSmartDashboard();
+
 		_swingerSlaveMotor.setInverted(true);
 		handleReady();
 	}
@@ -287,9 +292,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private void startSwing(double steps){
 		_pidMasterController.setReference(
 			steps, // * _inputDirection.value,
-			CANSparkMax.ControlType.kPosition
+			CANSparkMax.ControlType.kSmartMotion
 		);
-		_pidSlaveController.setReference(-steps, CANSparkMax.ControlType.kPosition );
+		_pidSlaveController.setReference(-steps, CANSparkMax.ControlType.kSmartMotion );
 	}
 
 	private void stopSwing(){
@@ -303,11 +308,11 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private void releaseSwing(double steps){
 		_pidMasterController.setReference(
 			steps,
-			CANSparkMax.ControlType.kPosition
+			CANSparkMax.ControlType.kSmartMotion
 		);
 		_pidSlaveController.setReference(
 			-steps,
-			CANSparkMax.ControlType.kPosition
+			CANSparkMax.ControlType.kSmartMotion
 		);
 	}
 
@@ -407,19 +412,19 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	//#endregion
 
 	private void updateSmartDashboard(){
-		SmartDashboard.putString("climb_State", _currentState.name());
-		SmartDashboard.putString("climb_iDir", _inputDirection.name());
-		SmartDashboard.putBoolean("climb_GrbNF Closed", _grabberNorthFront.get() == Value.kForward);
-		SmartDashboard.putBoolean("climb_GrbNB Closed", _grabberNorthBack.get() == Value.kForward);
-		SmartDashboard.putBoolean("climb_GrbSF Closed", _grabberSouthFront.get() == Value.kForward);
-		SmartDashboard.putBoolean("climb_GrbSB Closed", _grabberSouthBack.get() == Value.kForward);
-		SmartDashboard.putBoolean("climb_Extender", _extender.get() == Value.kForward);
-		SmartDashboard.putNumber("climb_encPos", _encoderMaster.getPosition());
-		SmartDashboard.putNumber("climb_North Sensor Voltage", _northSensor != null ? _northSensor.getVoltage() : 0);
-		SmartDashboard.putBoolean("climb_North Sensor Triggered", _northSensor != null ? _northSensor.isTriggered() : false);
-		SmartDashboard.putNumber("climb_South Sensor Voltage", _southSensor != null ? _southSensor.getVoltage() : 0);
-		SmartDashboard.putBoolean("climb_South Sensor Triggered", _southSensor != null ? _southSensor.isTriggered() : false);
-		SmartDashboard.putBoolean("climb_Sensor Override", _sensorOverride);
+		// SmartDashboard.putString("climb_State", _currentState.name());
+		// SmartDashboard.putString("climb_iDir", _inputDirection.name());
+		// SmartDashboard.putBoolean("climb_GrbNF Closed", _grabberNorthFront.get() == Value.kForward);
+		// SmartDashboard.putBoolean("climb_GrbNB Closed", _grabberNorthBack.get() == Value.kForward);
+		// SmartDashboard.putBoolean("climb_GrbSF Closed", _grabberSouthFront.get() == Value.kForward);
+		// SmartDashboard.putBoolean("climb_GrbSB Closed", _grabberSouthBack.get() == Value.kForward);
+		// SmartDashboard.putBoolean("climb_Extender", _extender.get() == Value.kForward);
+		// SmartDashboard.putNumber("climb_encPos", _encoderMaster.getPosition());
+		// SmartDashboard.putNumber("climb_North Sensor Voltage", _northSensor != null ? _northSensor.getVoltage() : 0);
+		// SmartDashboard.putBoolean("climb_North Sensor Triggered", _northSensor != null ? _northSensor.isTriggered() : false);
+		// SmartDashboard.putNumber("climb_South Sensor Voltage", _southSensor != null ? _southSensor.getVoltage() : 0);
+		// SmartDashboard.putBoolean("climb_South Sensor Triggered", _southSensor != null ? _southSensor.isTriggered() : false);
+		 SmartDashboard.putBoolean("climb_Sensor Override", _sensorOverride);
 		SmartDashboard.putBoolean("climb_South_Back_Cylinder", _southBackCylinderSensor.get());
 		SmartDashboard.putBoolean("climb_North_Back_Cylinder", _northBackCylinderSensor.get());
 		SmartDashboard.putBoolean("climb_North_Front_Cylinder", _northFrontCylinderSensor.get());
@@ -435,7 +440,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		// This method will be called once per scheduler run
 		if(isDisabled()) return;
 
-		updateSmartDashboard();
+		if (_sdCount++ > 50 ) {
+			updateSmartDashboard();
+			_sdCount = 0;
+		}
 
 		if(_inputDirection == InputDirection.NEUTRAL){
 			_swingerMasterMotor.set(0);

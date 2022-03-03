@@ -78,7 +78,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private final SwerveModule m_rightFront;
 	private final SwerveModule m_leftRear;
 	private final SwerveModule m_rightRear;
-	private double angleOffset;
+	private int _sdCount = 0;
 
 	// The gyro sensor
 	// private final Gyro a_gyro = new ADXRS450_Gyro();
@@ -191,7 +191,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		// Update the odometry in the periodic block
 		// updateOdometry();
 
-		if (Robot.doSD()) {
+		if (_sdCount++ > 70) {
 			SmartDashboard.putNumber("pose x", m_odometry.getPoseMeters().getTranslation().getX());
 			SmartDashboard.putNumber("pose y", m_odometry.getPoseMeters().getTranslation().getY());
 			SmartDashboard.putNumber("rot deg", m_odometry.getPoseMeters().getRotation().getDegrees());
@@ -200,22 +200,22 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
 			SmartDashboard.putNumber("Heading", m_heading);
 			SmartDashboard.putNumber("targetAngle", getTargetAngle());
-			SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getX());
-			SmartDashboard.putNumber("AngleOffset", angleOffset);
-			SmartDashboard.putNumber("targetDistance", getTargetDistance());
-			SmartDashboard.putBoolean("VisionStale", visionStale());
-			SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
-
-			SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
-			SmartDashboard.putNumber("LF turn Position", m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("LF turn Velocity", m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
-			SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
-			SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
-			SmartDashboard.putNumber("RF turn Position", m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("LR turn Position", m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
-			SmartDashboard.putNumber("RR turn Position", m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
-
+			// SmartDashboard.putNumber("TargetAngleFromVision",m_vision.getLastTarget().getX());
+			// SmartDashboard.putNumber("targetDistance", getTargetDistance());
+			// SmartDashboard.putBoolean("VisionStale", visionStale());
+			// SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
+			// SmartDashboard.putNumber("desiredHeading", desiredHeading);
+			// SmartDashboard.putNumber("headingController Output", rotationalOutput);
+			// SmartDashboard.putNumber("LF drive Position", m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("LF drive Velocity", m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
+			// SmartDashboard.putNumber("LF turn Position", m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("LF turn Velocity", m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
+			// SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
+			// SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
+			// SmartDashboard.putNumber("RF turn Position", m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("LR turn Position", m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
+			// SmartDashboard.putNumber("RR turn Position", m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
+			_sdCount = 0;
 		}
 
 	//	mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
@@ -283,7 +283,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			m_vision.enableLED();
 			if (m_vision.hasTarget()) {
 				updateVisionOdometry();
-				setVisionHeadingGoal(-angleOffset + getHeading());
+				setVisionHeadingGoal(0 + getHeading());
 				setVisionHeadingOverride(true);
 			} else {
 				setVisionHeadingOverride(false);
@@ -342,8 +342,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 				// headingController.reset(getHeading());
 				// desiredHeading += rotationalOutput*2.5;
 				rotationalOutput = headingController.calculate(getHeading(), desiredHeading);
-				SmartDashboard.putNumber("desiredHeading", desiredHeading);
-				SmartDashboard.putNumber("headingController Output", rotationalOutput);
+
 			}
 		}
 
@@ -540,7 +539,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	if (m_drivePolar && m_vision.hasTarget()) {
 
 		//m_gyro.setAngleAdjustment(-m_vision.getLastPortPos().getTargetAngle());
-        angleOffset = m_vision.getLastTarget().getX();
+      //  angleOffset = m_vision.getLastTarget().getX();
 		resetOdometry(new Pose2d(new Translation2d(-m_vision.getLastTarget().getTargetDistance(), 0),
 		new Rotation2d(Math.toRadians(m_vision.getLastTarget().getX()))));	
 		lastVisionTimestamp = m_vision.getLastTarget().getTimeCaptured();

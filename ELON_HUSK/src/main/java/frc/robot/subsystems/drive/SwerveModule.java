@@ -66,7 +66,7 @@ public class SwerveModule {
 			m_driveMotor.configPeakOutputForward(1, 30);
 			m_driveMotor.configPeakOutputReverse(-1, 30);
 
-			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5,30);
 
 			m_turningMotor = new WPI_TalonFX(turningMotorChannel);
 

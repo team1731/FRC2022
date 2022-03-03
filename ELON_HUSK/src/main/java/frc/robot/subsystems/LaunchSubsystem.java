@@ -30,6 +30,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private final WPI_TalonFX _RangeMotor;
 	private final WPI_TalonFX _LaunchMotor;
 	private double lastPosition = -1.0;
+	private int _sdCount = 0;
 
 	private DriveSubsystem m_drive;
 
@@ -140,6 +141,16 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	public void periodic() {
 		// This method will be called once per scheduler run
 		if(isDisabled()){ return; }
+
+		if (_sdCount++ > 80) {
+			SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
+		//	SmartDashboard.putNumber("_RangeStick", position_0to1);
+			SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
+			SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
+			SmartDashboard.putNumber("_RangeLastPos", lastPosition);
+			SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+
+		}
 		//SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
 	}
 
@@ -171,10 +182,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 		//SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
 		//SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
-		SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
-		SmartDashboard.putNumber("_RangeStick", position_0to1);
-		SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
-		SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
+
 
 		double position;
 		if ( !m_drive.visionStale()) {    //this method also checks to see if we we are not manually shooting
@@ -191,8 +199,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
 			lastPosition = position;
 		}
-		SmartDashboard.putNumber("_RangeLastPos", lastPosition);
-		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+
 
 		/// Speed - max is 6000.0 RPMs
 		// launchMotorPercent_0_to_1 *= -1;
@@ -231,8 +238,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){ return; }
 		_RangeMotor.set(TalonFXControlMode.PercentOutput, 0);
 		_LaunchMotor.set(TalonFXControlMode.PercentOutput, 0);
-		SmartDashboard.putNumber("_LaunchPosition", 0);
-		SmartDashboard.putNumber("_LaunchSpeed", 0);
+
 
 	}
 

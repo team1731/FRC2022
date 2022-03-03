@@ -62,8 +62,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_LeftMotorIntake.setSensorPhase(false);
 		_LeftMotorIntake.setInverted(false);
 
-		SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
-		SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
+		// SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
+		// SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
 	}
 
 	@Override

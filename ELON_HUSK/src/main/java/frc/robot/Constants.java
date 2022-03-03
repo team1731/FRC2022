@@ -125,8 +125,8 @@ public final class Constants {
 		public static final int kGrabberNorthBackCloseID = 1;
 		public static final int kGrabberSouthFrontOpenID = 2;
 		public static final int kGrabberSouthFrontCloseID = 3;
-		public static final int kGrabberSouthBackOpenID = 4;
-		public static final int kGrabberSouthBackCloseID = 5;
+		public static final int kGrabberSouthBackOpenID = 5;
+		public static final int kGrabberSouthBackCloseID = 4;
 
 		public static final int kLeftSwingerMotorID = 9;
 		public static final int kRightSwingerMotorID = 10;
@@ -307,23 +307,23 @@ public final class Constants {
 	}
 
 	public static final class ClimbConstants {
-  		public static final double kP = .2;
+  		public static final double kP = .0001;
 		public static final double kI = 0; 
 		public static final double kD = 0; 
 		public static final double kIz = 0; 
-		public static final double kFF = 0; 
+		public static final double kFF = 0.0006; 
 		public static final double kMaxOutput = 1;
 		public static final double kMinOutput = -1;
 		public static final double maxRPM = 5700;
 
-		public static final double maxVel = 500; //rpm
+		public static final double maxVel = 4000; //rpm
 		public static final double minVel = 0;
-		public static final double maxAcc = 1500;
+		public static final double maxAcc = 1000;
 		public static final double allowedErr = 0;
 
 
 		public static final double kBckSteps = -10;
-		public static final double kSecondBarSteps = 60;
+		public static final double kSecondBarSteps = 80;
 		public static final double kThirdBarSteps = 120;
 
 		public static final int smartMotionSlot = 0;
