@@ -20,6 +20,7 @@ import frc.robot.commands.intake.RightStopCommand;
 import frc.robot.commands.launch.LaunchBallCommand;
 import frc.robot.commands.launch.LaunchBallCommandStart;
 import frc.robot.commands.launch.LaunchBallCommandStop;
+import frc.robot.commands.launch.LaunchCommandStart;
 //import to create a new IntakeSubstem object
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
@@ -80,21 +81,21 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-
+            new LaunchCommandStart(m_launch,.4).withTimeout(2),
+			new LaunchBallCommandStart(m_launch).withTimeout(1),
 			new ParallelCommandGroup(
-			new RightIntakeCommand(m_intake).withTimeout(2),                                   // Turn on Intake
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory0)), // Drive to first ball	
+			new RightIntakeCommand(m_intake).withTimeout(2), 
+			new LaunchCommandStart(m_launch,.55).withTimeout(1),                                // Turn on Intake
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0)), // Drive to first ball	
 				
 
-			new LaunchBallCommandStart(m_launch).withTimeout(4),
+			new LaunchBallCommandStart(m_launch).withTimeout(3),
 			new LaunchBallCommandStop(m_launch).withTimeout(0.1),
 
 			new ParallelCommandGroup(
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory1),  // Drive to second ball
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1),  // Drive to second ball
 			new RightIntakeCommand(m_intake).withTimeout(2)),
-			
-			new RightStopCommand(m_intake),
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory2),  // Drive to first ball				
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -20.0, trajectory2),  // Drive to first ball				
 			new LaunchBallCommandStart(m_launch),
 			new WaitCommand (3),			
 			new LaunchBallCommandStop(m_launch)
