@@ -139,15 +139,10 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 		// done in robot.initSubsystems() _RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 		_RangeMotor.configMotionSCurveStrength(OpConstants.MMScurve);
-
     
 		_absoluteRange = new DutyCycle(new DigitalInput(4));
 
-	
 		stopLaunchBall();  // make sure plunger is out when we start
-
-	
-
 	}
 
 	@Override
@@ -167,8 +162,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	private boolean range_update(double _position, double _percent) {
 		boolean update = false;
-		if (_position > lastPosition * (1+_percent)) update = true;
-		else if (_position < lastPosition * (1 - _percent)) update = true;
+		if (_position > (lastPosition * (1 + _percent))) update = true;
+		else if (_position < (lastPosition * (1 - _percent))) update = true;
 		return update;
 	}
 
@@ -192,12 +187,11 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	//	SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
 	//	SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
 
-
 		double position = 0.0;
 		double velUnitsPer100ms = 0.0;
 		int index = 0;
 		double fraction = 0;
-        boolean calibrating = true;
+        boolean calibrating = false;
 
 
 		if (!m_drive.approximationStale()) { // this method also checks to see if we we are not manually shooting
@@ -222,6 +216,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
 			lastPosition = position;
 		}
+		SmartDashboard.putNumber("_RangePos", position);
 		SmartDashboard.putNumber("_RangeLastPos", lastPosition);
 		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
 

@@ -562,7 +562,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		double x =  m_odometry.getPoseMeters().getX();
 		double angle =  Math.toDegrees(Math.atan((4.155 - m_odometry.getPoseMeters().getY())/(8.188 - x)));
 		if (x > 4.155) {
-			angle = angle + 180;
+			//angle = angle + 180;
 		}
 		return angle;
 

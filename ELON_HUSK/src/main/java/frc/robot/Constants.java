@@ -198,14 +198,14 @@ public final class Constants {
 		public static final double kVelocity = 2048 / 600;
 
 		public static final double kRangeArray[][] = { // position ticks, velUnitsPer100ms
-				{ 39000.0, 0.0 }, // 0 meters - eject
-				{ 25020.0, 10109.0 }, // 1 meter
-				{ 24465.0, 9991.0 }, // 2 meters
-				{ 24465.0, 9991.0 }, // 3 meters
-				{ 19500.0, 3000.0 }, // 4
-				{ 14625.0, 3750.0 },
-				{ 9750.0, 4500.0 },
-				{ 4000.0, 5250.0 },
+				{ 39000.0, 5999.0 }, // 0 meters - eject
+				{ 39000.0, 5999.0 }, // 1 meter
+				{ 34700.0, 9991.0 }, // 2 meters
+				{ 26510.0, 10700.0 }, // 3 meters
+				{ 21116.0, 12235.0 }, // 4 meters
+				{ 10436.0, 13299.0 }, // 5 meters
+				{ 3944.0, 15660.0 },  // 6 meters
+				{ 3944.0, 15660.0 },  // 7 untested
 				{ 0.0, 6000.0 },
 		};
 	}
