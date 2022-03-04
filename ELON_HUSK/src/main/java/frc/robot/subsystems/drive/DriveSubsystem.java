@@ -561,10 +561,11 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	public double getApproximateHubAngle () {
 		double x =  m_odometry.getPoseMeters().getX();
 		double angle =  Math.toDegrees(Math.atan((4.155 - m_odometry.getPoseMeters().getY())/(8.188 - x)));
-		if (x > 4.155) {
-			//angle = angle + 180;
+		if (x > 8.188) {
+			angle = angle - 180;
 		}
 		return angle;
+		//return Math.toDegrees(Math.asin(((4.155 -m_odometry.getPoseMeters().getY()) * (8.188 - m_odometry.getPoseMeters().getX()))/getApproximateHubDistance()));
 
 	}
 

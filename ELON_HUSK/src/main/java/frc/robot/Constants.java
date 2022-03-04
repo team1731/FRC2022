@@ -161,7 +161,7 @@ public final class Constants {
 		 * 
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
-		public final static Gains kGains_Velocity = new Gains(0.05, 0, 0, .06, 300, 1.00);
+		public final static Gains kGains_Velocity = new Gains(0.5, 0, 0, .056, 300, 1.00);
 		public final static Gains kGains_Range = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
 
 		public final static int SLOT_0 = 0;
@@ -200,12 +200,12 @@ public final class Constants {
 		public static final double kRangeArray[][] = { // position ticks, velUnitsPer100ms
 				{ 39000.0, 5999.0 }, // 0 meters - eject
 				{ 39000.0, 5999.0 }, // 1 meter
-				{ 34700.0, 9991.0 }, // 2 meters
-				{ 26510.0, 10700.0 }, // 3 meters
-				{ 21116.0, 12235.0 }, // 4 meters
-				{ 10436.0, 13299.0 }, // 5 meters
-				{ 3944.0, 15660.0 },  // 6 meters
-				{ 3944.0, 15660.0 },  // 7 untested
+				{ 35000.0, 8574.0 }, // 2 meters
+				{ 32652.0, 9992.0 }, // 3 meters changed 3/4
+				{ 23695.0, 11999.0 }, // 4 meters
+				{ 17048.0, 13534.0 }, // 5 meters
+				{ 14000.0, 15660.0 },  // 6 meters
+				{ 11000.0, 15660.0 },  // 7 untested
 				{ 0.0, 6000.0 },
 		};
 	}
