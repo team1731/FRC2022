@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.F1_Move_Forward;
 import frc.robot.autonomous.L4_B3L2_B5B4L2;
+import frc.robot.autonomous.L5_B3X2_B5B4X2_B2B1X1;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
@@ -160,7 +161,7 @@ public class RobotContainer {
 			)
 			.whenInactive(() -> m_launch.stopLaunch());
 
-		new JoystickButton(m_operatorController, ButtonConstants.kLaunchMode).whenHeld(new LaunchModeCommand(m_launch));
+		//new JoystickButton(m_operatorController, ButtonConstants.kLaunchMode).whenHeld(new LaunchModeCommand(m_launch));
 		//new JoystickButton(m_operatorController, ButtonConstants.kLaunchMode).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
 		//#endregion
 	}
@@ -214,6 +215,8 @@ public class RobotContainer {
 				return new _NamedAutoMode(new F1_Move_Forward(m_drive));
 			case "L4":
 			    return new _NamedAutoMode(new L4_B3L2_B5B4L2(m_drive, m_intake, m_launch));
+			case "L5":
+			    return new _NamedAutoMode(new L5_B3X2_B5B4X2_B2B1X1(m_drive, m_intake, m_launch));
 
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");

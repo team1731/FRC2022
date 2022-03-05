@@ -159,7 +159,7 @@ public final class Constants {
 		 * 
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
-		public final static Gains kGains_Velocity = new Gains(0.5, 0, 0, .056, 300, 1.00);
+		public final static Gains kGains_Velocity = new Gains(0.4, 0, 0, .056, 300, 1.00);
 		public final static Gains kGains_Range = new Gains(0.5, 0.0, 0.0, 0.2, 0, 1.0);
 
 		public final static int SLOT_0 = 0;
@@ -168,10 +168,10 @@ public final class Constants {
 		public final static int MMCruiseVelocity = 15000;
 		public final static int MMAcceleration = 6000;
 		public final static int MMScurve = 1;
-		public final static int MaxRange = 39000;
-		public final static int MinRange = 100;
-		public final static double MinAbsEncoder = 0.05;
-		public final static double MaxAbsEncoder = 0.95;
+		public final static int MaxRange = 31718;
+		public final static int MinRange = 0;
+		public final static double MinAbsEncoder = 0.028;
+		public final static double MaxAbsEncoder = 0.975;
 
 		///// End TalonFX
 
@@ -198,14 +198,14 @@ public final class Constants {
 		public static final double kVelocity = 2048 / 600;
 
 		public static final double kRangeArray[][] = { // position ticks, velUnitsPer100ms
-				{ 39000.0, 5999.0 }, // 0 meters - eject
-				{ 39000.0, 5999.0 }, // 1 meter
-				{ 35000.0, 8574.0 }, // 2 meters
-				{ 32652.0, 9992.0 }, // 3 meters changed 3/4
-				{ 23695.0, 11999.0 }, // 4 meters
-				{ 17048.0, 13534.0 }, // 5 meters
-				{ 14000.0, 15660.0 },  // 6 meters
-				{ 11000.0, 15660.0 },  // 7 untested
+				{ 30000.0, 5999.0 }, // 0 meters - eject
+				{ 15530.0, 7000.0 }, // 1 meter
+				{ 17814.0, 8917.0 }, // 2 meters //35000
+				{ 15530.0, 10203.0 }, // 3 meters changed 3/4 //32652
+				{ 10971.0, 12758.0 }, // 4 meters
+				{  6250.0, 14400.0 }, // 5 meters
+				{  1529.0, 16042.0 },  // 6 meters
+				{  1000.0, 16042.0 },  // 7 untested
 				{ 0.0, 6000.0 },
 		};
 	}
