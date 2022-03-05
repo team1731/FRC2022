@@ -170,6 +170,7 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 		double targetAngularVel = m_thetaController.calculate(m_pose.get().getRotation().getRadians(),
 				endingHeading == null ? m_finalPose.getRotation().getRadians()
 						: Rotation2d.fromDegrees(endingHeading).getRadians());
+						
 
 		double vRef = desiredState.velocityMetersPerSecond;
 
