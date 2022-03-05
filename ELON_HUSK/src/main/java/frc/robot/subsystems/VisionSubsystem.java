@@ -224,9 +224,10 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 *                   the disable. Setting to false typically forces the LED to
 	 *                   turn off.
 	 */
-	private void disableLED(boolean trackQuery) {
+	public void disableLED(boolean trackQuery) {
+		_limeLED.setNumber(0);
 		if(isDisabled()) return;
-
+        
 		if (trackQuery) {
 			_ledQueries--;
 		}

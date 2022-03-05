@@ -7,7 +7,11 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalSource;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
@@ -29,7 +33,10 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private DoubleSolenoid _LaunchSolenoid;
 	private final WPI_TalonFX _RangeMotor;
 	private final WPI_TalonFX _LaunchMotor;
+	private DutyCycle _absoluteRange;
+	private boolean manual_launch = false;
 	private double lastPosition = -1.0;
+	private int _sdCount = 0;
 
 	private DriveSubsystem m_drive;
 
@@ -134,13 +141,27 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 		// done in robot.initSubsystems() _RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
 		_RangeMotor.configMotionSCurveStrength(OpConstants.MMScurve);
+    
+		_absoluteRange = new DutyCycle(new DigitalInput(4));
+
+		stopLaunchBall();  // make sure plunger is out when we start
 	}
 
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
 		if(isDisabled()){ return; }
-		//SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+
+		if (_sdCount++ > 80) {
+			SmartDashboard.putNumber("_Range%Out", _RangeMotor.getMotorOutputPercent());
+		//	SmartDashboard.putNumber("_RangeStick", position_0to1);
+			SmartDashboard.putNumber("_Launch%Out", _LaunchMotor.getMotorOutputPercent());
+			SmartDashboard.putNumber("_LaunchSpd", _LaunchMotor.getSelectedSensorVelocity());
+			SmartDashboard.putNumber("_RngLastPos", lastPosition);
+			SmartDashboard.putNumber("_RngGetPos", _RangeMotor.getSelectedSensorPosition());
+			SmartDashboard.putNumber("_absRngPos", _absoluteRange.getOutput());
+			_sdCount = 0;
+		}
 	}
 
 	private double normalize_input(double input, double min, double max) {
@@ -152,9 +173,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	private boolean range_update(double _position, double _percent) {
 		boolean update = false;
-		if (_position > lastPosition * (1+_percent)) update = true;
-		else if (_position < lastPosition * (1 - _percent)) update = true;
+		if (_position > (lastPosition * (1 + _percent))) update = true;
+		else if (_position < (lastPosition * (1 - _percent))) update = true;
 		return update;
+	}
+
+	public void manualMode(boolean mode) {
+		manual_launch = mode;
 	}
 
 	public void resetEncoder() {
@@ -162,70 +187,75 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if(isDisabled()){
 			return;
 		}
-		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, OpConstants.kTimeoutMs);
+		calibrateBasket();
 	}
 
-	public void runLaunch(double speed_0to1, double position_0to1) {
+	public void runLaunch(double joystick_0to1, double joystick1_0to1) {
 		if(isDisabled()){
 			return;
 		}
 		//SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
 		//SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
-		SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
-		SmartDashboard.putNumber("_RangeStick", position_0to1);
-		SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
-		SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
+		//SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
+		SmartDashboard.putNumber("_RangeStick", joystick_0to1);
+		//SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
+		//SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
 
-		double position;
-		if ( !m_drive.visionStale()) {    //this method also checks to see if we we are not manually shooting
-			speed_0to1 = getVisionSpeed();
-			position_0to1 = getVisionPosition();
-			position = position_0to1 * OpConstants.MaxRange;
+		double position = 0.0;
+		double velUnitsPer100ms = 0.0;
+		int index = 0;
+		double fraction = 0;
+
+		if (!m_drive.approximationStale()) { // this method also checks to see if we we are not manually shooting
+			// speed_0to1 = getVisionSpeed();
+			// position_0to1 = getVisionPosition();
+			// position = position_0to1 * OpConstants.MaxRange;
+			index = (int) m_drive.getApproximateHubDistance();
+			fraction = m_drive.getApproximateHubDistance() - index;
 		} else {
-			/// Range, max range guess is 10000 - OpConstantsMaxRange
-			/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
-			position = normalize_input(position_0to1, 0.226, 0.826) * OpConstants.MaxRange;
+			fraction = normalize_input(joystick_0to1, 0.226, 0.826) * 7.62;
+			index = (int) fraction;
+			fraction = fraction - index;
+		}
+
+        if (manual_launch) {
+			position = normalize_input(joystick1_0to1, 0.226, 0.826) * OpConstants.MaxRange;
+		} else {
+			position = OpConstants.kRangeArray[index][0] + ((OpConstants.kRangeArray[index+1][0]-OpConstants.kRangeArray[index][0])*fraction);
 		}
 		if (position < OpConstants.MinRange) { position = 0; }
 		if (range_update(position, .05 /* percent tolerance */)) {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
 			lastPosition = position;
 		}
-		SmartDashboard.putNumber("_RangeLastPos", lastPosition);
-		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+		SmartDashboard.putNumber("_RngCurPos", position);
 
-		/// Speed - max is 6000.0 RPMs
-		// launchMotorPercent_0_to_1 *= -1;
 		/**
-		 * Convert 2000 RPM to units / 100ms.
+		 * Convert 2000 RPM to units / 100ms.  Speed - max is 6000.0 RPMs
 		 * 2048 Units/Rev * 2000 RPM / 600 100ms/min in either direction:
 		 * velocity setpoint is in units/100ms
 		 */
 		/* normalize_input takes 1) joystick axis input 2) min axis value 3) max axis value */
-		/* multiply by -1.0 for direction */
-		double velUnitsPer100ms = /*-1.0 * */ (m_drive.visionStale() ? normalize_input(speed_0to1, 0.156, 0.748) : speed_0to1) * 6000.0 * 2048.0 / 600.0;		
+		if (manual_launch) {
+			velUnitsPer100ms = normalize_input(joystick_0to1, 0.226, 0.826) * 6000 * OpConstants.kVelocity;
+		} else {
+			velUnitsPer100ms = OpConstants.kRangeArray[index][1] + ((OpConstants.kRangeArray[index+1][1]-OpConstants.kRangeArray[index][1])*fraction);
+		}
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
-		SmartDashboard.putNumber("velUnitsPer100ms", velUnitsPer100ms);
 
-		/**
-		 * Convert 500 RPM to units / 100ms. 2048(FX) 4096(SRX) Units/Rev * 500 RPM /
-		 * 600 100ms/min in either direction: velocity setpoint is in units/100ms ==>
-		 * 11425 is measured velocity at 80% / 0.8 = 9140/0.8 ==> 3347 is 11425 * 600 *
-		 * 2048 == max speed in ticks per 100ms ==> launchPercent is 0 to 1, so 100% ==
-		 * put in a value of 1.0
-		 */
+		SmartDashboard.putNumber("velUnits/100ms", velUnitsPer100ms);
 	}
 	
-	private double getVisionPosition() {
-		// returns a number between 0 and 1 based on distance to the target 
+	// private double getVisionPosition() {
+	// 	// returns a number between 0 and 1 based on distance to the target 
 
-		return (1 - (m_drive.getApproximateHubPosition()/7.62));   //making the last number smaller makes shallower shot
-	}
+	// 	return (1 - (m_drive.getApproximateHubPosition()/7.62));   //making the last number smaller makes shallower shot
+	// }
 
-	private double getVisionSpeed() {
-		// returns a number between .5 and 1 based on 7.62 meters to 0 meters away from the target. This was just based on what I heard someone say that the shooter speed was beetween .5 and full power
-		 return  0.5 + (0.5 * (m_drive.getApproximateHubPosition()/7.62));
-	}
+	// private double getVisionSpeed() {
+	// 	// returns a number between .5 and 1 based on 7.62 meters to 0 meters away from the target. This was just based on what I heard someone say that the shooter speed was beetween .5 and full power
+	// 	 return  0.5 + (0.5 * (m_drive.getApproximateHubPosition()/7.62));
+	// }
 
 	public void stopLaunch() {
 		if(isDisabled()){ return; }
@@ -233,7 +263,6 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_LaunchMotor.set(TalonFXControlMode.PercentOutput, 0);
 		SmartDashboard.putNumber("_LaunchPosition", 0);
 		SmartDashboard.putNumber("_LaunchSpeed", 0);
-
 	}
 
 	public void runLaunchBall() {
@@ -244,6 +273,12 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	public void stopLaunchBall() {
 		if(isDisabled()){ return; }
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kReverse);
+	}
+
+	public void calibrateBasket() {
+		double _absPosition = _absoluteRange.getOutput();
+		_absPosition = normalize_input(_absPosition, OpConstants.MinAbsEncoder, OpConstants.MinAbsEncoder);
+		_RangeMotor.setSelectedSensorPosition(_absPosition * OpConstants.MaxRange, OpConstants.kPIDLoopIdx, 0);
 	}
 
 	@Override

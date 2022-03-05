@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean constants. This class should not be used for any other
  * purpose. All constants should be declared globally (i.e. public static). Do
- * not put anything functional in this class.	
+ * not put anything functional in this class.
  *
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
@@ -27,7 +27,7 @@ public final class Constants {
 	public static final String kCAN_BUS_CANIVORE = "Driver CAN Bus";
 
 	public static final PneumaticsModuleType kPneumaticsType = PneumaticsModuleType.REVPH;
-	
+
 	public static final int kTICKS = 33024; // 16.125 * 2048;
 
 	public static final int kDriverControllerPort = 0;
@@ -95,28 +95,28 @@ public final class Constants {
 	}
 
 	public static final class OpConstants {
-		
-		//Can IDs for all non-driving motors/motor controllers
-		//Shooter/Launcher CAN IDS
+
+		// Can IDs for all non-driving motors/motor controllers
+		// Shooter/Launcher CAN IDS
 		public static final int kMotorCANLaunch = 5;
 		public static final int kMotorCANRange = 6;
 
-		//Sequencer CAN IDs
+		// Sequencer CAN IDs
 		public static final int kMotorCanSequencer1 = 18;
 		public static final int kMotorCanSequencer2 = 19;
 
-		//Intake CAN IDs
+		// Intake CAN IDs
 		public static final int kMotorCANIntakeR = 8;
 		public static final int kMotorCANIntakeL = 7;
 
-		//CAN IDs for non-motor components (PDP/Pneumatics Controller)
-		//Power Distribution Pannel CAN IDs
+		// CAN IDs for non-motor components (PDP/Pneumatics Controller)
+		// Power Distribution Pannel CAN IDs
 		public static final int kPDPCanID = 1;
 
-		//Pneumatics Panel CAN IDs
+		// Pneumatics Panel CAN IDs
 		public static final int kPneumaticsCanID = 2;
-		
-		//ClimbSubsystem
+
+		// ClimbSubsystem
 		public static final int kExtenderUpID = 15;
 		public static final int kExtenderDownID = 12;
 		public static final int kGrabberNorthFrontOpenID = 6;
@@ -125,23 +125,21 @@ public final class Constants {
 		public static final int kGrabberNorthBackCloseID = 1;
 		public static final int kGrabberSouthFrontOpenID = 2;
 		public static final int kGrabberSouthFrontCloseID = 3;
-		public static final int kGrabberSouthBackOpenID = 4;
-		public static final int kGrabberSouthBackCloseID = 5;
+		public static final int kGrabberSouthBackOpenID = 5;
+		public static final int kGrabberSouthBackCloseID = 4;
 
 		public static final int kLeftSwingerMotorID = 9;
 		public static final int kRightSwingerMotorID = 10;
-		public static final int kNorthSensorID = 1; // NavX Analog Input Sensor 
+		public static final int kNorthSensorID = 1; // NavX Analog Input Sensor
 		public static final int kSouthSensorID = 2; // NavX Analog Input Sensor
 
-		//AnalogInputs
+		// AnalogInputs
 		public static final double kMinIRVoltage = 1.0;
 		public static final double kMaxIRVoltage = 1.5;
 
 		public static final double kMotorIntakeFwdSpeed = 0.8; // forward or backward
 		public static final double kMotorLeftIntakeSpeed = -1; // backward
 		public static final double kMotorRightIntakeSpeed = 1; // forward
-
-		public static final double kMotorConveyorSpeed = 0.1;
 
 		/////// TalonFX parameters
 		/**
@@ -161,17 +159,19 @@ public final class Constants {
 		 * 
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
-		public final static Gains kGains_Velocity = new Gains(0.05, 0, 0, .06, 300, 1.00);
-		public final static Gains kGains_Range = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
-		
+		public final static Gains kGains_Velocity = new Gains(0.5, 0, 0, .056, 300, 1.00);
+		public final static Gains kGains_Range = new Gains(0.5, 0.0, 0.0, 0.2, 0, 1.0);
+
 		public final static int SLOT_0 = 0;
 		public final static int SLOT_1 = 1;
 
 		public final static int MMCruiseVelocity = 15000;
 		public final static int MMAcceleration = 6000;
-		public final static int MMScurve = 4;
+		public final static int MMScurve = 1;
 		public final static int MaxRange = 39000;
 		public final static int MinRange = 100;
+		public final static double MinAbsEncoder = 0.05;
+		public final static double MaxAbsEncoder = 0.95;
 
 		///// End TalonFX
 
@@ -182,16 +182,32 @@ public final class Constants {
 		public final static int kRBottomB = 14;
 		public final static int kFTop = 12;
 		public final static int kFBottomB = 15;
-        public final static int kLaunchOn = 9;
-        public final static int kLaunchOff = 8;
+		public final static int kLaunchOn = 9;
+		public final static int kLaunchOff = 8;
 
-		//ltop = left intake top pneumatics: 			13
-		//lbottom = left intake bottom pneumatics:  	10
-		//rtop = right intake top pneumatics:	 		14
-		//rbottom = right intake bottom pneumatics:		11
-		//ftop = top climber pneumatics: 				15
-		//fbottom = bottom climber pneumatics: 			12
+		// ltop = left intake top pneumatics: 13
+		// lbottom = left intake bottom pneumatics: 10
+		// rtop = right intake top pneumatics: 14
+		// rbottom = right intake bottom pneumatics: 11
+		// ftop = top climber pneumatics: 15
+		// fbottom = bottom climber pneumatics: 12
 
+		// Range table for shooting values:Index 2 = Velocity, Index 3 = Position
+
+		// Motor velocity in RPM/100ms
+		public static final double kVelocity = 2048 / 600;
+
+		public static final double kRangeArray[][] = { // position ticks, velUnitsPer100ms
+				{ 39000.0, 5999.0 }, // 0 meters - eject
+				{ 39000.0, 5999.0 }, // 1 meter
+				{ 35000.0, 8574.0 }, // 2 meters
+				{ 32652.0, 9992.0 }, // 3 meters changed 3/4
+				{ 23695.0, 11999.0 }, // 4 meters
+				{ 17048.0, 13534.0 }, // 5 meters
+				{ 14000.0, 15660.0 },  // 6 meters
+				{ 11000.0, 15660.0 },  // 7 untested
+				{ 0.0, 6000.0 },
+		};
 	}
 
 	public static final class VisionConstants {
@@ -204,9 +220,9 @@ public final class Constants {
 		public static final double kCameraXOffset = 0;
 		public static final double kCameraYOffset = 0;
 		public static final double kCameraZOffset = 0;
-		public static final double kCameraPitchAngleDegrees = 33.5;
+		public static final double kCameraPitchAngleDegrees = 41.67;
 		public static final double kCameraYawAngleDegrees = 0;
-		public static final double kCameraLensHeightMeters = 0.6858;
+		public static final double kCameraLensHeightMeters = 0.7142;
 
 		// #region DrivePID
 		public static final double kDriveP = 0.05;
@@ -229,8 +245,6 @@ public final class Constants {
 		// #endregion
 
 		public static final double kAverageKeepTime = 0.2;
-		
-
 	}
 
 	public static final class XboxConstants {
@@ -251,11 +265,9 @@ public final class Constants {
 		public static final int kRTrigger = 3;
 		public static final int kRStickXAxis = 4;
 		public static final int kRStickYAxis = 5;
-
 	}
 
 	public static final class ButtonConstants {
-		
 		/**
 		 * Climb Buttons - Front Left front toggle(R/L): 6, 7
 		 */
@@ -265,28 +277,28 @@ public final class Constants {
 		 * Climb sensor override button - Select Spinner Press: 16
 		 */
 		public static final int kClimbSensorOverride = 16;
-		
+
 		/**
 		 * Robot Mode Buttons - Front Right front toggle(R/L): 8, 9
 		 */
 		public static final int kRobotModeShoot = 8;
 		public static final int kRobotModeClimb = 9;
+		public static final int kLaunchMode = 10;
 
 		/**
 		 * Intake Mode Buttons - Front Left Bottom(T/B): 14, 15
 		 */
-		public static final int kIntakeModeEject = 15;
-		public static final int kIntakeModePickup = 16;
+		public static final int kIntakeLeftEject = 14;
+		public static final int kIntakeRightEject = 15;
 
 		/**
 		 * Intake Control Buttons - Top Back Toggles(U/D): 1, 12
-			Left Button controls left intake, Right Button controls right intake
-			When activated, it extends the intake and starts spinning to intake
-			and when retracted, it retracts and stops spinning.
+		 * Left Button controls left intake, Right Button controls right intake
+		 * When activated, it extends the intake and starts spinning to intake
+		 * and when retracted, it retracts and stops spinning.
 		 */
 		public static final int kIntakeLeft = 1;
-		public static final int kIntakeRight= 12;
-		
+		public static final int kIntakeRight = 12;
 
 		public static final int kVision = XboxConstants.kRBumper;
 		public static final int kResetGyro = XboxConstants.kAppMenu;
@@ -307,22 +319,24 @@ public final class Constants {
 	}
 
 	public static final class ClimbConstants {
-  		public static final double kP = 5e-5;
-		public static final double kI = 1e-6; 
+  		public static final double kP = .0001;
+		public static final double kI = 0; 
 		public static final double kD = 0; 
 		public static final double kIz = 0; 
-		public static final double kFF = 0.000156; 
+		public static final double kFF = 0.0006; 
 		public static final double kMaxOutput = 1;
 		public static final double kMinOutput = -1;
 		public static final double maxRPM = 5700;
 
-		public static final double maxVel = 2000; //rpm
+		public static final double maxVel = 4000; //rpm
 		public static final double minVel = 0;
-		public static final double maxAcc = 1500;
+		public static final double maxAcc = 1000;
 		public static final double allowedErr = 0;
 
-		public static final double kFwdSteps = 50;
-		public static final double kBckSteps = -10;
+
+		public static final double kBckSteps = 10*4;
+		public static final double kSecondBarSteps = 50 *4;
+		public static final double kThirdBarSteps = 120*4;
 
 		public static final int smartMotionSlot = 0;
 	}

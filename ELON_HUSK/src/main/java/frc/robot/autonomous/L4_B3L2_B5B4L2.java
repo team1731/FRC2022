@@ -17,6 +17,7 @@ import frc.robot.commands.intake.RightIntakeCommand;
 import frc.robot.commands.intake.RightStopCommand;
 import frc.robot.commands.launch.LaunchBallCommandStart;
 import frc.robot.commands.launch.LaunchBallCommandStop;
+import frc.robot.commands.launch.LaunchCommandStart;
 //import to create a new IntakeSubstem object
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
@@ -34,17 +35,14 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 	private IntakeSubsystem m_intake;
 	private LaunchSubsystem m_launch;
 
-	private double angleOffset;
+
 
 	@Override
 	public Pose2d getInitialPose() {
 		return this._initPose;
 	}
 
-	@Override
-	public double getAngleOffset() {
-		return this.angleOffset;
-	}
+
 
 
 	public L4_B3L2_B5B4L2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
@@ -75,28 +73,29 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 
 		Pose2d unrotInitPose = trajectory0.getInitialPose();
 		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(-46.0));
-		this.angleOffset = -46.0;   // this is the angle of the robot on the field. 
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-
-			new ParallelCommandGroup(
-			new RightIntakeCommand(m_intake).withTimeout(2),                                   // Turn on Intake
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory0)), // Drive to first ball	
-				
-
-			new LaunchBallCommandStart(m_launch).withTimeout(4),
-			new LaunchBallCommandStop(m_launch).withTimeout(0.1),
-
-			new ParallelCommandGroup(
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory1),  // Drive to second ball
-			new RightIntakeCommand(m_intake).withTimeout(2)),
-			
-			new RightStopCommand(m_intake),
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -46.0, trajectory2),  // Drive to first ball				
+            new LaunchCommandStart(m_launch,.4),
+			new WaitCommand(2),
 			new LaunchBallCommandStart(m_launch),
-			new WaitCommand (3),			
+			new WaitCommand(2),
+			
+			new ParallelCommandGroup(
+				new RightIntakeCommand(m_intake), 
+				new LaunchCommandStart(m_launch,.55),  
+                            
+				createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0,true)), // Drive to first ball	
+			new WaitCommand(2),	
+			new LaunchBallCommandStop(m_launch),
+
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,true),  // Drive to second ball
+
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -20.0, trajectory2,true),  // Drive to first ball				
+			new RightStopCommand(m_intake),
+			new LaunchBallCommandStart(m_launch),
+			new WaitCommand (5),			
 			new LaunchBallCommandStop(m_launch)
 					     
 		);

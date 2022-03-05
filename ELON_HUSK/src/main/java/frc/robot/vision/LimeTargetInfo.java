@@ -25,7 +25,7 @@ public class LimeTargetInfo {
 		this._boxLength = vert;
 		this._boxWidth = hor;
 		
-		double angleToGoalDegrees = VisionConstants.kCameraPitchAngleDegrees + y;
+		double angleToGoalDegrees = VisionConstants.kCameraPitchAngleDegrees + z;
 		double angleToGoalRadians = Math.toRadians(angleToGoalDegrees); // angleToGoalDegrees * (Math.PI / 180.0);
 
 		//calculate distance
