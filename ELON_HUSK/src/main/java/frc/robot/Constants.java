@@ -319,22 +319,24 @@ public final class Constants {
 	}
 
 	public static final class ClimbConstants {
-		public static final double kP = 5e-5;
-		public static final double kI = 1e-6;
-		public static final double kD = 0;
-		public static final double kIz = 0;
-		public static final double kFF = 0.000156;
+  		public static final double kP = .0001;
+		public static final double kI = 0; 
+		public static final double kD = 0; 
+		public static final double kIz = 0; 
+		public static final double kFF = 0.0006; 
 		public static final double kMaxOutput = 1;
 		public static final double kMinOutput = -1;
 		public static final double maxRPM = 5700;
 
-		public static final double maxVel = 2000; // rpm
+		public static final double maxVel = 4000; //rpm
 		public static final double minVel = 0;
-		public static final double maxAcc = 1500;
+		public static final double maxAcc = 1000;
 		public static final double allowedErr = 0;
 
-		public static final double kFwdSteps = 50;
-		public static final double kBckSteps = -10;
+
+		public static final double kBckSteps = 10*4;
+		public static final double kSecondBarSteps = 50 *4;
+		public static final double kThirdBarSteps = 120*4;
 
 		public static final int smartMotionSlot = 0;
 	}

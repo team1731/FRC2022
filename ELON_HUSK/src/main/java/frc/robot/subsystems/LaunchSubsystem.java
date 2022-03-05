@@ -35,6 +35,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private final WPI_TalonFX _LaunchMotor;
 	private DutyCycle _absoluteRange;
 	private double lastPosition = -1.0;
+	private int _sdCount = 0;
 
 	private DriveSubsystem m_drive;
 
@@ -149,8 +150,17 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	public void periodic() {
 		// This method will be called once per scheduler run
 		if(isDisabled()){ return; }
-		SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
-		SmartDashboard.putNumber("_absoluteRange", _absoluteRange.getOutput());
+
+		if (_sdCount++ > 80) {
+			SmartDashboard.putNumber("_RangePercentOut", _RangeMotor.getMotorOutputPercent());
+		//	SmartDashboard.putNumber("_RangeStick", position_0to1);
+			SmartDashboard.putNumber("_LaunchPercentOut", _LaunchMotor.getMotorOutputPercent());
+			SmartDashboard.putNumber("_LaunchSpeed", _LaunchMotor.getSelectedSensorVelocity());
+			SmartDashboard.putNumber("_RangeLastPos", lastPosition);
+			SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
+
+		}
+		//SmartDashboard.putNumber("_RangePosition", _RangeMotor.getSelectedSensorPosition());
 	}
 
 	private double normalize_input(double input, double min, double max) {

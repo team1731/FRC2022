@@ -77,7 +77,6 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 		Pose2d unrotInitPose = trajectory0.getInitialPose();
 		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(-46.0));
 
-
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
