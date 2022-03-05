@@ -210,7 +210,7 @@ public class _DelayableStrafingAutoMode {
 	}
 
 	public Command createSwerveCommand(DriveSubsystem m_robotDrive, String name, double endingHeading,
-			Trajectory trajectory) {
+			Trajectory trajectory, boolean trackTarget) {
 		return new _InstrumentedSwerveControllerCommand(m_robotDrive, m_robotDrive.getCSVWriter(), trajectory, // trajectory
 																												// was
 																												// created
@@ -228,7 +228,7 @@ public class _DelayableStrafingAutoMode {
 				// Position controllers
 				new PIDController(AutoConstants.kPXController, 0, 0),
 				new PIDController(AutoConstants.kPYController, 0, 0),
-				new PIDController(AutoConstants.kPThetaController, 0, 0),
+				new PIDController(AutoConstants.kPThetaController, 0, 0), trackTarget,
 
 				m_robotDrive::setModuleStates, m_robotDrive) {
 			@Override
@@ -240,7 +240,7 @@ public class _DelayableStrafingAutoMode {
 	}
 
 	public _InstrumentedSwerveControllerCommand createSwerveCommand(DriveSubsystem m_robotDrive, String name,
-			TrajectoryDirection dir, TrajectoryHeading mode, double value, double[][] points) {
+			TrajectoryDirection dir, TrajectoryHeading mode, double value, double[][] points, boolean trackTarget) {
 		if (mode == TrajectoryHeading.CONVERT_TO_METERS) {
 			points = convertPoints(points);
 		}
@@ -252,7 +252,7 @@ public class _DelayableStrafingAutoMode {
 				// Position controllers
 				new PIDController(AutoConstants.kPXController, 0, 0),
 				new PIDController(AutoConstants.kPYController, 0, 0),
-				new PIDController(AutoConstants.kPThetaController, 0, 0),
+				new PIDController(AutoConstants.kPThetaController, 0, 0), trackTarget,
 
 				m_robotDrive::setModuleStates, m_robotDrive) {
 			@Override

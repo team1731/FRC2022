@@ -13,7 +13,7 @@ public class F1_Move_Forward extends _DelayableStrafingAutoMode {
 				createSwerveCommand(m_robotDrive, "MOVE FORWARD", TrajectoryDirection.FWD, TrajectoryHeading.DO_NOTHING,
 						0, new double[][] { { 0.0, 0.0, 0.0 }, // initial pose
 								{ 0.5, 0.0 }, // waypoint(s)
-								{ 1.0, 0.0, 0.0 } } // final pose
+								{ 1.0, 0.0, 0.0 } }, false // final pose
 				));
 
 		command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0, 0, false, false));

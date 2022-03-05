@@ -19,4 +19,9 @@ public class RightIntakeCommand extends CommandBase {
 	@Override
 	public void end(boolean interrupted) {
 	}
+
+	@Override
+	public boolean isFinished() {
+		return true;
+	}
 }

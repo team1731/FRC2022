@@ -20,4 +20,8 @@ public class RightStopCommand extends CommandBase {
     public void end(boolean interrupted) {
         
     }
+    @Override
+	public boolean isFinished() {
+		return true;
+	}
 }

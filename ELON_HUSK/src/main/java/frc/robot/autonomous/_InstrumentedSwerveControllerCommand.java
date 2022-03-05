@@ -54,7 +54,9 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 	private PIDController m_thetaController;
 	private Consumer<SwerveModuleState[]> m_outputModuleStates;
 	private ReflectingCSVWriter<AutoSwerveDebug> csvWriter;
+	private boolean m_trackTarget = false;
 	private Double endingHeading;
+	private Double defaultEndingHeading;
 	private Double lastXVelocity = 0.0;
 	private Double lastYVelocity = 0.0;
 	private Double lastXPosition = 0.0;
@@ -93,10 +95,12 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 	@SuppressWarnings("ParameterName")
 	public _InstrumentedSwerveControllerCommand(DriveSubsystem drive, ReflectingCSVWriter<AutoSwerveDebug> csvWriter,
 			Trajectory trajectory, Supplier<Pose2d> pose, SwerveDriveKinematics kinematics, PIDController xController,
-			PIDController yController, PIDController thetaController,
+			PIDController yController, PIDController thetaController, boolean trackTarget,
+		
 
 			Consumer<SwerveModuleState[]> outputModuleStates, Subsystem... requirements) {
 		m_drive = drive;
+		m_trackTarget = trackTarget;
 		this.csvWriter = csvWriter;
 		m_trajectory = requireNonNullParam(trajectory, "trajectory", "SwerveControllerCommand");
 		m_pose = requireNonNullParam(pose, "pose", "SwerveControllerCommand");
@@ -114,12 +118,13 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 	public _InstrumentedSwerveControllerCommand(DriveSubsystem drive, ReflectingCSVWriter<AutoSwerveDebug> csvWriter,
 			Trajectory trajectory, double endingHeading, // this is used to "fix up" a supplied trajectory
 			Supplier<Pose2d> pose, SwerveDriveKinematics kinematics, PIDController xController,
-			PIDController yController, PIDController thetaController,
+			PIDController yController, PIDController thetaController, boolean trackTarget,
 
 			Consumer<SwerveModuleState[]> outputModuleStates, Subsystem... requirements) {
 		m_drive = drive;
 		this.csvWriter = csvWriter;
 		this.endingHeading = endingHeading;
+		this.defaultEndingHeading = endingHeading;
 		m_trajectory = requireNonNullParam(trajectory, "trajectory", "SwerveControllerCommand");
 		m_pose = requireNonNullParam(pose, "pose", "SwerveControllerCommand");
 		m_kinematics = requireNonNullParam(kinematics, "kinematics", "SwerveControllerCommand");
@@ -131,6 +136,16 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 
 		m_outputModuleStates = requireNonNullParam(outputModuleStates, "leftFrontOutput", "SwerveControllerCommand");
 		addRequirements(requirements);
+	}
+
+
+
+
+    public _InstrumentedSwerveControllerCommand(DriveSubsystem m_robotDrive,
+			ReflectingCSVWriter<AutoSwerveDebug> csvWriter2, Trajectory trajectory, double endingHeading2,
+			Object object, SwerveDriveKinematics kdrivekinematics, PIDController pidController,
+			PIDController pidController2, PIDController pidController3, Object object2, DriveSubsystem m_robotDrive2,
+			boolean trackTarget) {
 	}
 
 	@Override
@@ -167,9 +182,19 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 		// The robot will go to the desired rotation of the final pose in the
 		// trajectory,
 		// not following the poses at individual states.
+		if (m_trackTarget) {
+			m_drive.updateVisionOdometry();
+			if (!m_drive.approximationStale()) {
+				endingHeading = m_drive.getApproximateHubAngle();
+			} else {
+				endingHeading = defaultEndingHeading;
+			}
+		}
 		double targetAngularVel = m_thetaController.calculate(m_pose.get().getRotation().getRadians(),
 				endingHeading == null ? m_finalPose.getRotation().getRadians()
 						: Rotation2d.fromDegrees(endingHeading).getRadians());
+
+
 
 		double vRef = desiredState.velocityMetersPerSecond;
 

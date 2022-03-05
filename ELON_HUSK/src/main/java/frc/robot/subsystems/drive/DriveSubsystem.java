@@ -290,9 +290,11 @@ public class DriveSubsystem extends ToggleableSubsystem {
      //   System.out.println("drivepolar" + m_drivePolar);
 		m_drivePolar = fieldPolar;
 	//	SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
-       updateVisionOdometry(); // for autonomous may need ot shut off
+	   
+
 		if ((fieldPolar)) {
-			m_vision.enableLED();
+			updateVisionOdometry(); 
+
 			if (!approximationStale()) {
 				setVisionHeadingGoal(getApproximateHubAngle());
 				setVisionHeadingOverride(true);
@@ -535,7 +537,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	}
 
    public void updateVisionOdometry() {
-	if (m_drivePolar && m_vision.hasTarget()) {
+	m_vision.enableLED();
+	if (m_vision.hasTarget()) {
         // determine position on the field and set odometry
 		double y = (4.15  - (m_vision.getLastTarget().getTargetDistance() + .67)* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
 		double x = (8.188  - (m_vision.getLastTarget().getTargetDistance() + .67)* Math.cos(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
