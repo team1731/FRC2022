@@ -160,7 +160,7 @@ public final class Constants {
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
 		public final static Gains kGains_Velocity = new Gains(0.5, 0, 0, .056, 300, 1.00);
-		public final static Gains kGains_Range = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
+		public final static Gains kGains_Range = new Gains(0.5, 0.0, 0.0, 0.2, 0, 1.0);
 
 		public final static int SLOT_0 = 0;
 		public final static int SLOT_1 = 1;
@@ -284,6 +284,7 @@ public final class Constants {
 		 */
 		public static final int kRobotModeShoot = 8;
 		public static final int kRobotModeClimb = 9;
+		public static final int kLaunchMode = 10;
 
 		/**
 		 * Intake Mode Buttons - Front Left Bottom(T/B): 14, 15
