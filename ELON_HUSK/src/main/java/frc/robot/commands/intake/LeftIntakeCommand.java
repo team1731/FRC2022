@@ -1,9 +1,9 @@
 package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class LeftIntakeCommand extends CommandBase {
+public class LeftIntakeCommand extends InstantCommand {
     private final IntakeSubsystem _intake;
 
     public LeftIntakeCommand(IntakeSubsystem intake) {
@@ -17,7 +17,6 @@ public class LeftIntakeCommand extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        
+    public void end(boolean interrupted) { 
     }
 }

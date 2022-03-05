@@ -160,7 +160,7 @@ public final class Constants {
 		 * kP ORIG=4.0 kI kD kF Iz PeakOut
 		 */
 		public final static Gains kGains_Velocity = new Gains(0.5, 0, 0, .056, 300, 1.00);
-		public final static Gains kGains_Range = new Gains(0.2, 0.0, 0.0, 0.2, 0, 1.0);
+		public final static Gains kGains_Range = new Gains(0.5, 0.0, 0.0, 0.2, 0, 1.0);
 
 		public final static int SLOT_0 = 0;
 		public final static int SLOT_1 = 1;
@@ -170,6 +170,8 @@ public final class Constants {
 		public final static int MMScurve = 1;
 		public final static int MaxRange = 39000;
 		public final static int MinRange = 100;
+		public final static double MinAbsEncoder = 0.05;
+		public final static double MaxAbsEncoder = 0.95;
 
 		///// End TalonFX
 
@@ -243,7 +245,6 @@ public final class Constants {
 		// #endregion
 
 		public static final double kAverageKeepTime = 0.2;
-
 	}
 
 	public static final class XboxConstants {
@@ -264,11 +265,9 @@ public final class Constants {
 		public static final int kRTrigger = 3;
 		public static final int kRStickXAxis = 4;
 		public static final int kRStickYAxis = 5;
-
 	}
 
 	public static final class ButtonConstants {
-
 		/**
 		 * Climb Buttons - Front Left front toggle(R/L): 6, 7
 		 */
@@ -284,12 +283,13 @@ public final class Constants {
 		 */
 		public static final int kRobotModeShoot = 8;
 		public static final int kRobotModeClimb = 9;
+		public static final int kLaunchMode = 10;
 
 		/**
 		 * Intake Mode Buttons - Front Left Bottom(T/B): 14, 15
 		 */
-		public static final int kIntakeModeEject = 15;
-		public static final int kIntakeModePickup = 16;
+		public static final int kIntakeLeftEject = 14;
+		public static final int kIntakeRightEject = 15;
 
 		/**
 		 * Intake Control Buttons - Top Back Toggles(U/D): 1, 12

@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.OpConstants;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -28,9 +28,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 	private final DoubleSolenoid _RightIntakeSolenoid;
 	private final WPI_TalonFX _LeftMotorIntake;
 	private final DoubleSolenoid _LeftIntakeSolenoid;
-
-	private boolean _LeftEnabled = true;
-	private boolean _RightEnabled = true;
 
 	/**
 	 * Creates a new IntakeSubsystem.
@@ -61,9 +58,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_RightMotorIntake.setInverted(false);
 		_LeftMotorIntake.setSensorPhase(false);
 		_LeftMotorIntake.setInverted(false);
-
-		// SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
-		// SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
 	}
 
 	@Override
@@ -74,10 +68,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		// SmartDashboard.putNumber("RightIntakeVelocity", _RightMotorIntake.getSelectedSensorVelocity());
 		// SmartDashboard.putNumber("LeftIntakeVelocity", _LeftMotorIntake.getSelectedSensorVelocity());
-
-		// SmartDashboard.putBoolean("RightIntakeOn",_RightEnabled);
-		// SmartDashboard.putBoolean("LeftIntakeOn", _LeftEnabled);
-
 		// This method will be called once per scheduler run
 	}
 
@@ -100,10 +90,17 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		}	
 
 		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		//_RightMotorIntake.set(TalonFXControlMode.Velocity, OpConstants.kMotorIntakeFwdSpeed * 2000.0 * 2048.0 / 600);
 		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorRightIntakeSpeed);
+	}
 
-		_RightEnabled = true;
+	//Extends the Right intake and spins the motor to intake
+	public void extendRightEject(){
+		if(isDisabled()){
+			return;
+		}	
+
+		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, -1 * OpConstants.kMotorRightIntakeSpeed);
 	}
 
 	//Retracts the Right intake and stops spinning the motor
@@ -114,8 +111,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
 		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-
-		_RightEnabled = false;
 	}
 
 	//Extends the Left intake and spins the motor to intake
@@ -126,8 +121,16 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
 		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorLeftIntakeSpeed);
-		
-		_LeftEnabled = true;
+	}
+
+	//Extends the Left intake and spins the motor to intake
+	public void extendLeftEject(){
+		if(isDisabled()){
+			return;
+		}
+
+		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, -1 * OpConstants.kMotorLeftIntakeSpeed);
 	}
 
 	//Retracts the Left intake and stops spinning the motor
@@ -138,7 +141,6 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
 		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-		_LeftEnabled = false;
 	}
 
 }
