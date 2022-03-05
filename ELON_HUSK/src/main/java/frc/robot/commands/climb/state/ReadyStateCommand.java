@@ -1,7 +1,5 @@
 package frc.robot.commands.climb.state;
 
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.IRSensor;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ClimbSubsystem.State;
 
