@@ -289,8 +289,8 @@ public final class Constants {
 		/**
 		 * Intake Mode Buttons - Front Left Bottom(T/B): 14, 15
 		 */
-		public static final int kIntakeModeEject = 15;
-		public static final int kIntakeModePickup = 16;
+		public static final int kIntakeLeftEject = 14;
+		public static final int kIntakeRightEject = 15;
 
 		/**
 		 * Intake Control Buttons - Top Back Toggles(U/D): 1, 12

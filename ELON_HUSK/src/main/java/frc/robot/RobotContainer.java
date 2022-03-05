@@ -23,10 +23,10 @@ import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.commands.climb.OverrideSensorCommand;
-import frc.robot.commands.intake.LeftIntakeCommand;
-import frc.robot.commands.intake.LeftStopCommand;
-//import frc.robot.commands.intake.RightIntakeCommand;
-//import frc.robot.commands.intake.RightStopCommand;
+//import frc.robot.commands.intake.LeftIntakeCommand;
+//import frc.robot.commands.intake.LeftStopCommand;
+import frc.robot.commands.intake.RightIntakeEjectCommand;
+import frc.robot.commands.intake.LeftIntakeEjectCommand;
 import frc.robot.commands.launch.LaunchBallCommand;
 import frc.robot.commands.launch.LaunchModeCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -139,9 +139,10 @@ public class RobotContainer {
 		//Alternate code for Joystick testing as opposed to simulation
 		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeft).whenHeld(new LeftIntakeJoyconCommand(m_intake));
 		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRight).whenHeld(new RightIntakeJoyconCommand(m_intake));
-		new JoystickButton(m_driverController, ButtonConstants.kLaunchBall).whenHeld(new LaunchBallCommand(m_launch));
 		new HanTrigger(HanTriggers.DR_TRIG_LEFT).whileActiveContinuous(new LeftIntakeJoyconCommand(m_intake));
 		new HanTrigger(HanTriggers.DR_TRIG_RIGHT).whileActiveContinuous(new RightIntakeJoyconCommand(m_intake));	 
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeftEject).whenHeld(new LeftIntakeEjectCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRightEject).whenHeld(new RightIntakeEjectCommand(m_intake));
 
 		// //left = button 1
 		// //right = button 12
@@ -150,6 +151,7 @@ public class RobotContainer {
 		//#endregion
 
 		//#region Launch Subsystem
+		new JoystickButton(m_driverController, ButtonConstants.kLaunchBall).whenHeld(new LaunchBallCommand(m_launch));
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
 					(m_operatorController.getRawAxis(4)+1)/2,

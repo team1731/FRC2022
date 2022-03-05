@@ -8,6 +8,7 @@ public class LaunchModeCommand extends InstantCommand {
 
     public LaunchModeCommand(LaunchSubsystem launch) {
         _launch = launch;
+        addRequirements(launch);
     }
 
     @Override
