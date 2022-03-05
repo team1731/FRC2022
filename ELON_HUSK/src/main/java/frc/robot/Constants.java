@@ -141,8 +141,6 @@ public final class Constants {
 		public static final double kMotorLeftIntakeSpeed = -1; // backward
 		public static final double kMotorRightIntakeSpeed = 1; // forward
 
-		public static final double kMotorConveyorSpeed = 0.1;
-
 		/////// TalonFX parameters
 		/**
 		 * Talon SRX/ Victor SPX will supported multiple (cascaded) PID loops. For now
