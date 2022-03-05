@@ -276,7 +276,9 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	}
 
 	public void calibrateBasket() {
-		_RangeMotor.setSelectedSensorPosition(_absoluteRange.getOutput() * OpConstants.MaxRange, OpConstants.kPIDLoopIdx, 0);
+		double _absPosition = _absoluteRange.getOutput();
+		_absPosition = normalize_input(_absPosition, OpConstants.MinAbsEncoder, OpConstants.MinAbsEncoder);
+		_RangeMotor.setSelectedSensorPosition(_absPosition * OpConstants.MaxRange, OpConstants.kPIDLoopIdx, 0);
 	}
 
 	@Override

@@ -170,6 +170,8 @@ public final class Constants {
 		public final static int MMScurve = 1;
 		public final static int MaxRange = 39000;
 		public final static int MinRange = 100;
+		public final static double MinAbsEncoder = 0.05;
+		public final static double MaxAbsEncoder = 0.95;
 
 		///// End TalonFX
 
@@ -243,7 +245,6 @@ public final class Constants {
 		// #endregion
 
 		public static final double kAverageKeepTime = 0.2;
-
 	}
 
 	public static final class XboxConstants {
@@ -264,11 +265,9 @@ public final class Constants {
 		public static final int kRTrigger = 3;
 		public static final int kRStickXAxis = 4;
 		public static final int kRStickYAxis = 5;
-
 	}
 
 	public static final class ButtonConstants {
-
 		/**
 		 * Climb Buttons - Front Left front toggle(R/L): 6, 7
 		 */
