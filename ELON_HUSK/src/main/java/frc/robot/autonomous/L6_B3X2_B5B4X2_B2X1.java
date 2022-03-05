@@ -21,7 +21,6 @@ import frc.robot.commands.launch.LaunchBallCommand;
 import frc.robot.commands.launch.LaunchBallCommandStart;
 import frc.robot.commands.launch.LaunchBallCommandStop;
 import frc.robot.commands.launch.LaunchCommandStart;
-import frc.robot.commands.launch.LaunchCommandStop;
 //import to create a new IntakeSubstem object
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
@@ -30,7 +29,7 @@ import frc.robot.subsystems.LaunchSubsystem;
  * Starts at B3, launches 2, goes to B4 then B5 then launches 2
  */
 
-public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
+public class L6_B3X2_B5B4X2_B2X1 extends _DelayableStrafingAutoMode {
 
 
 
@@ -49,17 +48,19 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 
 
 
-	public L4_B3L2_B5B4L2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
+	public L6_B3X2_B5B4X2_B2X1(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
 
 		String trajectoryJSON0 = "paths/output/L4-1.wpilib.json";
         String trajectoryJSON1 = "paths/output/L4-2.wpilib.json";
-        String trajectoryJSON2 = "paths/output/L4-3.wpilib.json";
+        String trajectoryJSON2 = "paths/output/L6-3.wpilib.json";
+		String trajectoryJSON3 = "paths/output/L6-4.wpilib.json";
         this.m_intake = m_intake2;
 		this.m_launch = m_launch2;
 
         Trajectory trajectory0 = new Trajectory();
         Trajectory trajectory1 = new Trajectory();
         Trajectory trajectory2 = new Trajectory();
+		Trajectory trajectory3 = new Trajectory();
 
 
         try {
@@ -69,6 +70,9 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
             trajectory1 = TrajectoryUtil.fromPathweaverJson(traj1Path);
             Path traj2Path = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
             trajectory2 = TrajectoryUtil.fromPathweaverJson(traj2Path);
+			Path traj3Path = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON3);
+            trajectory3 = TrajectoryUtil.fromPathweaverJson(traj3Path);
+
 
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON0, ex.getStackTrace());
@@ -77,6 +81,7 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 
 		Pose2d unrotInitPose = trajectory0.getInitialPose();
 		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(-46.0));
+
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
@@ -90,18 +95,28 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 				new RightIntakeCommand(m_intake), 
 				new LaunchCommandStart(m_launch,.55),  
                             
-				createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0,true)), // Drive to first ball	
+				createSwerveCommand(m_robotDrive, "L6_B3X2_B5B4X2_B2X1", -40.0, trajectory0,true)), // Drive to first ball	
 			new WaitCommand(2),	
 			new LaunchBallCommandStop(m_launch),
 
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,true),  // Drive to second ball
+			createSwerveCommand(m_robotDrive, "L6_B3X2_B5B4X2_B2X1", -40.0, trajectory1,true),  // Drive to second ball
 
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -20.0, trajectory2,true),  // Drive to first ball				
+			createSwerveCommand(m_robotDrive, "L6_B3X2_B5B4X2_B2X1", -20.0, trajectory2,true),  // Drive to shooting location				
+			
+			new WaitCommand(2),
 			new RightStopCommand(m_intake),
 			new LaunchBallCommandStart(m_launch),
-			new WaitCommand (5),			
+			new WaitCommand(2),			
 			new LaunchBallCommandStop(m_launch),
-			new LaunchCommandStop(m_launch)		     
+
+			new ParallelCommandGroup(
+				new RightIntakeCommand(m_intake),   
+				createSwerveCommand(m_robotDrive, "L6_B3X2_B5B4X2_B2X1", -20.0, trajectory3,true)
+			),
+			new RightStopCommand(m_intake),
+			new LaunchBallCommandStart(m_launch),
+			new WaitCommand(2),			
+			new LaunchBallCommandStop(m_launch)
 		);
 
 
