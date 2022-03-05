@@ -322,9 +322,9 @@ public final class Constants {
 		public static final double allowedErr = 0;
 
 
-		public static final double kBckSteps = -10;
-		public static final double kSecondBarSteps = 80;
-		public static final double kThirdBarSteps = 120;
+		public static final double kBckSteps = 10*4;
+		public static final double kSecondBarSteps = 50 *4;
+		public static final double kThirdBarSteps = 120*4;
 
 		public static final int smartMotionSlot = 0;
 	}
