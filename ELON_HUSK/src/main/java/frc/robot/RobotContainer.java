@@ -29,7 +29,8 @@ import frc.robot.commands.climb.OverrideSensorCommand;
 import frc.robot.commands.intake.RightIntakeEjectCommand;
 import frc.robot.commands.intake.LeftIntakeEjectCommand;
 import frc.robot.commands.launch.LaunchBallCommand;
-import frc.robot.commands.launch.LaunchModeCommand;
+import frc.robot.commands.launch.LaunchManualEnableCommand;
+import frc.robot.commands.launch.LaunchManualDisableCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -161,8 +162,9 @@ public class RobotContainer {
 			)
 			.whenInactive(() -> m_launch.stopLaunch());
 
-		//new JoystickButton(m_operatorController, ButtonConstants.kLaunchMode).whenHeld(new LaunchModeCommand(m_launch));
-		//new JoystickButton(m_operatorController, ButtonConstants.kLaunchMode).whenActive(new LeftIntakeCommand(m_intake)).whenInactive(new LeftStopCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kLaunchManualMode)
+			.whenActive(new LaunchManualEnableCommand(m_launch))
+			.whenInactive(new LaunchManualDisableCommand(m_launch));
 		//#endregion
 	}
 

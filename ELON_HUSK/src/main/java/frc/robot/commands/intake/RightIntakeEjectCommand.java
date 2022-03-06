@@ -1,14 +1,13 @@
 package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class RightIntakeEjectCommand extends InstantCommand {
+public class RightIntakeEjectCommand extends CommandBase {
     private final IntakeSubsystem _intake;
 
     public RightIntakeEjectCommand(IntakeSubsystem intake) {
         _intake = intake;
-        addRequirements(intake);
     }
 
     @Override

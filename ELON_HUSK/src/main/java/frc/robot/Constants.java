@@ -283,7 +283,7 @@ public final class Constants {
 		 */
 		public static final int kRobotModeShoot = 8;
 		public static final int kRobotModeClimb = 9;
-		public static final int kLaunchMode = 10;
+		public static final int kLaunchManualMode = 10;
 
 		/**
 		 * Intake Mode Buttons - Front Left Bottom(T/B): 14, 15

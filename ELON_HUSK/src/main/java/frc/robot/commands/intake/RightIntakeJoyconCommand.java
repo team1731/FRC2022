@@ -19,5 +19,4 @@ public class RightIntakeJoyconCommand extends CommandBase {
     public void end(boolean interrupted) {
         _intake.retractRightIntake();
     }
-    
 }

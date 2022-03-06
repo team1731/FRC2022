@@ -1,9 +1,9 @@
 package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class RightStopCommand extends InstantCommand {
+public class RightStopCommand extends CommandBase {
     private final IntakeSubsystem _intake;
 
     public RightStopCommand(IntakeSubsystem intake) {
@@ -17,6 +17,11 @@ public class RightStopCommand extends InstantCommand {
     }
 
     @Override
-    public void end(boolean interrupted) {   
+    public void end(boolean interrupted) {
     }
+	
+    @Override
+	public boolean isFinished() {
+		return true;
+	}
 }
