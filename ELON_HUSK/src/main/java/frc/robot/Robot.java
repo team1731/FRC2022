@@ -139,8 +139,8 @@ public class Robot extends TimedRobot {
 
 		autoInitPreload();
 
-		SmartDashboard.putBoolean("Vis_HasTarget", false);
-		SmartDashboard.putNumber("Vis_TargetAngle", 0);
+	//	SmartDashboard.putBoolean("Vis_HasTarget", false);
+	//	SmartDashboard.putNumber("Vis_TargetAngle", 0);
 
 		SmartDashboard.putString("Build Info - Branch", "N/A");
 		SmartDashboard.putString("Build Info - Commit Hash", "N/A");

@@ -14,7 +14,7 @@ public class ClimbDownCommand extends CommandBase {
 
 	@Override
 	public void initialize() {
-		// _climb.setInputDirection(ClimbSubsystem.InputDirection.DOWN);
+		 _climb.setInputDirection(ClimbSubsystem.InputDirection.DOWN);
 	}
 
 	@Override

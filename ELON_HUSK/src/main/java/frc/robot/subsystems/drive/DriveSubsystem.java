@@ -218,10 +218,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 			SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
 
-			SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
-			SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
-			SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
-			SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
+			// SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
+			// SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
+			// SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
+			// SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
 
 			// SmartDashboard.putNumber("LF drive Position",
 			// m_leftFront.m_driveMotor.getSelectedSensorPosition(0));

@@ -12,8 +12,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.F1_Move_Forward;
+import frc.robot.autonomous.L1_B3X2;
+import frc.robot.autonomous.L3_B3X2_B5X2;
 import frc.robot.autonomous.L4_B3L2_B5B4L2;
 import frc.robot.autonomous.L5_B3X2_B5B4X2_B2B1X1;
+import frc.robot.autonomous.L6_B3X2_B5B4X2_B2X1;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
@@ -215,10 +218,16 @@ public class RobotContainer {
 		switch (autoModeName) {
 			case "F1":
 				return new _NamedAutoMode(new F1_Move_Forward(m_drive));
+			case "L1":
+			    return new _NamedAutoMode(new L1_B3X2(m_drive, m_intake, m_launch));
+			case "L3":
+			    return new _NamedAutoMode(new L3_B3X2_B5X2(m_drive, m_intake, m_launch));
 			case "L4":
 			    return new _NamedAutoMode(new L4_B3L2_B5B4L2(m_drive, m_intake, m_launch));
 			case "L5":
 			    return new _NamedAutoMode(new L5_B3X2_B5B4X2_B2B1X1(m_drive, m_intake, m_launch));
+			case "L6":
+			return new _NamedAutoMode(new L6_B3X2_B5B4X2_B2X1(m_drive, m_intake, m_launch));
 
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");

@@ -335,6 +335,7 @@ public final class Constants {
 
 
 		public static final double kBckSteps = 10*4;
+		public static final double kStartSteps = 5;
 		public static final double kSecondBarSteps = 50 *4;
 		public static final double kThirdBarSteps = 120*4;
 
