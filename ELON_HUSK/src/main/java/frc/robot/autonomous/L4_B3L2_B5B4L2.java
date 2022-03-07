@@ -87,13 +87,13 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 				new RightIntakeCommand(m_intake), 
 				new LaunchCommandStart(m_launch,.55),  
                             
-				createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)), // Drive to first ball	
+				createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false))), // Drive to first ball	
 			new WaitCommand(2),	
 			new LaunchBallCommandStop(m_launch),
 
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false),  // Drive to second ball
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)),  // Drive to second ball
 
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -20.0, trajectory2,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false),  // Drive to first ball				
+			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -20.0, trajectory2,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)),  // Drive to first ball				
 			new RightStopCommand(m_intake),
 			new LaunchBallCommandStart(m_launch),
 			new WaitCommand (5),			
