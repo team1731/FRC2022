@@ -113,7 +113,6 @@ public class L5_B3X2_B5B4X2_B2B1X1 extends _DelayableStrafingAutoMode {
 				createSwerveCommand(m_robotDrive, "L5_B3X2_B5B4X2_B2B1X1", -20.0, trajectory3,true)
 			),				
 			new RightStopCommand(m_intake),
-			new WaitCommand (5),
 			new LaunchBallCommandStart(m_launch),
 			new WaitCommand (5),			
 			new LaunchBallCommandStop(m_launch)
