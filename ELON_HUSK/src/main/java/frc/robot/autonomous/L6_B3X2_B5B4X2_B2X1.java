@@ -86,14 +86,14 @@ public class L6_B3X2_B5B4X2_B2X1 extends _DelayableStrafingAutoMode {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-            new LaunchCommandStart(m_launch,.4),
+            new LaunchCommandStart(m_launch,.4,true),
 			new WaitCommand(2),
 			new LaunchBallCommandStart(m_launch),
 			new WaitCommand(2),
 			
 			new ParallelCommandGroup(
 				new RightIntakeCommand(m_intake), 
-				new LaunchCommandStart(m_launch,.55),  
+				new LaunchCommandStart(m_launch,.55,true),  
                             
 				createSwerveCommand(m_robotDrive, "L6_B3X2_B5B4X2_B2X1", -40.0, trajectory0,true)), // Drive to first ball	
 			new WaitCommand(2),	

@@ -602,7 +602,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	}
 
 	public boolean approximationStale() {
-		return (Timer.getFPGATimestamp() - lastVisionTimestamp >= 15 || !m_drivePolar);
+		return (Timer.getFPGATimestamp() - lastVisionTimestamp >= 15 );
 	}
 
 }

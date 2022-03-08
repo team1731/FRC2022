@@ -6,10 +6,12 @@ import frc.robot.subsystems.LaunchSubsystem;
 public class LaunchCommandStart extends CommandBase {
     private final LaunchSubsystem _launch;
     private double _stick;
+    private boolean _useVision;
 
-    public LaunchCommandStart(LaunchSubsystem launch, double stick) {
+    public LaunchCommandStart(LaunchSubsystem launch, double stick, boolean useVision) {
         _launch = launch;
         _stick = stick;
+        _useVision = useVision;
     }
 
     @Override
@@ -19,7 +21,7 @@ public class LaunchCommandStart extends CommandBase {
 
     @Override
     public void execute() {
-        _launch.runLaunch(_stick, 0.0);
+        _launch.runLaunch(_stick, 0.0,_useVision);
     }
 
 	@Override

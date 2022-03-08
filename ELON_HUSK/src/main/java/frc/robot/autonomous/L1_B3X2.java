@@ -52,7 +52,7 @@ public class L1_B3X2 extends _DelayableStrafingAutoMode {
 	public L1_B3X2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
 
 		String trajectoryJSON0 = "paths/output/L4-1.wpilib.json";
-		String trajectoryJSON1 = "paths/output/L4-2.wpilib.json";
+		String trajectoryJSON1 = "paths/output/L1-2.wpilib.json";
         this.m_intake = m_intake2;
 		this.m_launch = m_launch2;
 
@@ -78,18 +78,13 @@ public class L1_B3X2 extends _DelayableStrafingAutoMode {
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 			new WaitCommand(getInitialDelaySeconds()),
-            new LaunchCommandStart(m_launch,.4),
-			new WaitCommand(2),
-			new LaunchBallCommandStart(m_launch),
-			new WaitCommand(2),	
-			new LaunchBallCommandStop(m_launch),		
-			new RightIntakeCommand(m_intake),           
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)), // Drive to first ball
-			new WaitCommand(2),
-			new RightStopCommand(m_intake),
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)), // Drive to first ball
+            new LaunchCommandStart(m_launch,0.42,true).raceWith(new RightIntakeCommand(m_intake),           
+			new LaunchCommandStart(m_launch,.42,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0,true))), // Drive to first ball
+			new LaunchCommandStart(m_launch,0.42,true).withTimeout(2),
+			new LaunchCommandStart(m_launch,.42,true).raceWith(new RightStopCommand(m_intake),
+			new LaunchCommandStart(m_launch,.42,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,true))), // Drive to first ball
             new LaunchBallCommandStart(m_launch),
-			new WaitCommand(5),
+			new LaunchCommandStart(m_launch,0.42,true).withTimeout(5),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStop(m_launch)
 					     

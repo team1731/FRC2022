@@ -17,6 +17,16 @@ public class LeftStopCommand extends CommandBase {
     }
 
     @Override
+    public void execute() {
+        _intake.retractLeftIntake();
+    }
+
+    @Override
     public void end(boolean interrupted) {
     }
+
+    @Override
+	public boolean isFinished() {
+		return true;
+	}
 }

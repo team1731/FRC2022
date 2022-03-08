@@ -357,7 +357,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setNorthGrabbers(true);
 		} else if (_inputDirection == InputDirection.DOWN) {
 		 
-           _currentState = State.EXTEND;
+        //   _currentState = State.EXTEND;
 		}
 
 		return (Timer.getFPGATimestamp() - _timer >= 1) &&  !_northFrontCylinderSensor.get();

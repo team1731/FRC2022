@@ -207,7 +207,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		calibrateBasket();
 	}
 
-	public void runLaunch(double joystick_0to1, double joystick1_0to1) {
+	public void runLaunch(double joystick_0to1, double joystick1_0to1,boolean useVision) {
 		if (isDisabled()) {
 			return;
 		}
@@ -224,13 +224,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		int index = 0;
 		double fraction = 0;
 
-		if (!m_drive.approximationStale()) { // this method also checks to see if we we are not manually shooting
+		if (useVision && !m_drive.approximationStale()) { // this method also checks to see if we we are not manually shooting
 			// speed_0to1 = getVisionSpeed();
 			// position_0to1 = getVisionPosition();
 			// position = position_0to1 * OpConstants.MaxRange;
 			index = (int) m_drive.getApproximateHubDistance();
 			fraction = m_drive.getApproximateHubDistance() - index;
-			System.out.println("approximationwasnotstale");
+			//System.out.println("approximationwasnotstale");
 		} else {
 			fraction = normalize_input(joystick_0to1, 0.226, 0.826) * 7.62;
 			_tempAutodistance = fraction;
@@ -245,7 +245,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		} else {
 			position = OpConstants.kRangeArray[index][0]
 					+ ((OpConstants.kRangeArray[index + 1][0] - OpConstants.kRangeArray[index][0]) * fraction);
-					System.out.println("calculating position");
+					//System.out.println("calculating position");
 		}
 		if (position < OpConstants.MinRange) {
 			position = OpConstants.MinRange;
@@ -270,7 +270,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		} else {
 			velUnitsPer100ms = OpConstants.kRangeArray[index][1]
 					+ ((OpConstants.kRangeArray[index + 1][1] - OpConstants.kRangeArray[index][1]) * fraction);
-					System.out.println("setting the velocity");
+					//System.out.println("setting the velocity");
 		}
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 

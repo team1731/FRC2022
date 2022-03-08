@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.commands.intake.LeftIntakeCommand;
+import frc.robot.commands.intake.LeftStopCommand;
 import frc.robot.commands.intake.RightIntakeCommand;
 import frc.robot.commands.intake.RightStopCommand;
 import frc.robot.commands.launch.LaunchBallCommandStart;
@@ -76,17 +78,17 @@ public class C1_B2X2 extends _DelayableStrafingAutoMode {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-            new LaunchCommandStart(m_launch,.4),
-			new WaitCommand(2),
+            new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
 			new LaunchBallCommandStart(m_launch),
-			new WaitCommand(1),
-			new RightIntakeCommand(m_intake), 
-			createSwerveCommand(m_robotDrive, "R1-1", 43, trajectory0,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)), // Drive to first ball	
-			new WaitCommand(1),
-			createSwerveCommand(m_robotDrive, "R1-2", 43, trajectory1,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
+			new LaunchBallCommandStop(m_launch),
+			new LaunchCommandStart(m_launch,.4,true).raceWith(new LeftIntakeCommand(m_intake)), 
+			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "R1-1", 43, trajectory0,true)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,0.4,true).withTimeout(1),
+			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "R1-2", 43, trajectory1,true)), // Drive to first ball	
 			new LaunchBallCommandStart(m_launch),
-			new WaitCommand(5),
-			new RightStopCommand(m_intake),
+			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
+			new LeftStopCommand(m_intake),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStop(m_launch)
 	     
