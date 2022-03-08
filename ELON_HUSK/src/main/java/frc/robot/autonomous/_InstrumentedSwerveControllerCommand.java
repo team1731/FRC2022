@@ -124,6 +124,7 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 		m_drive = drive;
 		this.csvWriter = csvWriter;
 		this.endingHeading = endingHeading;
+		this.m_trackTarget = trackTarget;
 		this.defaultEndingHeading = endingHeading;
 		m_trajectory = requireNonNullParam(trajectory, "trajectory", "SwerveControllerCommand");
 		m_pose = requireNonNullParam(pose, "pose", "SwerveControllerCommand");
