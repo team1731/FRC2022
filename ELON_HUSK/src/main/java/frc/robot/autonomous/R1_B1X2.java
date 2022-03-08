@@ -76,13 +76,13 @@ public class R1_B1X2 extends _DelayableStrafingAutoMode {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-			new LaunchCommandStart(m_launch,0.42,true).withTimeout(2),
-			new LaunchCommandStart(m_launch,.42,true).raceWith(new RightIntakeCommand(m_intake)), 
-			new LaunchCommandStart(m_launch,.42,true).raceWith(createSwerveCommand(m_robotDrive, "R1-1", 0, trajectory0,false)), // Drive to first ball	
-			new LaunchCommandStart(m_launch,0.42,true).withTimeout(2),
-			new LaunchCommandStart(m_launch,.42,true).raceWith(createSwerveCommand(m_robotDrive, "R1-1", 90, trajectory1,true)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
+			new LaunchCommandStart(m_launch,.4,true).raceWith(new RightIntakeCommand(m_intake)), 
+			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "R1-1", 0, trajectory0,false)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
+			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "R1-1", 90, trajectory1,true)), // Drive to first ball	
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.42,true).withTimeout(2),
+			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
 			new RightStopCommand(m_intake),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStop(m_launch)

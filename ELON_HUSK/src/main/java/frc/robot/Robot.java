@@ -246,7 +246,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		m_drive.resumeCSVWriter();
-
+		if (m_launch != null) {
+			m_launch.resetEncoder();
+		}
 		CommandScheduler.getInstance().cancelAll();
 
 		// schedule the autonomous command (example)

@@ -568,6 +568,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	public void updateVisionOdometry() {
 		m_vision.enableLED();
 		if (m_vision.hasTarget()) {
+			//System.out.println("inUpdateVisionOdometry");
 			// determine position on the field and set odometry
 			double y = (4.15 - (m_vision.getLastTarget().getTargetDistance() + .67)
 					* Math.sin(Math.toRadians(getHeading()) - Math.toRadians(m_vision.getLastTarget().getY())));
