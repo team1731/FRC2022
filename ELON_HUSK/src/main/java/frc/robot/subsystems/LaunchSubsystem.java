@@ -38,6 +38,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private int _sdCount = 0;
 
 	private DriveSubsystem m_drive;
+	private double _tempAutodistance;
 
 	/**
 	 * Creates a new LaunchSubsystem.
@@ -74,7 +75,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		 * enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s)
 		 */
 		_RangeMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 10, 15, 1.0));
-		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 6, 8, 0.5));
+		_RangeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 9, 14, 1.0));
 
 		/* setup a basic closed loop */
 		_RangeMotor.setNeutralMode(NeutralMode.Coast); // Netural Mode override
@@ -162,7 +163,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		if (_sdCount++ > 80) {
+		if (_sdCount++ > 10) {
 			SmartDashboard.putNumber("_Range%Out", _RangeMotor.getMotorOutputPercent());
 			// SmartDashboard.putNumber("_RangeStick", position_0to1);
 			SmartDashboard.putNumber("_Launch%Out", _LaunchMotor.getMotorOutputPercent());
@@ -171,6 +172,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			SmartDashboard.putNumber("_RngGetPos", _RangeMotor.getSelectedSensorPosition());
 			SmartDashboard.putNumber("_absRngPos", _absoluteRange.getOutput());
 			SmartDashboard.putBoolean("_RngManMode", manual_launch);
+			SmartDashboard.putNumber("AUTO-DISTANCE_METERS", _tempAutodistance);
+			
 			_sdCount = 0;
 		}
 	}
@@ -179,6 +182,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		double result;
 		result = (input - min) / (max - min);
 		result = Math.max(0, Math.min(result, 1));
+
 		return result;
 	}
 
@@ -226,10 +230,14 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			// position = position_0to1 * OpConstants.MaxRange;
 			index = (int) m_drive.getApproximateHubDistance();
 			fraction = m_drive.getApproximateHubDistance() - index;
+			System.out.println("approximationwasnotstale");
 		} else {
 			fraction = normalize_input(joystick_0to1, 0.226, 0.826) * 7.62;
+			_tempAutodistance = fraction;
 			index = (int) fraction;
 			fraction = fraction - index;
+
+
 		}
 
 		if (manual_launch) {
@@ -237,14 +245,15 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		} else {
 			position = OpConstants.kRangeArray[index][0]
 					+ ((OpConstants.kRangeArray[index + 1][0] - OpConstants.kRangeArray[index][0]) * fraction);
+					System.out.println("calculating position");
 		}
 		if (position < OpConstants.MinRange) {
 			position = OpConstants.MinRange;
 		}
-		if (range_update(position, .05 /* percent tolerance */)) {
+	//	if (range_update(position, .05 /* percent tolerance */)) {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
-			lastPosition = position;
-		}
+	//		lastPosition = position;
+	//	}
 		SmartDashboard.putNumber("_RngCurPos", position);
 
 		/**
@@ -261,6 +270,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		} else {
 			velUnitsPer100ms = OpConstants.kRangeArray[index][1]
 					+ ((OpConstants.kRangeArray[index + 1][1] - OpConstants.kRangeArray[index][1]) * fraction);
+					System.out.println("setting the velocity");
 		}
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 
@@ -307,8 +317,9 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	public void calibrateBasket() {
 		double _absPosition = _absoluteRange.getOutput();
-		_absPosition = normalize_input(_absPosition, OpConstants.MinAbsEncoder, OpConstants.MaxAbsEncoder);
-		_RangeMotor.setSelectedSensorPosition(_absPosition * OpConstants.MaxRange, OpConstants.kPIDLoopIdx, 0);
+	//	_absPosition = normalize_input(_absPosition, OpConstants.MinAbsEncoder, OpConstants.MaxAbsEncoder);
+	//	_RangeMotor.setSelectedSensorPosition(_absPosition * OpConstants.MaxRange, OpConstants.kPIDLoopIdx, 0);
+		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, 0);
 	}
 
 	@Override

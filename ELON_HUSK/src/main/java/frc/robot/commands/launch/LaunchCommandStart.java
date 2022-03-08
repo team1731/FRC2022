@@ -14,6 +14,11 @@ public class LaunchCommandStart extends CommandBase {
 
     @Override
     public void initialize() {
+        
+    }
+
+    @Override
+    public void execute() {
         _launch.runLaunch(_stick, 0.0);
     }
 
@@ -23,6 +28,6 @@ public class LaunchCommandStart extends CommandBase {
 
     @Override
 	public boolean isFinished() {
-		return true;
+		return false;
 	}
 }

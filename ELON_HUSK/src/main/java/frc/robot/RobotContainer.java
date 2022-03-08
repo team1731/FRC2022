@@ -156,6 +156,9 @@ public class RobotContainer {
 		//#endregion
 
 		//#region Launch Subsystem
+
+
+
 		new JoystickButton(m_driverController, ButtonConstants.kLaunchBall).whenHeld(new LaunchBallCommand(m_launch));
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
@@ -165,6 +168,10 @@ public class RobotContainer {
 			)
 			.whenInactive(() -> m_launch.stopLaunch());
 
+
+
+
+			
 		new JoystickButton(m_operatorController, ButtonConstants.kLaunchManualMode)
 			.whenActive(new LaunchManualEnableCommand(m_launch))
 			.whenInactive(new LaunchManualDisableCommand(m_launch));

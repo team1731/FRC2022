@@ -70,9 +70,7 @@ public class Robot extends TimedRobot {
 		if (m_intake != null) {
 			m_intake.retract();
 		}
-		if (m_launch != null) {
-			m_launch.resetEncoder();
-		}
+
 	}
 
 	private void autoInitPreload() {
@@ -131,6 +129,9 @@ public class Robot extends TimedRobot {
 		m_robotContainer = new RobotContainer(m_drive, m_climb, m_launch, m_intake, m_vision);
 
 		initSubsystems();
+		if (m_launch != null) {
+			m_launch.resetEncoder();
+		}
 
 		SmartDashboard.putString("AUTO CODE", AutoConstants.kDEFAULT_AUTO_CODE); // see above for explanation
 		if (RobotBase.isReal()) {

@@ -17,6 +17,11 @@ public class RightStopCommand extends CommandBase {
     }
 
     @Override
+    public void execute() {
+        _intake.retractRightIntake();
+    }
+
+    @Override
     public void end(boolean interrupted) {
     }
 	

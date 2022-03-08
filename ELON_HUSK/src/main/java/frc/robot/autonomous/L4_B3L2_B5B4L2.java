@@ -78,31 +78,37 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-            new LaunchCommandStart(m_launch,.4),
-			new WaitCommand(2),
+            new LaunchCommandStart(m_launch,0.42).withTimeout(1.5),
 			new LaunchBallCommandStart(m_launch),
-			new WaitCommand(2),
-			
-			new ParallelCommandGroup(
-				new RightIntakeCommand(m_intake), 
-				new LaunchCommandStart(m_launch,.55),  
+			new LaunchCommandStart(m_launch,0.42).withTimeout(1),
+			new LaunchBallCommandStop(m_launch),
+			new LaunchCommandStart(m_launch,0.513).raceWith(new RightIntakeCommand(m_intake)),
+			new LaunchCommandStart(m_launch,0.513).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0,true)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,0.513).withTimeout(2),
+			new LaunchBallCommandStart(m_launch),
+			new LaunchCommandStart(m_launch,0.513).withTimeout(2),
+			new LaunchBallCommandStop(m_launch),
+			new LaunchCommandStart(m_launch,0.513).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,true)),  // Drive to second ball
+	
+			new LaunchCommandStart(m_launch,0.513).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -20.0, trajectory2,true)),  // Drive to first ball				
+			new LaunchCommandStart(m_launch,0.513).raceWith(new RightStopCommand(m_intake)),
+			new LaunchBallCommandStart(m_launch),
+			new LaunchCommandStart(m_launch,0.513).withTimeout(2),		
+			new LaunchBallCommandStop(m_launch),
+			new LaunchCommandStop(m_launch)
+
+					
+				);
+		
+
                             
-				createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory0,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false))), // Drive to first ball	
-			new WaitCommand(2),	
-			new LaunchBallCommandStop(m_launch),
-
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)),  // Drive to second ball
-
-			createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -20.0, trajectory2,true).andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false)),  // Drive to first ball				
-			new RightStopCommand(m_intake),
-			new LaunchBallCommandStart(m_launch),
-			new WaitCommand (5),			
-			new LaunchBallCommandStop(m_launch),
-			new LaunchCommandStop(m_launch)		     
-		);
 
 
-        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false));
+				     
+	
+
+
+        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, true, true));
     }
 }
 

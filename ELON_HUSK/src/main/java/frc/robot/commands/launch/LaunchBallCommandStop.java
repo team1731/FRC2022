@@ -15,6 +15,11 @@ public class LaunchBallCommandStop extends CommandBase {
         _launch.stopLaunchBall();
     }
 
+    @Override
+    public void execute() {
+        _launch.stopLaunchBall();
+    }
+
 	@Override
 	public void end(boolean interrupted) {
 	}
