@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.commands.intake.LeftIntakeCommand;
+import frc.robot.commands.intake.LeftStopCommand;
 import frc.robot.commands.intake.RightIntakeCommand;
 import frc.robot.commands.intake.RightStopCommand;
 import frc.robot.commands.launch.LaunchBallCommandStart;
@@ -27,7 +29,7 @@ import frc.robot.subsystems.LaunchSubsystem;
  * Starts at B3, launches 2, goes to B4 then B5 then launches 2
  */
 
-public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
+public class C2_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
 
 
 
@@ -46,17 +48,18 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 
 
 
-	public L4_B3L2_B5B4L2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
+	public C2_B2X2_B4B5X2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
 
-		String trajectoryJSON0 = "paths/output/L4-1.wpilib.json";
-        String trajectoryJSON1 = "paths/output/L4-2.wpilib.json";
-        String trajectoryJSON2 = "paths/output/L4-3.wpilib.json";
+		String trajectoryJSON0 = "paths/output/C1-1.wpilib.json";
+        String trajectoryJSON1 = "paths/output/C2-1.wpilib.json";
+        String trajectoryJSON2 = "paths/output/C2-2.wpilib.json";
         this.m_intake = m_intake2;
 		this.m_launch = m_launch2;
 
         Trajectory trajectory0 = new Trajectory();
         Trajectory trajectory1 = new Trajectory();
         Trajectory trajectory2 = new Trajectory();
+  
 
 
         try {
@@ -67,47 +70,37 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
             Path traj2Path = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
             trajectory2 = TrajectoryUtil.fromPathweaverJson(traj2Path);
 
+
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON0, ex.getStackTrace());
         }
 
 
 		Pose2d unrotInitPose = trajectory0.getInitialPose();
-		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(-46.0));
+		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(46));
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-			new LaunchCommandStart(m_launch,0.5,true).raceWith(new RightIntakeCommand(m_intake)),
-			new LaunchCommandStart(m_launch,0.5,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -35.0, trajectory0,false)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,.4, true).raceWith(new LeftIntakeCommand(m_intake)), 
+			new LaunchCommandStart(m_launch,.52, true).raceWith(createSwerveCommand(m_robotDrive, "C1-1", 35, trajectory0, false)),
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.5,true).withTimeout(1.5),
+			new LaunchCommandStart(m_launch,0.5,true).withTimeout(2),
 			new LaunchBallCommandStop(m_launch),
-			new LaunchCommandStart(m_launch,0.52,true).withTimeout(0.5), //spinup
+			new LaunchCommandStart(m_launch,.4, true).raceWith(new LeftStopCommand(m_intake)),
+			new LaunchCommandStart(m_launch,.4, true).raceWith(new RightIntakeCommand(m_intake)),
+			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "C2-1", -40, trajectory1, false)), // Drive to Second ball	
+			new LaunchCommandStart(m_launch,0.5,true).withTimeout(1.75),
+			new RightStopCommand(m_intake),
+			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "C2-2", 42, trajectory2, false)), // Drive to first ball	
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.52,true).withTimeout(1),
-			new LaunchBallCommandStop(m_launch),
-			new LaunchCommandStart(m_launch,0.5,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,false)),  // Drive to second ball
-	
-			new LaunchCommandStart(m_launch,0.45,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", 0.0, trajectory2,false)),  // Drive to first ball				
-			new LaunchCommandStart(m_launch,0.46,true).raceWith(new RightStopCommand(m_intake)),
-			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.465,true).withTimeout(2),		
+			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStop(m_launch)
-
-					
-				);
-		
-
-                            
+		);
 
 
-				     
-	
-
-
-        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, true, true));
+        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false));
     }
 }
 

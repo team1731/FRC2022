@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.C1_B2X2;
+import frc.robot.autonomous.C2_B2X2_B4B5X2;
 import frc.robot.autonomous.F1_Move_Forward;
 import frc.robot.autonomous.L1_B3X2;
 import frc.robot.autonomous.L3_B3X2_B5X2;
@@ -241,6 +242,8 @@ public class RobotContainer {
 			    return new _NamedAutoMode(new R1_B1X2(m_drive, m_intake, m_launch));
 			case "C1":
 			    return new _NamedAutoMode(new C1_B2X2(m_drive, m_intake, m_launch));
+			case "C2":
+			    return new _NamedAutoMode(new C2_B2X2_B4B5X2(m_drive, m_intake, m_launch));
 
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");
