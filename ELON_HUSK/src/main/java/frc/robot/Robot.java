@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
 		if (RobotBase.isReal()) {
 			autoCode = SmartDashboard.getString("AUTO CODE", autoCode);
 		}
-
+        
 		autoInitPreload();
 
 	//	SmartDashboard.putBoolean("Vis_HasTarget", false);

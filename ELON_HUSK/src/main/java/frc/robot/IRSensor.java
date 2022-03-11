@@ -20,8 +20,9 @@ public class IRSensor {
         mAnalogInput.setAverageBits(6);
         mAnalogTrigger = new AnalogTrigger(mAnalogInput);
         mAnalogTrigger.setAveraged(true);
-        mAnalogTrigger.setFiltered(false);
         mAnalogTrigger.setLimitsVoltage(OpConstants.kMinIRVoltage, OpConstants.kMaxIRVoltage);
+     //   mAnalogTrigger.setFiltered(false);
+     //   mAnalogTrigger.setLimitsVoltage(OpConstants.kMinIRVoltage, OpConstants.kMaxIRVoltage);
         // mCounter = new Counter(mAnalogTrigger.createOutput(AnalogTriggerType.kState));
     }
 

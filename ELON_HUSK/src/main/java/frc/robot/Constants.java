@@ -131,7 +131,7 @@ public final class Constants {
 		public static final int kLeftSwingerMotorID = 9;
 		public static final int kRightSwingerMotorID = 10;
 		public static final int kNorthSensorID = 1; // NavX Analog Input Sensor
-		public static final int kSouthSensorID = 2; // NavX Analog Input Sensor
+		public static final int kSouthSensorID = 0; // NavX Analog Input Sensor
 
 		// AnalogInputs
 		public static final double kMinIRVoltage = 1.0;
@@ -328,16 +328,17 @@ public final class Constants {
 		public static final double kMinOutput = -1;
 		public static final double maxRPM = 5700;
 
-		public static final double maxVel = 4000; //rpm
+		public static final double maxVel = 1000; //rpm
 		public static final double minVel = 0;
 		public static final double maxAcc = 1000;
 		public static final double allowedErr = 0;
 
 
-		public static final double kBckSteps = 10*4;
-		public static final double kStartSteps = 5;
-		public static final double kSecondBarSteps = 50 *4;
+		public static final double kBckSteps = 40*4;
+		public static final double kStartSteps = -5;
+		public static final double kSecondBarSteps = 56 *4;
 		public static final double kThirdBarSteps = 120*4;
+		public static final double kHangSteps = 130*4;
 
 		public static final int smartMotionSlot = 0;
 	}
