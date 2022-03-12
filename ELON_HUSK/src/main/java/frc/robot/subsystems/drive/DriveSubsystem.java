@@ -436,7 +436,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		// m_rightFront.resetEncoders(0);// had taken out but it started working again
 		// 7mar2020. // took this one out -- bad hardware encoder!!!
 		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.26);
-		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.32);
+		// COMPETITION: We will set this manually for now
+		// m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.32);
 		resetOdometry(new Pose2d());
 
 	}
