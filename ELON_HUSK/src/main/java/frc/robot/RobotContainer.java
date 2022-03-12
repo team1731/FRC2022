@@ -20,6 +20,7 @@ import frc.robot.autonomous.L4_B3L2_B5B4L2;
 import frc.robot.autonomous.L5_B3X2_B5B4X2_B2B1X1;
 import frc.robot.autonomous.L6_B3X2_B5B4X2_B2X1;
 import frc.robot.autonomous.R1_B1X2;
+import frc.robot.autonomous.X0_DoNothing;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
@@ -244,6 +245,8 @@ public class RobotContainer {
 			    return new _NamedAutoMode(new C1_B2X2(m_drive, m_intake, m_launch));
 			case "C2":
 			    return new _NamedAutoMode(new C2_B2X2_B4B5X2(m_drive, m_intake, m_launch));
+			case "X0":
+				return new _NamedAutoMode(new X0_DoNothing(m_drive, m_intake, m_launch));
 
 			default:
 				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");
