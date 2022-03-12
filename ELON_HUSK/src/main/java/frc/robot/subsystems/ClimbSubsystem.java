@@ -371,7 +371,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
         //   _currentState = State.EXTEND;
 		}
 
-		return (Timer.getFPGATimestamp() - _timer >= 1) &&  !_northFrontCylinderSensor.get();
+		return (Timer.getFPGATimestamp() - _timer >= 0.5) &&  !_northFrontCylinderSensor.get();
 	}
 
 	private boolean handleSwingToSecondBar(){
@@ -397,6 +397,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		
 
 		return (Timer.getFPGATimestamp() - _timer >= 2 && !_southBackCylinderSensor.get()) ;
+		
 	}
 
 	private boolean handleReleaseFirstBar(){
@@ -412,7 +413,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			stopSwing();
 		}
 
-		return Timer.getFPGATimestamp() - _timer >= 3;
+		//return Timer.getFPGATimestamp() - _timer >= 3;
+		return !_northBackCylinderReleaseSensor.get();
 	}
 
 	private boolean handleSwingToThirdBar(){

@@ -91,8 +91,15 @@ public class C2_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
 			new LaunchCommandStart(m_launch,.4, true).raceWith(new RightIntakeCommand(m_intake)),
 			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "C2-1", -40, trajectory1, false)), // Drive to Second ball	
 			new LaunchCommandStart(m_launch,0.5,true).withTimeout(1.75),
-			new RightStopCommand(m_intake),
-			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "C2-2", 42, trajectory2, false)), // Drive to first ball	
+			new ParallelCommandGroup(
+				new SequentialCommandGroup (
+					new WaitCommand(2),
+					new RightStopCommand(m_intake)
+				),
+				new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "C2-2", 42, trajectory2, false))
+			),
+			
+			 // Drive to first ball	
 			new LaunchBallCommandStart(m_launch),
 			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
 			new LaunchBallCommandStop(m_launch),

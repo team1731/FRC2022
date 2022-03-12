@@ -130,8 +130,8 @@ public final class Constants {
 
 		public static final int kLeftSwingerMotorID = 9;
 		public static final int kRightSwingerMotorID = 10;
-		public static final int kNorthSensorID = 1; // NavX Analog Input Sensor
-		public static final int kSouthSensorID = 0; // NavX Analog Input Sensor
+		public static final int kNorthSensorID = 0; // NavX Analog Input Sensor
+		public static final int kSouthSensorID = 2; // NavX Analog Input Sensor
 
 		// AnalogInputs
 		public static final double kMinIRVoltage = 1.0;
