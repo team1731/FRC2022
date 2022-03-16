@@ -173,10 +173,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerSlaveMotor.setSmartCurrentLimit(13,13,0);
 		_swingerMasterMotor.setSecondaryCurrentLimit(15);
 		_swingerSlaveMotor.setSecondaryCurrentLimit(15);
-		_swingerMasterMotor.setClosedLoopRampRate(2);
-		_swingerSlaveMotor.setClosedLoopRampRate(2);
-		_swingerMasterMotor.setOpenLoopRampRate(2);
-		_swingerSlaveMotor.setOpenLoopRampRate(2);
+		_swingerMasterMotor.setClosedLoopRampRate(1);
+		_swingerSlaveMotor.setClosedLoopRampRate(1);
+		_swingerMasterMotor.setOpenLoopRampRate(1);
+		_swingerSlaveMotor.setOpenLoopRampRate(1);
 	
 
 
@@ -343,12 +343,13 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	private boolean handleExtend() {
 		// Extenders up, north grabber one half closed, south grabbers closed
-		if (_inputDirection == InputDirection.UP) {
+		if (_inputDirection == InputDirection.UP || (_inputDirection == InputDirection.DOWN && (Timer.getFPGATimestamp() - _timer <= 5.0))){
 			setExtenders(true);
 			setNorthGrabber(GrabberHalf.FRONT, true);
+			setNorthGrabber(GrabberHalf.BACK, false);
 			setSouthGrabbers(true);
 			startSwing(ClimbConstants.kStartSteps);
-		} else if (_inputDirection == InputDirection.DOWN) {
+		} else if (_inputDirection == InputDirection.DOWN){
 			setExtenders(false);
 			setNorthGrabbers(false);
 			setSouthGrabbers(true);
@@ -360,6 +361,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 		return _sensorOverride || (_northSensor != null && _northSensor.isTriggered());
 	}
+	
 
 	private boolean handleGrabFirstBar(){
 		// Extenders up, north grabber closed, south grabber closed
@@ -367,8 +369,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setExtenders(true);
 		setNorthGrabbers(true);
 		} else if (_inputDirection == InputDirection.DOWN) {
-		 
-        //   _currentState = State.EXTEND;
+			_timer = Timer.getFPGATimestamp();
+           _currentState = State.EXTEND;
 		}
 
 		return (Timer.getFPGATimestamp() - _timer >= 0.5) &&  !_northFrontCylinderSensor.get();
@@ -380,6 +382,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setExtenders(true);
 		startSwing(ClimbConstants.kSecondBarSteps);
 		setSouthGrabber(GrabberHalf.BACK, false);
+		} else if (_inputDirection == InputDirection.DOWN){
+			_timer = Timer.getFPGATimestamp();
+			_currentState = State.EXTEND;
 		} else {
 			stopSwing();
 		}
@@ -396,7 +401,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		 } 
 		
 
-		return (Timer.getFPGATimestamp() - _timer >= 2 && !_southBackCylinderSensor.get()) ;
+		return (Timer.getFPGATimestamp() - _timer >= 1 && !_southBackCylinderSensor.get()) ;
 		
 	}
 
@@ -569,6 +574,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		if(transition){
 			_timer = Timer.getFPGATimestamp();
 			_currentState = _currentState.next();
+			System.out.println("transitioning to state:" + _currentState);
 			_sensorOverride = false;
 			//  _currentState = _inputDirection == InputDirection.UP ? _currentState.next()
 			//  	: _currentState.previous();

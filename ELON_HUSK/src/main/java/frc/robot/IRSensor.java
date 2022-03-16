@@ -34,8 +34,9 @@ public class IRSensor {
         return mAnalogInput.getAverageVoltage();
     }
 
+
     public boolean isTriggered() {
-        return mAnalogTrigger.getTriggerState();
+        return (mAnalogTrigger.getTriggerState() && mAnalogInput.getVoltage() > OpConstants.kMaxIRVoltage);
     }
 
     // public void resetCount() {

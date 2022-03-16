@@ -328,9 +328,9 @@ public final class Constants {
 		public static final double kMinOutput = -1;
 		public static final double maxRPM = 5700;
 
-		public static final double maxVel = 1000; //rpm
+		public static final double maxVel = 1500; //rpm
 		public static final double minVel = 0;
-		public static final double maxAcc = 1000;
+		public static final double maxAcc = 1500;
 		public static final double allowedErr = 0;
 
 

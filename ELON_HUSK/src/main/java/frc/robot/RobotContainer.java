@@ -136,8 +136,11 @@ public class RobotContainer {
 	
 		//#region Climb Subsystem
 		new JoystickButton(m_operatorController, ButtonConstants.kClimbUp).whileHeld(new ClimbUpCommand(m_climb));
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).whileHeld(new ClimbDownCommand(m_climb));
-		new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride).whileHeld(new OverrideSensorCommand(m_climb));
+		new JoystickButton(m_operatorController, ButtonConstants.kClimbDown).and(new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride)).whileActiveContinuous(new ClimbDownCommand(m_climb));
+	
+
+
+	//	new JoystickButton(m_operatorController, ButtonConstants.kClimbSensorOverride).whileHeld(new OverrideSensorCommand(m_climb));
 		//#endregion
 
 		//#region Vision Subsystem
