@@ -12,6 +12,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -79,6 +80,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private final SwerveModule m_leftRear;
 	private final SwerveModule m_rightRear;
 	private int _sdCount = 0;
+	private final SlewRateLimiter xfilter;
+	private final SlewRateLimiter yfilter;
 
 	// The gyro sensor
 	// private final Gyro a_gyro = new ADXRS450_Gyro();
@@ -117,6 +120,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			m_rightFront = null;
 			m_leftRear = null;
 			m_rightRear = null;
+			xfilter = null;
+			yfilter = null;
 			return;
 		}
 
@@ -128,6 +133,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 				DriveConstants.kLeftRearTurningMotorPort);
 		m_rightRear = new SwerveModule(DriveConstants.kRightRearDriveMotorPort,
 				DriveConstants.kRightRearTurningMotorPort);
+
+		 xfilter = new SlewRateLimiter(100);
+
+		 yfilter = new SlewRateLimiter(100);
 
 		leftFrontAbsEncoder = new AnalogInput(0);
 		rightFrontAbsEncoder = new AnalogInput(1);
@@ -345,6 +354,11 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		 */
 		xSpeedAdjusted *= this.driveSpeedScaler;
 		ySpeedAdjusted *= this.driveSpeedScaler;
+
+	   // xSpeedAdjusted = xfilter.calculate(xSpeedAdjusted);
+		//ySpeedAdjusted = yfilter.calculate(ySpeedAdjusted);
+
+
 
 		// If the right stick is neutral - this code should lock on the last known
 		// heading
@@ -604,6 +618,14 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	public boolean approximationStale() {
 		return (Timer.getFPGATimestamp() - lastVisionTimestamp >= 15 );
+	}
+
+	public void setCurrentLimits(boolean enable) {
+		m_leftFront.setCurrentLimits(enable);
+		m_rightFront.setCurrentLimits(enable);
+		m_leftRear.setCurrentLimits(enable);
+		m_rightRear.setCurrentLimits(enable);
+	
 	}
 
 }

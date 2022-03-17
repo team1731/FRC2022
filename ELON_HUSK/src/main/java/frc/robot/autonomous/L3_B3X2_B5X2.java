@@ -78,28 +78,21 @@ public class L3_B3X2_B5X2 extends _DelayableStrafingAutoMode {
 		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(-46.0));
 
 
+
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-            new LaunchCommandStart(m_launch,.4,true),
-			new WaitCommand(2),
-			new LaunchBallCommandStart(m_launch),
-			new WaitCommand(2),
-			
-			new ParallelCommandGroup(
-				new RightIntakeCommand(m_intake), 
-				new LaunchCommandStart(m_launch,.55,true),  
+            new LaunchCommandStart(m_launch,.4,true).withTimeout(2),
+			new LaunchBallCommandStart(m_launch).withTimeout(2),
+			new LaunchCommandStart(m_launch,.55,true).raceWith(new RightIntakeCommand(m_intake)),  
                             
-				createSwerveCommand(m_robotDrive, "L3_B3X2_B5X2", -40.0, trajectory0,true)), // Drive to first ball	
-			new WaitCommand(2),	
+			new LaunchCommandStart(m_launch,.55,true).raceWith(createSwerveCommand(m_robotDrive, "L3_B3X2_B5X2", -40.0, trajectory0,false)).withTimeout(2), // Drive to first ball	
 			new LaunchBallCommandStop(m_launch),
 
-			createSwerveCommand(m_robotDrive, "L3_B3X2_B5X2", -40.0, trajectory1,false),  // Drive to second ball
-
-			createSwerveCommand(m_robotDrive, "L3_B3X2_B5X2", -20.0, trajectory2,true),  // Drive to first ball				
-			new RightStopCommand(m_intake),
-			new LaunchBallCommandStart(m_launch),
-			new WaitCommand (5),			
+			new LaunchCommandStart(m_launch,.55,true).raceWith(createSwerveCommand(m_robotDrive, "L3_B3X2_B5X2", -40.0, trajectory1,false)),  // Drive to second ball
+			new LaunchCommandStart(m_launch,.55,true).raceWith(createSwerveCommand(m_robotDrive, "L3_B3X2_B5X2", -20.0, trajectory2,false)),  // Drive to first ball				
+			new LaunchCommandStart(m_launch,.55,true).raceWith(new RightStopCommand(m_intake)),
+			new LaunchBallCommandStart(m_launch).withTimeout(5),			
 			new LaunchBallCommandStop(m_launch)
 					     
 		);

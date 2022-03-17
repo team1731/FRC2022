@@ -78,16 +78,16 @@ public class C1_B2X2 extends _DelayableStrafingAutoMode {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-            new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
+            new LaunchCommandStart(m_launch,0.42,true).withTimeout(2),
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
+			new LaunchCommandStart(m_launch,0.42,true).withTimeout(2),
 			new LaunchBallCommandStop(m_launch),
-			new LaunchCommandStart(m_launch,.4,true).raceWith(new LeftIntakeCommand(m_intake)), 
-			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "C1-1", 43, trajectory0,false)), // Drive to first ball	
-			new LaunchCommandStart(m_launch,0.4,true).withTimeout(1),
-			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "C1-2", 43, trajectory1,false)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,.43,true).raceWith(new LeftIntakeCommand(m_intake)), 
+			new LaunchCommandStart(m_launch,.43,true).raceWith(createSwerveCommand(m_robotDrive, "C1-1", 43, trajectory0,false)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,0.43,true).withTimeout(1),
+			new LaunchCommandStart(m_launch,.43,true).raceWith(createSwerveCommand(m_robotDrive, "C1-2", 43, trajectory1,false)), // Drive to first ball	
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
+			new LaunchCommandStart(m_launch,0.43,true).withTimeout(2),
 			new LeftStopCommand(m_intake),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStop(m_launch)

@@ -78,14 +78,14 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-			new LaunchCommandStart(m_launch,0.5,true).raceWith(new RightIntakeCommand(m_intake)),
-			new LaunchCommandStart(m_launch,0.5,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -35.0, trajectory0,false)), // Drive to first ball	
+			new LaunchCommandStart(m_launch,0.55,true).raceWith(new RightIntakeCommand(m_intake)),
+			new LaunchCommandStart(m_launch,0.55,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -35.0, trajectory0,false)), // Drive to first ball	
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.5,true).withTimeout(1.5),
+			new LaunchCommandStart(m_launch,0.55,true).withTimeout(1.5),
 			new LaunchBallCommandStop(m_launch),
-			new LaunchCommandStart(m_launch,0.52,true).withTimeout(0.5), //spinup
+			new LaunchCommandStart(m_launch,0.55,true).withTimeout(0.5), //spinup
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.52,true).withTimeout(1),
+			new LaunchCommandStart(m_launch,0.55,true).withTimeout(1),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStart(m_launch,0.5,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory1,false)),  // Drive to second ball
 	

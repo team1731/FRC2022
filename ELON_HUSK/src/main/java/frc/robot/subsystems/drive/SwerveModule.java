@@ -8,6 +8,7 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -47,8 +48,7 @@ public class SwerveModule {
 
 			m_driveMotor.setInverted(true);
 
-			SupplyCurrentLimitConfiguration limit = new SupplyCurrentLimitConfiguration(true, 40, 50, 5);
-			m_driveMotor.configGetSupplyCurrentLimit(limit);
+
 
 			m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 30);
 			m_driveMotor.config_kP(0, 0.1, 30);
@@ -217,6 +217,15 @@ public class SwerveModule {
 		// SmartDashboard.putNumber("RelativeEncoder"+id,
 		// m_turningEncoder.getPosition());
 		// SmartDashboard.putNumber("absOffset"+id, offsetFromAbsoluteEncoder);
+	}
+
+	public void setCurrentLimits(boolean enable) {
+
+		SupplyCurrentLimitConfiguration limit = new SupplyCurrentLimitConfiguration(enable, 40, 60, 5);
+		StatorCurrentLimitConfiguration statorLimit = new StatorCurrentLimitConfiguration(enable, 60, 50, 5);
+
+		m_driveMotor.configSupplyCurrentLimit(limit);
+		m_driveMotor.configStatorCurrentLimit(statorLimit);
 	}
 
 	/**

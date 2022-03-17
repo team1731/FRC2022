@@ -228,8 +228,13 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			// speed_0to1 = getVisionSpeed();
 			// position_0to1 = getVisionPosition();
 			// position = position_0to1 * OpConstants.MaxRange;
-			index = (int) m_drive.getApproximateHubDistance();
-			fraction = m_drive.getApproximateHubDistance() - index;
+			double distance = m_drive.getApproximateHubDistance();
+			if ((distance >= 7 ) || (distance < 0)) {
+				distance = 3.0;
+				System.out.println("got a distance greater than 8");
+			}
+			index = (int) distance;
+			fraction = distance - index;
 		} else {
 			fraction = normalize_input(joystick_0to1, 0.226, 0.826) * 7.62;
 			_tempAutodistance = fraction;
