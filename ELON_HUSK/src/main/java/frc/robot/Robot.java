@@ -82,11 +82,12 @@ public class Robot extends TimedRobot {
 		m_drive.resumeCSVWriter();
 
 		if (RobotBase.isReal()) {
-			autoCode = SmartDashboard.getString("AUTO CODE", autoCode);
+			autoCode = SmartDashboard.getString(AutoConstants.kAUTO_CODE, autoCode);
 		}
 		System.out.println("AUTO CODE retrieved from Dashboard --> " + autoCode);
 		if (autoCode == null || autoCode.length() < 2) {
 			autoCode = AutoConstants.kDEFAULT_AUTO_CODE;
+			SmartDashboard.putString(AutoConstants.kAUTO_CODE, AutoConstants.kDEFAULT_AUTO_CODE);
 		}
 		autoCode = autoCode.toUpperCase();
 		System.out.println("AUTO CODE being used by the software --> " + autoCode);
@@ -94,7 +95,7 @@ public class Robot extends TimedRobot {
 		m_autonomousCommand = null;
 		namedAutoMode = m_robotContainer.getNamedAutonomousCommand(autoCode);
 		if (namedAutoMode != null) {
-			System.out.println("autoInitPreload: getCommand Auto Begin");
+			System.out.println("autoInitPreload: getCommand Auto Begin: "+namedAutoMode.name);
 			m_autonomousCommand = namedAutoMode.getCommand();
 			System.out.println("autoInitPreload: getCommand Auto Complete");
 		} else {
@@ -133,9 +134,9 @@ public class Robot extends TimedRobot {
 			m_launch.resetEncoder();
 		}
 
-		SmartDashboard.putString("AUTO CODE", AutoConstants.kDEFAULT_AUTO_CODE); // see above for explanation
+		SmartDashboard.putString(AutoConstants.kAUTO_CODE, AutoConstants.kDEFAULT_AUTO_CODE); // see above for explanation
 		if (RobotBase.isReal()) {
-			autoCode = SmartDashboard.getString("AUTO CODE", autoCode);
+			autoCode = SmartDashboard.getString(AutoConstants.kAUTO_CODE, autoCode);
 		}
         
 		autoInitPreload();
@@ -219,23 +220,11 @@ public class Robot extends TimedRobot {
 		}
 
 		 if (RobotBase.isReal()) {
-		 	String newCode = SmartDashboard.getString("AUTO CODE", autoCode);
+		 	String newCode = SmartDashboard.getString(AutoConstants.kAUTO_CODE, autoCode);
 		 	if (!newCode.equals(autoCode)) {
+		 		System.out.println("New Auto Code read from dashboard. OLD: \""+autoCode+"\", NEW: \""+newCode+"\" - initializing.");
 		 		autoCode = newCode;
-		 		System.out.println("New Auto Code read from dashboard - initializing.");
 		 		autoInitPreload();
-		 	}
-		 	if (m_autonomousCommand != null) {
-		 		if (m_autonomousCommand.getName().startsWith("H0")) {
-		 			Integer newFieldOrientation = namedAutoMode.getFieldOrientation();
-		 			if (newFieldOrientation != null) {
-		 				if (!newFieldOrientation.equals(fieldOrientation)) {
-		 					System.out.println("New Field Orientation detected by LimeLight - initializing.");
-		 					fieldOrientation = newFieldOrientation;
-		 					autoInitPreload();
-		 				}
-		 			}
-		 		}
 		 	}
 		 }
 	}

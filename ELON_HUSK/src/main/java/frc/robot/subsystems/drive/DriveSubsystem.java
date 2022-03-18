@@ -213,7 +213,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			// SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));
 			// SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
 			// SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
-			SmartDashboard.putNumber("Heading", m_heading);
+			SmartDashboard.putNumber("Gyro", m_heading);
 			SmartDashboard.putNumber("TargetAngleFromVision", m_vision.getLastTarget().getY());
 			SmartDashboard.putNumber("TargetDistanceFromVision", m_vision.getLastTarget().getTargetDistance());
 			SmartDashboard.putNumber("ApproximateHubAngle", getApproximateHubAngle());

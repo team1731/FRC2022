@@ -25,15 +25,11 @@ import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
 import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.ResetGyroCommand;
-//import frc.robot.commands.VisionRotateCommand;
 import frc.robot.commands.intake.RightIntakeJoyconCommand;
 import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
-import frc.robot.commands.climb.OverrideSensorCommand;
 import frc.robot.commands.climb.RewindClimbComand;
-//import frc.robot.commands.intake.LeftIntakeCommand;
-//import frc.robot.commands.intake.LeftStopCommand;
 import frc.robot.commands.intake.RightIntakeEjectCommand;
 import frc.robot.commands.intake.LeftIntakeEjectCommand;
 import frc.robot.commands.launch.LaunchBallCommand;
@@ -248,14 +244,12 @@ public class RobotContainer {
 			    return new _NamedAutoMode(new R1_B1X2(m_drive, m_intake, m_launch));
 			case "C1":
 			    return new _NamedAutoMode(new C1_B2X2(m_drive, m_intake, m_launch));
-			case "C2":
-			    return new _NamedAutoMode(new C2_B2X2_B4B5X2(m_drive, m_intake, m_launch));
 			case "X0":
 				return new _NamedAutoMode(new X0_DoNothing(m_drive, m_intake, m_launch));
-
+		
+			case "C2":
 			default:
-				System.err.println("FATAL: SELECTED AUTO MODE " + autoModeName + " DOES NOT MAP TO A JAVA CLASS!!!!");
-				return null;
+				return new _NamedAutoMode(new C2_B2X2_B4B5X2(m_drive, m_intake, m_launch));
 		}
 	}
 

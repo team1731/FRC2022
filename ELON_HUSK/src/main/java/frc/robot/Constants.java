@@ -70,6 +70,7 @@ public final class Constants {
 
 	public static final class AutoConstants {
 		public static final String kDEFAULT_AUTO_CODE = "C2";
+		public static final String kAUTO_CODE = "Auto Selector";
 		// DEFAULT AUTO MODE if Drive Team is unable to set the mode via Dashboard
 		// NOTE: also useful if trying to run in the simulator!
 		// XNDD (X=L,M,R,F) (N=1,2,3,4) (DD=0-99 [optional])
