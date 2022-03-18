@@ -486,8 +486,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	//#endregion
 
 	private void updateSmartDashboard(){
-		 SmartDashboard.putString("climb_State", _currentState.name());
-		 SmartDashboard.putString("climb_iDir", _inputDirection.name());
+	//	 SmartDashboard.putString("climb_State", _currentState.name());
+	//	 SmartDashboard.putString("climb_iDir", _inputDirection.name());
 		// SmartDashboard.putBoolean("climb_GrbNF Closed", _grabberNorthFront.get() == Value.kForward);
 		// SmartDashboard.putBoolean("climb_GrbNB Closed", _grabberNorthBack.get() == Value.kForward);
 		// SmartDashboard.putBoolean("climb_GrbSF Closed", _grabberSouthFront.get() == Value.kForward);
@@ -503,7 +503,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		SmartDashboard.putBoolean("climb_North_Back_Cylinder", _northBackCylinderSensor.get());
 		SmartDashboard.putBoolean("climb_North_Front_Cylinder", _northFrontCylinderSensor.get());
 		SmartDashboard.putBoolean("climb_North_Back_Release_Cylinder", _northBackCylinderReleaseSensor.get());
-		SmartDashboard.putNumber("climb_Count", _climbCount);
+	//	SmartDashboard.putNumber("climb_Count", _climbCount);
 	//	SmartDashboard.putNumber("SlaveOutput", _swingerMasterMotor.getAppliedOutput());
 	//	SmartDashboard.putNumber("MasterOutput", _swingerSlaveMotor.getAppliedOutput());
 	//	SmartDashboard.putNumber("SlaveVelocity", _encoderMaster.getVelocity());

@@ -140,9 +140,9 @@ public class VisionSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		SmartDashboard.putBoolean("Vis_HasTarget", hasTarget());
-		SmartDashboard.putString("Vis_TargetPos",
-				hasTarget() ? _lastTarget.getY() + ", " + _lastTarget.getZ() : "N/A");
+	//	SmartDashboard.putBoolean("Vis_HasTarget", hasTarget());
+	//	SmartDashboard.putString("Vis_TargetPos",
+	//			hasTarget() ? _lastTarget.getY() + ", " + _lastTarget.getZ() : "N/A");
 	}
 
 	/**

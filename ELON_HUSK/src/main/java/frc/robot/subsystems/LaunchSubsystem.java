@@ -166,15 +166,15 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 
 		if (_sdCount++ > 10) {
-			SmartDashboard.putNumber("_Range%Out", _RangeMotor.getMotorOutputPercent());
+		//	SmartDashboard.putNumber("_Range%Out", _RangeMotor.getMotorOutputPercent());
 			// SmartDashboard.putNumber("_RangeStick", position_0to1);
-			SmartDashboard.putNumber("_Launch%Out", _LaunchMotor.getMotorOutputPercent());
-			SmartDashboard.putNumber("_LaunchSpd", _LaunchMotor.getSelectedSensorVelocity());
-			SmartDashboard.putNumber("_RngLastPos", lastPosition);
-			SmartDashboard.putNumber("_RngGetPos", _RangeMotor.getSelectedSensorPosition());
-			SmartDashboard.putNumber("_absRngPos", _absoluteRange.getOutput());
-			SmartDashboard.putBoolean("_RngManMode", manual_launch);
-			SmartDashboard.putNumber("AUTO-DISTANCE_METERS", _tempAutodistance);
+		//	SmartDashboard.putNumber("_Launch%Out", _LaunchMotor.getMotorOutputPercent());
+		//	SmartDashboard.putNumber("_LaunchSpd", _LaunchMotor.getSelectedSensorVelocity());
+		//	SmartDashboard.putNumber("_RngLastPos", lastPosition);
+		//	SmartDashboard.putNumber("_RngGetPos", _RangeMotor.getSelectedSensorPosition());
+		//	SmartDashboard.putNumber("_absRngPos", _absoluteRange.getOutput());
+		//	SmartDashboard.putBoolean("_RngManMode", manual_launch);
+		//	SmartDashboard.putNumber("AUTO-DISTANCE_METERS", _tempAutodistance);
 			
 			_sdCount = 0;
 		}
@@ -217,7 +217,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_joystick = joystick_0to1;
 		// SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
 		// SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
-		SmartDashboard.putNumber("_RangeStick", joystick_0to1);
+		//SmartDashboard.putNumber("_RangeStick", joystick_0to1);
 		// SmartDashboard.putNumber("_LaunchPercentOut",
 		// _LaunchMotor.getMotorOutputPercent());
 		// SmartDashboard.putNumber("_LaunchSpeed",
@@ -262,7 +262,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			_RangeMotor.set(TalonFXControlMode.MotionMagic, position);
 	//		lastPosition = position;
 	//	}
-		SmartDashboard.putNumber("_RngCurPos", position);
+		//SmartDashboard.putNumber("_RngCurPos", position);
 
 		/**
 		 * Convert 2000 RPM to units / 100ms. Speed - max is 6000.0 RPMs
@@ -282,7 +282,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 		_LaunchMotor.set(TalonFXControlMode.Velocity, velUnitsPer100ms);
 
-		SmartDashboard.putNumber("velUnits/100ms", velUnitsPer100ms);
+		//SmartDashboard.putNumber("velUnits/100ms", velUnitsPer100ms);
 	}
 
 	// private double getVisionPosition() {
@@ -305,8 +305,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 		_RangeMotor.set(TalonFXControlMode.PercentOutput, 0);
 		_LaunchMotor.set(TalonFXControlMode.PercentOutput, 0);
-		SmartDashboard.putNumber("_LaunchPosition", 0);
-		SmartDashboard.putNumber("_LaunchSpeed", 0);
+	//	SmartDashboard.putNumber("_LaunchPosition", 0);
+	//	SmartDashboard.putNumber("_LaunchSpeed", 0);
 	}
 
 	public void runLaunchBall() {
@@ -314,7 +314,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
-		System.out.println("Launching-  use Vision:" + _useVision +  "have Lock:" + !m_drive.approximationStale() + "approx dist:" + m_drive.getApproximateHubDistance() + "joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
+		//System.out.println("Launching-  use Vision:" + _useVision +  "have Lock:" + !m_drive.approximationStale() + "approx dist:" + m_drive.getApproximateHubDistance() + "joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
 	}
 
 	public void stopLaunchBall() {
