@@ -58,6 +58,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private int _climbCount = 0;
 	private int _sdCount = 0;
 	private boolean _sensorOverride = false;
+	private boolean _rewinding = false;
 
 	//#region Enums
 
@@ -242,7 +243,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		
 		_encoderMaster.setPosition(0);
 		_encoderSlave.setPosition(0);
-		handleReady();
+		//handleReady();
 	}
 
 	public State getState(){
@@ -332,12 +333,14 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	//#region State Handlers
 
-	private boolean handleReady(){
+	public boolean handleReady(){
 		// Extenders down, north grabbers open, south grabbers closed
+		if (_inputDirection == InputDirection.DOWN) {
 		setExtenders(false);
 		setNorthGrabbers(false);
 		setSouthGrabbers(true);
 		stopSwing();
+		}
 		return _inputDirection == InputDirection.UP;
 	}
 
@@ -483,8 +486,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	//#endregion
 
 	private void updateSmartDashboard(){
-		// SmartDashboard.putString("climb_State", _currentState.name());
-		// SmartDashboard.putString("climb_iDir", _inputDirection.name());
+		 SmartDashboard.putString("climb_State", _currentState.name());
+		 SmartDashboard.putString("climb_iDir", _inputDirection.name());
 		// SmartDashboard.putBoolean("climb_GrbNF Closed", _grabberNorthFront.get() == Value.kForward);
 		// SmartDashboard.putBoolean("climb_GrbNB Closed", _grabberNorthBack.get() == Value.kForward);
 		// SmartDashboard.putBoolean("climb_GrbSF Closed", _grabberSouthFront.get() == Value.kForward);
@@ -517,11 +520,14 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			_sdCount = 0;
 		}
 
-		if(_inputDirection == InputDirection.NEUTRAL){
+		if((_inputDirection == InputDirection.NEUTRAL) && !_rewinding){
 			_swingerMasterMotor.set(0);
 			_swingerSlaveMotor.set(0);
 			_timer = Timer.getFPGATimestamp();
-			return;
+			if (_currentState != State.READY) {
+				return;
+			}
+
 		}
 
 		/*
@@ -580,6 +586,25 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			//  	: _currentState.previous();
 		}
 	}
+
+    public void startRewind() {
+		_rewinding = true;
+		_pidMasterController.setReference(-500, CANSparkMax.ControlType.kVelocity);
+		_pidSlaveController.setReference(500, CANSparkMax.ControlType.kVelocity );
+
+
+    }
+
+    public void stopRewind() {
+		_rewinding = false;
+		_currentState = State.READY;
+	//	_inputDirection = InputDirection.DOWN;
+		_swingerMasterMotor.set(0);
+		_swingerSlaveMotor.set(0);
+		_encoderMaster.setPosition(0);
+		_encoderSlave.setPosition(0);
+
+    }
 
 	
 }

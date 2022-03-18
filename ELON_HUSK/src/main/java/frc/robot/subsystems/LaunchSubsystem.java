@@ -39,6 +39,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 
 	private DriveSubsystem m_drive;
 	private double _tempAutodistance;
+	private boolean _useVision = false;  // just for logging
+	private double _joystick;
 
 	/**
 	 * Creates a new LaunchSubsystem.
@@ -211,6 +213,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if (isDisabled()) {
 			return;
 		}
+		_useVision = useVision;
+		_joystick = joystick_0to1;
 		// SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
 		// SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
 		SmartDashboard.putNumber("_RangeStick", joystick_0to1);
@@ -310,6 +314,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
+		System.out.println("Launching-  use Vision:" + _useVision +  "have Lock:" + !m_drive.approximationStale() + "approx dist:" + m_drive.getApproximateHubDistance() + "joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
 	}
 
 	public void stopLaunchBall() {

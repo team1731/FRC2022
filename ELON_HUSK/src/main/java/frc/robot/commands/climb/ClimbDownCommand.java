@@ -15,11 +15,13 @@ public class ClimbDownCommand extends CommandBase {
 	@Override
 	public void initialize() {
 		 _climb.setInputDirection(ClimbSubsystem.InputDirection.DOWN);
+		// System.out.println("setting direction down");
 	}
 
 	@Override
 	public void end(boolean interrupted) {
 		_climb.setInputDirection(ClimbSubsystem.InputDirection.NEUTRAL);
+		//System.out.println("setting direction neutral");
 	}
 
 }

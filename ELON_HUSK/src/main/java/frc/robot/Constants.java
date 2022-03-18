@@ -299,6 +299,7 @@ public final class Constants {
 		 */
 		public static final int kIntakeLeft = 1;
 		public static final int kIntakeRight = 12;
+		public static final int kRewindClimber = 13;
 
 		public static final int kVision = XboxConstants.kRBumper;
 		public static final int kResetGyro = XboxConstants.kAppMenu;

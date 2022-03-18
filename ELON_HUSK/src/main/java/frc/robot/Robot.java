@@ -139,6 +139,7 @@ public class Robot extends TimedRobot {
 		}
         
 		autoInitPreload();
+		//m_climb.handleReady();
 
 	//	SmartDashboard.putBoolean("Vis_HasTarget", false);
 	//	SmartDashboard.putNumber("Vis_TargetAngle", 0);

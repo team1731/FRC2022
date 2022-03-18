@@ -31,6 +31,7 @@ import frc.robot.commands.intake.LeftIntakeJoyconCommand;
 import frc.robot.commands.climb.ClimbDownCommand;
 import frc.robot.commands.climb.ClimbUpCommand;
 import frc.robot.commands.climb.OverrideSensorCommand;
+import frc.robot.commands.climb.RewindClimbComand;
 //import frc.robot.commands.intake.LeftIntakeCommand;
 //import frc.robot.commands.intake.LeftStopCommand;
 import frc.robot.commands.intake.RightIntakeEjectCommand;
@@ -155,6 +156,7 @@ public class RobotContainer {
 		new HanTrigger(HanTriggers.DR_TRIG_RIGHT).whileActiveContinuous(new RightIntakeJoyconCommand(m_intake));	 
 		new JoystickButton(m_operatorController, ButtonConstants.kIntakeLeftEject).whenHeld(new LeftIntakeEjectCommand(m_intake));
 		new JoystickButton(m_operatorController, ButtonConstants.kIntakeRightEject).whenHeld(new RightIntakeEjectCommand(m_intake));
+		new JoystickButton(m_operatorController, ButtonConstants.kRewindClimber).whenHeld(new RewindClimbComand(m_climb));
 
 		// //left = button 1
 		// //right = button 12
