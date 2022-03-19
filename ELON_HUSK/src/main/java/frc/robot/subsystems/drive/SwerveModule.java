@@ -124,6 +124,7 @@ public class SwerveModule {
 
 			/* Zero the sensor once on robot boot up */
 			m_turningMotor.setSelectedSensorPosition(0, 0, 30);
+			setCurrentLimits(false);
 
 		} else {
 			m_driveMotor = null;
