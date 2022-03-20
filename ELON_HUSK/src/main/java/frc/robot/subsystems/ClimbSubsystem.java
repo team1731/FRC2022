@@ -257,6 +257,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	public void setInputDirection(InputDirection value){
 		if(isDisabled()) return; 
 		
+		_timer = Timer.getFPGATimestamp();
 		_inputDirection = value;
 	}
 
@@ -348,7 +349,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	private boolean handleExtend() {
 		// Extenders up, north grabber one half closed, south grabbers closed
-		if (_inputDirection == InputDirection.UP || (_inputDirection == InputDirection.DOWN && (Timer.getFPGATimestamp() - _timer <= 5.0))){
+		if (_inputDirection == InputDirection.UP){
 			setExtenders(true);
 			setNorthGrabber(GrabberHalf.FRONT, true);
 			setNorthGrabber(GrabberHalf.BACK, false);
@@ -374,8 +375,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setExtenders(true);
 		setNorthGrabbers(true);
 		} else if (_inputDirection == InputDirection.DOWN) {
+			_currentState = State.EXTEND;
 			_timer = Timer.getFPGATimestamp();
-           _currentState = State.EXTEND;
+			return false;
 		}
 
 		return (Timer.getFPGATimestamp() - _timer >= 0.5) &&  !_northFrontCylinderSensor.get();
@@ -388,8 +390,12 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		startSwing(ClimbConstants.kSecondBarSteps);
 		setSouthGrabber(GrabberHalf.BACK, false);
 		} else if (_inputDirection == InputDirection.DOWN){
-			_timer = Timer.getFPGATimestamp();
-			_currentState = State.EXTEND;
+			startSwing(ClimbConstants.kStartSteps);
+			if(Timer.getFPGATimestamp() - _timer >= 5){
+				_currentState = State.EXTEND;
+			}
+
+			return false;
 		} else {
 			stopSwing();
 		}

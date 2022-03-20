@@ -240,7 +240,7 @@ public class Robot extends TimedRobot {
 			m_launch.resetEncoder();
 		}
 		CommandScheduler.getInstance().cancelAll();
-        m_drive.setCurrentLimits(false);
+      //  m_drive.setCurrentLimits(false);
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand == null) {
 			System.err.println("SOMETHING WENT WRONG - UNABLE TO RUN AUTONOMOUS! CHECK SOFTWARE!");
