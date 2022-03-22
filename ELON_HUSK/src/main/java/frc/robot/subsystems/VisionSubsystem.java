@@ -18,8 +18,6 @@ import edu.wpi.first.wpilibj.Timer;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /**
  * This subsystem stores the last target coordinates and allows for easy control
  * over the LED

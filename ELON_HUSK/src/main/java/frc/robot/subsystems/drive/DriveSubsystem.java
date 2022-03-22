@@ -12,7 +12,6 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,7 +23,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.VisionSubsystem;
@@ -80,8 +78,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private final SwerveModule m_leftRear;
 	private final SwerveModule m_rightRear;
 	private int _sdCount = 0;
-	private final SlewRateLimiter xfilter;
-	private final SlewRateLimiter yfilter;
+	// private final SlewRateLimiter xfilter; // unused
+	// private final SlewRateLimiter yfilter; // unused
 
 	// The gyro sensor
 	// private final Gyro a_gyro = new ADXRS450_Gyro();
@@ -120,8 +118,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 			m_rightFront = null;
 			m_leftRear = null;
 			m_rightRear = null;
-			xfilter = null;
-			yfilter = null;
+			// xfilter = null;
+			// yfilter = null;
 			return;
 		}
 
@@ -134,9 +132,9 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		m_rightRear = new SwerveModule(DriveConstants.kRightRearDriveMotorPort,
 				DriveConstants.kRightRearTurningMotorPort);
 
-		 xfilter = new SlewRateLimiter(100);
+		 //xfilter = new SlewRateLimiter(100); // unused
 
-		 yfilter = new SlewRateLimiter(100);
+		 //yfilter = new SlewRateLimiter(100); // unused
 
 		leftFrontAbsEncoder = new AnalogInput(0);
 		rightFrontAbsEncoder = new AnalogInput(1);

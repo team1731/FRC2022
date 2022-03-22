@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.LaunchSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -42,11 +40,8 @@ public class Robot extends TimedRobot {
 	private _NamedAutoMode namedAutoMode;
 	private Command m_autonomousCommand;
 	private RobotContainer m_robotContainer;
-	private Integer fieldOrientation;
 
 	// The robot's modules ** DOES NOT WORK with CAN Id of 21, needs to be 1 but drive motor is 1
-	private PneumaticsControlModule m_pneu;
-	private PowerDistribution m_pdp;
 
 	// The robot's subsystems
 	public DriveSubsystem m_drive;
@@ -74,7 +69,6 @@ public class Robot extends TimedRobot {
 	}
 
 	private void autoInitPreload() {
-		//FIXME: SOMEWHERE IN THIS METHOD CAN ERRORS ARE SPAWNING WHILE DISABLED
 		System.out.println("autoInitPreload: Start");
 		m_autonomousCommand = null;
 		m_drive.resetOdometry(new Pose2d());

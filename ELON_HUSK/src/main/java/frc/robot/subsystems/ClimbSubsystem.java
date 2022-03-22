@@ -55,7 +55,6 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private final SparkMaxPIDController _pidSlaveController;
 
 	private double _timer = System.currentTimeMillis();
-	private int _climbCount = 0;
 	private int _sdCount = 0;
 	private boolean _sensorOverride = false;
 	private boolean _rewinding = false;
