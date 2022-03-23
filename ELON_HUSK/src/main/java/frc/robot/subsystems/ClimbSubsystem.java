@@ -320,7 +320,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			stopSwing();
 		}
 		if (_inputDirection == InputDirection.UP) {
-			transition(State.EXTEND);
+			transition();
 		}
 	}
 
@@ -342,7 +342,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		}
 
 		if (_sensorOverride || (_northSensor != null) && _northSensor.isTriggered()) {
-			transition(State.GRAB_FIRST_BAR);
+			transition();
 		}
 	}
 
@@ -352,7 +352,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			setExtenders(true);
 			setNorthGrabbers(true);
 			if (Timer.getFPGATimestamp() - _timer >= 0.5 && !_northFrontCylinderSensor.get()) {
-				transition(State.SWING_TO_SECOND_BAR);
+				transition();
 			}
 		} else if (_inputDirection == InputDirection.DOWN) {
 			setNorthGrabbers(false);
@@ -369,7 +369,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			setSwingPosition(ClimbConstants.kSecondBarSteps);
 			setSouthGrabber(GrabberHalf.BACK, false);
 			if (_sensorOverride || (_southSensor != null && _southSensor.isTriggered())) {
-				transition(State.GRAB_SECOND_BAR);
+				transition();
 			}
 		} else if (_inputDirection == InputDirection.DOWN) {
 			setSwingPosition(ClimbConstants.kStartSteps);
@@ -388,7 +388,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		}
 
 		if (Timer.getFPGATimestamp() - _timer >= 1 && !_southBackCylinderSensor.get()) {
-			transition(State.RELEASE_FIRST_BAR);
+			transition();
 		}
 
 	}
@@ -404,7 +404,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		}
 
 		if (!_northBackCylinderReleaseSensor.get()) {
-			transition(State.SWING_TO_THIRD_BAR);
+			transition();
 		}
 	}
 
@@ -422,7 +422,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		}
 
 		if (_sensorOverride || ((_northSensor != null && _northSensor.isTriggered()) && Timer.getFPGATimestamp() - _timer >= 5.5)) {
-			transition(State.GRAB_THIRD_BAR);
+			transition();
 		}
 	}
 
@@ -432,7 +432,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		stopSwing();
 
 		if (Timer.getFPGATimestamp() - _timer >= 1 && !_northBackCylinderSensor.get()) {
-			transition(State.RELEASE_SECOND_BAR);
+			transition();
 		}
 	}
 
@@ -448,7 +448,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		}
 		
 		if (Timer.getFPGATimestamp() - _timer >= 2) {
-			transition(State.HANG);
+			transition();
 		}
 	}
 
@@ -543,6 +543,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_timer = Timer.getFPGATimestamp();
 		_sensorOverride = false;
 		_currentState = nextState;
+	}
+
+	private void transition() {
+		transition(_currentState.next());
 	}
 
 	public void startRewind() {
