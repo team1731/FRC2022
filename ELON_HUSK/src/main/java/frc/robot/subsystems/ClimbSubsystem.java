@@ -23,10 +23,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	// #region ToggleableSubsystem
 	@Override
 	protected boolean getEnabled() {
-		return m_Enabled;
+		return true;
 	}
-
-	private boolean m_Enabled = true;
 	// #endregion
 
 	private State _currentState = State.READY;
@@ -459,7 +457,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setExtenders(true);
 		setNorthGrabbers(true);
 		setSouthGrabbers(false);
-		
+
 		if (_inputDirection == InputDirection.UP) {
 			setSwingPosition(ClimbConstants.kHangSteps);
 		} else {
