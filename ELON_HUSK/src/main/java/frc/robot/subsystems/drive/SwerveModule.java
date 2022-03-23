@@ -273,4 +273,9 @@ public class SwerveModule {
 		}
 	}
 
+    public void allStop() {
+		m_driveMotor.set(TalonFXControlMode.PercentOutput, 0);
+		m_turningMotor.set(TalonFXControlMode.PercentOutput, 0);
+    }
+
 }

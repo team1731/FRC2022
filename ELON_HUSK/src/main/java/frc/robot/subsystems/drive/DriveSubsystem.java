@@ -626,4 +626,11 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	
 	}
 
+	public void allStop() {
+		m_leftFront.allStop();
+		m_rightFront.allStop();
+		m_leftRear.allStop();
+		m_rightRear.allStop();
+	}
+
 }

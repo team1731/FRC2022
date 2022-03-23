@@ -177,10 +177,16 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerSlaveMotor.setSmartCurrentLimit(13, 13, 0);
 		_swingerMasterMotor.setSecondaryCurrentLimit(15);
 		_swingerSlaveMotor.setSecondaryCurrentLimit(15);
-		_swingerMasterMotor.setClosedLoopRampRate(1);
-		_swingerSlaveMotor.setClosedLoopRampRate(1);
-		_swingerMasterMotor.setOpenLoopRampRate(1);
-		_swingerSlaveMotor.setOpenLoopRampRate(1);
+	//	_swingerMasterMotor.setClosedLoopRampRate(1);
+	//	_swingerSlaveMotor.setClosedLoopRampRate(1);
+	//	_swingerMasterMotor.setOpenLoopRampRate(1);
+	//	_swingerSlaveMotor.setOpenLoopRampRate(1);
+	
+
+
+	
+	
+
 
 		// Initiliaze sensors
 		_northSensor = new IRSensor(OpConstants.kNorthSensorID);
@@ -297,9 +303,9 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setSouthGrabber(GrabberHalf.BOTH, closed);
 	}
 
-	private void setSwingPosition(double steps) {
-		_pidMasterController.setReference(steps, CANSparkMax.ControlType.kSmartMotion);
-		_pidSlaveController.setReference(-steps, CANSparkMax.ControlType.kSmartMotion);
+	private void setSwingPosition(double steps){
+		_pidMasterController.setReference(steps, CANSparkMax.ControlType.kPosition);  //was kSmartmotion
+		_pidSlaveController.setReference(-steps, CANSparkMax.ControlType.kPosition);  //was kSmartMotion
 	}
 
 	private void stopSwing() {

@@ -207,15 +207,15 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 		targetXVel += vRef * desiredState.poseMeters.getRotation().getCos();
 		targetYVel += vRef * desiredState.poseMeters.getRotation().getSin();
 
-		csvWriter.add(new AutoSwerveDebug(curTime, desiredPose.getTranslation().getX(),
-				desiredPose.getTranslation().getY(), desiredPose.getRotation().getDegrees(),
-				m_pose.get().getTranslation().getX(), m_pose.get().getTranslation().getY(),
-				m_pose.get().getRotation().getDegrees(), m_drive.getAngle().getDegrees(), m_drive.getXaccel(),
-				m_drive.getYaccel(), (targetXVel - lastXVelocity / 0.02), (targetYVel - lastYVelocity / 0.02),
-				targetXVel, targetYVel, errorXvel, errorYvel, m_pose.get().getTranslation().getX() - lastXPosition,
-				m_pose.get().getTranslation().getY() - lastYPosition)
+		// csvWriter.add(new AutoSwerveDebug(curTime, desiredPose.getTranslation().getX(),
+		// 		desiredPose.getTranslation().getY(), desiredPose.getRotation().getDegrees(),
+		// 		m_pose.get().getTranslation().getX(), m_pose.get().getTranslation().getY(),
+		// 		m_pose.get().getRotation().getDegrees(), m_drive.getAngle().getDegrees(), m_drive.getXaccel(),
+		// 		m_drive.getYaccel(), (targetXVel - lastXVelocity / 0.02), (targetYVel - lastYVelocity / 0.02),
+		// 		targetXVel, targetYVel, errorXvel, errorYvel, m_pose.get().getTranslation().getX() - lastXPosition,
+		// 		m_pose.get().getTranslation().getY() - lastYPosition)
 
-		);
+		// );
 		lastXVelocity = targetXVel;
 		lastYVelocity = targetYVel;
 		lastXPosition = m_pose.get().getTranslation().getX();
