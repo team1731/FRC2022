@@ -327,7 +327,7 @@ public final class Constants {
 		// public static final double kIz = 0; 
 		// public static final double kFF = 0.0006; 
 
-		public static final double kP = .01;
+		public static final double kP = .04;
 		public static final double kI = 0; 
 		public static final double kD = 0; 
 		public static final double kIz = 0; 
@@ -345,8 +345,8 @@ public final class Constants {
 		public static final double kBckSteps = 40*4;
 		public static final double kStartSteps = -5;
 		public static final double kSecondBarSteps = 56 *4;
-		public static final double kThirdBarSteps = 120*4;
-		public static final double kHangSteps = 130*4;
+		public static final double kThirdBarSteps = 140*4;
+		public static final double kHangSteps = 140*4;
 
 		public static final int smartMotionSlot = 0;
 	}

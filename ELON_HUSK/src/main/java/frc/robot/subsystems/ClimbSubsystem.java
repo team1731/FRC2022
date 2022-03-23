@@ -173,10 +173,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerSlaveMotor = new CANSparkMax(OpConstants.kRightSwingerMotorID, MotorType.kBrushless);
 
 		// Current limits
-		_swingerMasterMotor.setSmartCurrentLimit(13, 13, 0);
-		_swingerSlaveMotor.setSmartCurrentLimit(13, 13, 0);
-		_swingerMasterMotor.setSecondaryCurrentLimit(15);
-		_swingerSlaveMotor.setSecondaryCurrentLimit(15);
+		_swingerMasterMotor.setSmartCurrentLimit(40, 40, 0);
+		_swingerSlaveMotor.setSmartCurrentLimit(40,40, 0);
+		_swingerMasterMotor.setSecondaryCurrentLimit(40);
+		_swingerSlaveMotor.setSecondaryCurrentLimit(40);
 	//	_swingerMasterMotor.setClosedLoopRampRate(1);
 	//	_swingerSlaveMotor.setClosedLoopRampRate(1);
 	//	_swingerMasterMotor.setOpenLoopRampRate(1);
@@ -393,7 +393,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			stopSwing();
 		}
 
-		if (Timer.getFPGATimestamp() - _timer >= 1 && !_southBackCylinderSensor.get()) {
+		if (Timer.getFPGATimestamp() - _timer >= .5 && !_southBackCylinderSensor.get()) {
 			transition();
 		}
 
@@ -415,20 +415,18 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	}
 
 	private void handleSwingToThirdBar() {
-
 		if (_inputDirection == InputDirection.UP) {
 			setExtenders(true);
 			setSwingPosition(ClimbConstants.kThirdBarSteps);
 			setNorthGrabber(GrabberHalf.FRONT, false);
-			if (Timer.getFPGATimestamp() - _timer >= 5) {
+			if (Timer.getFPGATimestamp() - _timer >= 3) {
 				setNorthGrabber(GrabberHalf.BACK, true);
+				if (_sensorOverride || (_northSensor != null && _northSensor.isTriggered())) {
+					transition();
+				}
 			}
 		} else {
 			stopSwing();
-		}
-
-		if (_sensorOverride || ((_northSensor != null && _northSensor.isTriggered()) && Timer.getFPGATimestamp() - _timer >= 5.5)) {
-			transition();
 		}
 	}
 
@@ -437,7 +435,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		setNorthGrabbers(true);
 		stopSwing();
 
-		if (Timer.getFPGATimestamp() - _timer >= 1 && !_northBackCylinderSensor.get()) {
+		if (Timer.getFPGATimestamp() - _timer >= 0.5 && !_northBackCylinderSensor.get()) {
 			transition();
 		}
 	}
@@ -557,8 +555,8 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 
 	public void startRewind() {
 		_rewinding = true;
-		_pidMasterController.setReference(-500, CANSparkMax.ControlType.kVelocity);
-		_pidSlaveController.setReference(500, CANSparkMax.ControlType.kVelocity);
+		_swingerMasterMotor.set(-0.5);
+		_swingerSlaveMotor.set(0.5);
 	}
 
 	public void stopRewind() {
