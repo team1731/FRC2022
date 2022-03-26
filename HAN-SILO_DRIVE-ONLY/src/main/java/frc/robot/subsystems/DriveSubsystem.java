@@ -12,10 +12,12 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+//import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+//import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -25,27 +27,33 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.util.ReflectingCSVWriter;
-import frc.robot.util.SwerveModuleDebug;
+import frc.robot.Constants.VisionConstants;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
 	private final Timer m_timer = new Timer();
 
-	private final ReflectingCSVWriter<SwerveModuleDebug> m_CSVWriter;
-
 	private double desiredHeading;
 
 	private final ProfiledPIDController headingController = new ProfiledPIDController(DriveConstants.kTurnP,
 			DriveConstants.kTurnI, DriveConstants.kTurnD,
-			new TrapezoidProfile.Constraints(DriveConstants.kMaxTurnVelocity, DriveConstants.kMaxTurnAcceleration));
+			new TrapezoidProfile.Constraints(VisionConstants.kMaxTurnVelocity, VisionConstants.kMaxTurnAcceleration));
+
+	// After looking inside the ProfiledPIDController class, I suspect that a
+	// standard PIDController will work better as ProfiledPID seems to primarily use
+	// the
+	// trapezoid profiler to calculate the next output rather than the PID. Since
+	// trapezoid profiler doesn't have continuous input it just ignores it.
+	// private final PIDController headingControllerPID = new
+	// PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI,
+	// DriveConstants.kTurnD);
 
 	private boolean headingOverride = true;
 
-	private final AnalogInput leftFrontAbsEncoder;
+	// private final AnalogInput leftFrontAbsEncoder;
 	private final AnalogInput rightFrontAbsEncoder;
 	private final AnalogInput leftRearAbsEncoder;
-	private final AnalogInput rightRearAbsEncoder;
+	// private final AnalogInput rightRearAbsEncoder;
 
 	private double driveSpeedScaler = 1.0;
 
@@ -74,8 +82,12 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void updateOdometry() {
 		if (m_odometry != null) {
-			m_odometry.update(new Rotation2d(Math.toRadians(getHeading())), m_leftFront.getState(),
-					m_rightFront.getState(), m_leftRear.getState(), m_rightRear.getState());
+			m_odometry.update(
+					new Rotation2d(Math.toRadians(getHeading())),
+					m_leftFront.getState(), // leftFront, rightFront, leftRear, rightRear
+					m_rightFront.getState(),
+					m_leftRear.getState(),
+					m_rightRear.getState());
 		}
 	}
 
@@ -84,23 +96,30 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	public DriveSubsystem() {
 
-		leftFrontAbsEncoder = new AnalogInput(0);
+		// leftFrontAbsEncoder = new AnalogInput(0);
 		rightFrontAbsEncoder = new AnalogInput(1);
 		leftRearAbsEncoder = new AnalogInput(2);
-		rightRearAbsEncoder = new AnalogInput(3);
+		// rightRearAbsEncoder = new AnalogInput(3);
 
-		if (RobotBase.isReal()) {
-			if (leftFrontAbsEncoder == null || rightFrontAbsEncoder == null || leftRearAbsEncoder == null
-					|| rightRearAbsEncoder == null) {
-				System.err.println("\n\nAt least one absolute encoder (AnalogInput(0)--AnalogInput(3) is NULL!!!\n\n");
-			}
-		}
-		headingController.setTolerance(DriveConstants.kTurnToleranceDeg, DriveConstants.kTurnRateToleranceDegPerS);
+		// if (RobotBase.isReal()) {
+		// 	if (leftFrontAbsEncoder == null || rightFrontAbsEncoder == null || leftRearAbsEncoder == null
+		// 			|| rightRearAbsEncoder == null) {
+		// 		System.err.println("\n\nAt least one absolute encoder (AnalogInput(0)--AnalogInput(3) is NULL!!!\n\n");
+		// 	}
+		// }
+		headingController.setTolerance(VisionConstants.kTurnToleranceDeg, VisionConstants.kTurnRateToleranceDegPerS);
 		headingController.enableContinuousInput(-180, 180);
 
-		m_CSVWriter = new ReflectingCSVWriter<>(SwerveModuleDebug.class);
 		m_timer.reset();
 		m_timer.start();
+
+		// PID tuning
+		/*
+		 * SmartDashboard.putNumber("VisionP", VisionConstants.kTurnP);
+		 * SmartDashboard.putNumber("VisionI", VisionConstants.kTurnI);
+		 * SmartDashboard.putNumber("VisionD", VisionConstants.kTurnD);
+		 */
+
 	}
 
 	public void setDriveSpeedScaler(double axis) {
@@ -119,8 +138,6 @@ public class DriveSubsystem extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		resumeCSVWriter();
-
 		// Update the odometry in the periodic block
 		// updateOdometry();
 
@@ -131,13 +148,8 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));
 			SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
 			SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
-			SmartDashboard.putNumber("Heading", m_heading);
-			SmartDashboard.putNumber("LF speed m/s", m_leftFront.getState().speedMetersPerSecond);
-			SmartDashboard.putNumber("LF azimuth", m_leftFront.getState().angle.getDegrees());
 		}
 
-		m_CSVWriter.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
-				m_rightFront.getDebugValues(), m_leftRear.getDebugValues(), m_rightRear.getDebugValues()));
 	}
 
 	/**
@@ -195,6 +207,11 @@ public class DriveSubsystem extends SubsystemBase {
 		if (Math.abs(ySpeedAdjusted) < 0.1) {
 			ySpeedAdjusted = 0;
 		}
+		/*
+		 * if(Math.abs(rotAdjusted) < 0.3){
+		 * rotAdjusted = 0;
+		 * }
+		 */
 		xSpeedAdjusted *= this.driveSpeedScaler;
 		ySpeedAdjusted *= this.driveSpeedScaler;
 
@@ -216,24 +233,29 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 
 		if (headingOverride) {
+			// headingController.reset(getHeading());
+			// desiredHeading += rotationalOutput*2.5;
 			rotationalOutput = headingController.calculate(getHeading(), desiredHeading);
 			SmartDashboard.putNumber("desiredHeading", desiredHeading);
 			SmartDashboard.putNumber("headingController Output", rotationalOutput);
 		}
 
-		ChassisSpeeds chassisSpeeds;
-		if(fieldRelative){
-			chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle());
- 		} else {
-			chassisSpeeds = new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput);
-		}
-		// chassisSpeeds = fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle())
-		// 	: new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput);
+		/*
+		 * if(Math.abs(rotationalOutput) < 0.1){
+		 * rotationalOutput = 0;
+		 * }
+		 */
 
-		SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-		setModuleStates(swerveModuleStates);
-
+		var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+				fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
+						xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle())
+						: new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput));
+		SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
 		SmartDashboard.putNumber("SwerveModuleAzimuthState", swerveModuleStates[0].angle.getDegrees());
+		m_leftFront.setDesiredState(swerveModuleStates[0]); // leftFront, rightFront, leftRear, rightRear
+		m_rightFront.setDesiredState(swerveModuleStates[1]);
+		m_leftRear.setDesiredState(swerveModuleStates[2]);
+		m_rightRear.setDesiredState(swerveModuleStates[3]);
 	}
 
 	/**
@@ -242,7 +264,8 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @param desiredStates The desired SwerveModule states.
 	 */
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
-		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
+		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
+				DriveConstants.kMaxSpeedMetersPerSecond);
 		m_leftFront.setDesiredState(desiredStates[0]); // leftFront, rightFront, leftRear, rightRear
 		m_rightFront.setDesiredState(desiredStates[1]);
 		m_leftRear.setDesiredState(desiredStates[2]);
@@ -253,17 +276,14 @@ public class DriveSubsystem extends SubsystemBase {
 	 * Resets the drive encoders to currently read a position of 0.
 	 */
 	public void resetEncoders() {
-		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.269); // leftFront, rightFront, leftRear,
-																				// rightRear
-		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.275);// nope! took it back out!// had taken out
-																				// but it started working again
-																				// 7mar2020. // took this one out -- bad
-																				// hardware encoder!!!
+		// m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage()); // leftFront, rightFront, leftRear, rightRear
+		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage());// nope! took it back out!// had taken out but it
+																		// started working again 7mar2020. // took this
+																		// one out -- bad hardware encoder!!!
 		// m_rightFront.resetEncoders(0);// had taken out but it started working again
 		// 7mar2020. // took this one out -- bad hardware encoder!!!
-		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.265);
-		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.289);
-		resetOdometry(new Pose2d());
+		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage());
+		// m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage());
 	}
 
 	/**
@@ -271,6 +291,12 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	public void zeroHeading() {
 		m_gyro.reset(); // RDB2020 - I replace this call with the below 5 lines...
+
+		// logger.info("<b>DriveSubsystem</b>: zeroGyro started");
+		// m_gyro.setAngleAdjustment(0);
+		// double adj = m_gyro.getAngle() % 360;
+		// m_gyro.setAngleAdjustment(-adj);
+		// logger.info("<b>DriveSubsystem</b>: zeroGyro finished");
 	}
 
 	/**
@@ -305,23 +331,17 @@ public class DriveSubsystem extends SubsystemBase {
 		return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
 	}
 
-	public void suspendCSVWriter() {
-		if (!m_CSVWriter.isSuspended()) {
-			m_CSVWriter.suspend();
-		}
-	}
-
-	public void resumeCSVWriter() {
-		if (m_CSVWriter.isSuspended()) {
-			m_CSVWriter.resume();
-		}
-	}
-
 	public void displayEncoders() {
-		SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		// SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
 		SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
 		SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-		SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		// SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		if (RobotBase.isReal()) {
+			SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningEncoder.getPosition());
+			SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningEncoder.getPosition());
+			SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningEncoder.getPosition());
+			SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningEncoder.getPosition());
+		}
 	}
 
 	public void resetGyro() {
