@@ -11,59 +11,36 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-//import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-//import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.VisionConstants;
-import frc.robot.util.AutoSwerveDebug;
 import frc.robot.util.ReflectingCSVWriter;
 import frc.robot.util.SwerveModuleDebug;
-import frc.robot.util.Utils;;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
 	private final Timer m_timer = new Timer();
 
-	private final ReflectingCSVWriter<AutoSwerveDebug> mCSVWriter1;
-	private final ReflectingCSVWriter<SwerveModuleDebug> mCSVWriter2;
-
-	private LimeLightSubsystem m_vision;
+	private final ReflectingCSVWriter<SwerveModuleDebug> m_CSVWriter;
 
 	private double desiredHeading;
 
 	private final ProfiledPIDController headingController = new ProfiledPIDController(DriveConstants.kTurnP,
 			DriveConstants.kTurnI, DriveConstants.kTurnD,
-			new TrapezoidProfile.Constraints(VisionConstants.kMaxTurnVelocity, VisionConstants.kMaxTurnAcceleration));
-
-	private final ProfiledPIDController visionDistanceController = new ProfiledPIDController(VisionConstants.kDriveP,
-			VisionConstants.kDriveI, VisionConstants.kDriveD,
-			new TrapezoidProfile.Constraints(VisionConstants.kDriveMaxSpeed, VisionConstants.kDriveMaxAcceleration));
-
-	// After looking inside the ProfiledPIDController class, I suspect that a
-	// standard PIDController will work better as ProfiledPID seems to primarily use
-	// the
-	// trapezoid profiler to calculate the next output rather than the PID. Since
-	// trapezoid profiler doesn't have continuous input it just ignores it.
-	// private final PIDController headingControllerPID = new
-	// PIDController(DriveConstants.kTurnP, DriveConstants.kTurnI,
-	// DriveConstants.kTurnD);
+			new TrapezoidProfile.Constraints(DriveConstants.kMaxTurnVelocity, DriveConstants.kMaxTurnAcceleration));
 
 	private boolean headingOverride = true;
-	private boolean visionHeadingOverride = false;
-	private boolean visionDistanceOverride = false;
 
 	private final AnalogInput leftFrontAbsEncoder;
 	private final AnalogInput rightFrontAbsEncoder;
@@ -97,10 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void updateOdometry() {
 		if (m_odometry != null) {
-			m_odometry.update(new Rotation2d(Math.toRadians(getHeading())), m_leftFront.getState(), // leftFront,
-																									// rightFront,
-																									// leftRear,
-																									// rightRear
+			m_odometry.update(new Rotation2d(Math.toRadians(getHeading())), m_leftFront.getState(),
 					m_rightFront.getState(), m_leftRear.getState(), m_rightRear.getState());
 		}
 	}
@@ -108,7 +82,7 @@ public class DriveSubsystem extends SubsystemBase {
 	/**
 	 * Creates a new DriveSubsystem.
 	 */
-	public DriveSubsystem(LimeLightSubsystem m_vision) {
+	public DriveSubsystem() {
 
 		leftFrontAbsEncoder = new AnalogInput(0);
 		rightFrontAbsEncoder = new AnalogInput(1);
@@ -121,33 +95,16 @@ public class DriveSubsystem extends SubsystemBase {
 				System.err.println("\n\nAt least one absolute encoder (AnalogInput(0)--AnalogInput(3) is NULL!!!\n\n");
 			}
 		}
-		headingController.setTolerance(VisionConstants.kTurnToleranceDeg, VisionConstants.kTurnRateToleranceDegPerS);
-		visionDistanceController.setTolerance(VisionConstants.kDriveTolerance,
-				VisionConstants.kDriveAccelerationTolerance);
-		visionDistanceController.setGoal(0);
+		headingController.setTolerance(DriveConstants.kTurnToleranceDeg, DriveConstants.kTurnRateToleranceDegPerS);
 		headingController.enableContinuousInput(-180, 180);
 
-		mCSVWriter1 = new ReflectingCSVWriter<>(AutoSwerveDebug.class);
-		mCSVWriter2 = new ReflectingCSVWriter<>(SwerveModuleDebug.class);
+		m_CSVWriter = new ReflectingCSVWriter<>(SwerveModuleDebug.class);
 		m_timer.reset();
 		m_timer.start();
-
-		// PID tuning
-		/*
-		 * SmartDashboard.putNumber("VisionP", VisionConstants.kTurnP);
-		 * SmartDashboard.putNumber("VisionI", VisionConstants.kTurnI);
-		 * SmartDashboard.putNumber("VisionD", VisionConstants.kTurnD);
-		 */
-
-		this.m_vision = m_vision;
 	}
 
 	public void setDriveSpeedScaler(double axis) {
 		this.driveSpeedScaler = 0.5 * (axis + 1);
-	}
-
-	public ReflectingCSVWriter<AutoSwerveDebug> getCSVWriter() {
-		return mCSVWriter1;
 	}
 
 	/**
@@ -187,7 +144,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 		}
 
-		mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
+		m_CSVWriter.add(new SwerveModuleDebug(m_timer.get(), m_leftFront.getDebugValues(),
 				m_rightFront.getDebugValues(), m_leftRear.getDebugValues(), m_rightRear.getDebugValues()));
 	}
 
@@ -246,9 +203,6 @@ public class DriveSubsystem extends SubsystemBase {
 		if (Math.abs(ySpeedAdjusted) < 0.1) {
 			ySpeedAdjusted = 0;
 		}
-		/*
-		 * if(Math.abs(rotAdjusted) < 0.3){ rotAdjusted = 0; }
-		 */
 		xSpeedAdjusted *= this.driveSpeedScaler;
 		ySpeedAdjusted *= this.driveSpeedScaler;
 
@@ -269,45 +223,25 @@ public class DriveSubsystem extends SubsystemBase {
 			rotationalOutput *= Math.PI;
 		}
 
-		if (visionHeadingOverride || headingOverride) {
-
-			if (visionHeadingOverride) {
-				rotationalOutput = headingController.calculate(getHeading());
-				desiredHeading = getHeading();
-				lockedHeading = getHeading();
-				SmartDashboard.putNumber("headingController Output", rotationalOutput);
-			} else {
-				// headingController.reset(getHeading());
-				// desiredHeading += rotationalOutput*2.5;
-				rotationalOutput = headingController.calculate(getHeading(), desiredHeading);
-				SmartDashboard.putNumber("desiredHeading", desiredHeading);
-				SmartDashboard.putNumber("headingController Output", rotationalOutput);
-			}
+		if (headingOverride) {
+			rotationalOutput = headingController.calculate(getHeading(), desiredHeading);
+			SmartDashboard.putNumber("desiredHeading", desiredHeading);
+			SmartDashboard.putNumber("headingController Output", rotationalOutput);
 		}
 
-		/*
-		 * if(Math.abs(rotationalOutput) < 0.1){ rotationalOutput = 0; }
-		 */
-
-		if (visionDistanceOverride && m_vision != null) {
-			// This allows the driver to still have forward/backward control of the robot
-			// while getting to optimal shooting in case something is in the way
-			xSpeedAdjusted = Utils
-					.Clamp(xSpeedAdjusted + visionDistanceController.calculate(m_vision.getLastPortPos().getZ()), 0, 1);
-			SmartDashboard.putNumber("distanceController Output", ySpeedAdjusted);
-		} else if (m_vision != null) {
-			visionDistanceController.reset(m_vision.getLastPortPos().getZ());
+		ChassisSpeeds chassisSpeeds;
+		if(fieldRelative){
+			chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle());
+ 		} else {
+			chassisSpeeds = new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput);
 		}
+		// chassisSpeeds = fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle())
+		// 	: new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput);
 
-		var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(fieldRelative
-				? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput, getAngle())
-				: new ChassisSpeeds(xSpeedAdjusted, ySpeedAdjusted, rotationalOutput));
-		SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+		SwerveModuleState[] swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+		setModuleStates(swerveModuleStates);
+
 		SmartDashboard.putNumber("SwerveModuleAzimuthState", swerveModuleStates[0].angle.getDegrees());
-		m_leftFront.setDesiredState(swerveModuleStates[0]); // leftFront, rightFront, leftRear, rightRear
-		m_rightFront.setDesiredState(swerveModuleStates[1]);
-		m_leftRear.setDesiredState(swerveModuleStates[2]);
-		m_rightRear.setDesiredState(swerveModuleStates[3]);
 	}
 
 	/**
@@ -316,7 +250,7 @@ public class DriveSubsystem extends SubsystemBase {
 	 * @param desiredStates The desired SwerveModule states.
 	 */
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
-		SwerveDriveKinematics.normalizeWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
+		SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
 		m_leftFront.setDesiredState(desiredStates[0]); // leftFront, rightFront, leftRear, rightRear
 		m_rightFront.setDesiredState(desiredStates[1]);
 		m_leftRear.setDesiredState(desiredStates[2]);
@@ -345,12 +279,6 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	public void zeroHeading() {
 		m_gyro.reset(); // RDB2020 - I replace this call with the below 5 lines...
-
-		// logger.info("<b>DriveSubsystem</b>: zeroGyro started");
-		// m_gyro.setAngleAdjustment(0);
-		// double adj = m_gyro.getAngle() % 360;
-		// m_gyro.setAngleAdjustment(-adj);
-		// logger.info("<b>DriveSubsystem</b>: zeroGyro finished");
 	}
 
 	/**
@@ -386,41 +314,15 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void suspendCSVWriter() {
-		if (!mCSVWriter1.isSuspended()) {
-			mCSVWriter1.suspend();
-		}
-		if (!mCSVWriter2.isSuspended()) {
-			mCSVWriter2.suspend();
+		if (!m_CSVWriter.isSuspended()) {
+			m_CSVWriter.suspend();
 		}
 	}
 
 	public void resumeCSVWriter() {
-		if (mCSVWriter1.isSuspended()) {
-			mCSVWriter1.resume();
+		if (m_CSVWriter.isSuspended()) {
+			m_CSVWriter.resume();
 		}
-		if (mCSVWriter2.isSuspended()) {
-			mCSVWriter2.resume();
-		}
-	}
-
-	/**
-	 * Determines if the right thumbstick on the driver controller can control the
-	 * robot's orientation. Set to false if you want another subsystem to control
-	 * the orientation in teleop (e.x. vision)
-	 */
-	public void setVisionHeadingOverride(boolean visionOverride) {
-		visionHeadingOverride = visionOverride;
-		headingController.setP(visionOverride ? VisionConstants.kTurnP : DriveConstants.kTurnP);
-		headingController.setI(visionOverride ? VisionConstants.kTurnI : DriveConstants.kTurnI);
-		headingController.setD(visionOverride ? VisionConstants.kTurnD : DriveConstants.kTurnD);
-	}
-
-	public void setVisionDistanceOverride(boolean visionOverride) {
-		visionDistanceOverride = visionOverride;
-	}
-
-	public void setVisionHeadingGoal(double newGoal) {
-		headingController.setGoal(newGoal);
 	}
 
 	public void displayEncoders() {
