@@ -45,9 +45,9 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 
 		//kIntakeRetract = Bottom pneumatic, kIntakeExtend = top pneumatic
 		_RightMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeR, Constants.kCAN_BUS_CANIVORE);
-		_RightIntakeSolenoid = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kRBottomB, OpConstants.kRTopA);
+		_RightIntakeSolenoid = new DoubleSolenoid(OpConstants.kPneumaticsCanID2, Constants.kPneumaticsType, OpConstants.kRBottomB, OpConstants.kRTopA);
 		_LeftMotorIntake = new WPI_TalonFX(OpConstants.kMotorCANIntakeL, Constants.kCAN_BUS_CANIVORE);
-		_LeftIntakeSolenoid = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType, OpConstants.kLBottomB, OpConstants.kLTopA);
+		_LeftIntakeSolenoid = new DoubleSolenoid(OpConstants.kPneumaticsCanID1, Constants.kPneumaticsType, OpConstants.kLBottomB, OpConstants.kLTopA);
 
 		//Defaulting the Motors
 		_RightMotorIntake.configFactoryDefault();

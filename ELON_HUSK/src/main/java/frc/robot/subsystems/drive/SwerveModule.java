@@ -44,7 +44,7 @@ public class SwerveModule {
 		if (RobotBase.isReal()) {
 
 			m_driveMotor = new WPI_TalonFX(driveMotorChannel);
-			m_driveMotor.configFactoryDefault();
+		//	m_driveMotor.configFactoryDefault();
 
 			m_driveMotor.setInverted(true);
 
@@ -71,7 +71,7 @@ public class SwerveModule {
 
 
 			/* Factory default hardware to prevent unexpected behavior */
-			m_turningMotor.configFactoryDefault();
+			//m_turningMotor.configFactoryDefault();
 
 			/* Configure Sensor Source for Pirmary PID */
 			m_turningMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);

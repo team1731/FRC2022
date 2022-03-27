@@ -26,7 +26,7 @@ public final class Constants {
 	public static final String kCAN_BUS_DEFAULT = "rio";
 	public static final String kCAN_BUS_CANIVORE = "Driver CAN Bus";
 
-	public static final PneumaticsModuleType kPneumaticsType = PneumaticsModuleType.REVPH;
+	public static final PneumaticsModuleType kPneumaticsType = PneumaticsModuleType.CTREPCM;
 
 	public static final int kTICKS = 33024; // 16.125 * 2048;
 
@@ -115,19 +115,20 @@ public final class Constants {
 		public static final int kPDPCanID = 1;
 
 		// Pneumatics Panel CAN IDs
-		public static final int kPneumaticsCanID = 2;
+		public static final int kPneumaticsCanID1 = 3;
+		public static final int kPneumaticsCanID2 = 4;
 
 		// ClimbSubsystem
-		public static final int kExtenderUpID = 15;
-		public static final int kExtenderDownID = 12;
-		public static final int kGrabberNorthFrontOpenID = 6;
-		public static final int kGrabberNorthFrontCloseID = 7;
+		public static final int kExtenderUpID = 7;
+		public static final int kExtenderDownID = 4;
+		public static final int kGrabberNorthFrontOpenID = 2;
+		public static final int kGrabberNorthFrontCloseID = 3;
 		public static final int kGrabberNorthBackOpenID = 0;
 		public static final int kGrabberNorthBackCloseID = 1;
 		public static final int kGrabberSouthFrontOpenID = 2;
 		public static final int kGrabberSouthFrontCloseID = 3;
-		public static final int kGrabberSouthBackOpenID = 5;
-		public static final int kGrabberSouthBackCloseID = 4;
+		public static final int kGrabberSouthBackOpenID = 1;
+		public static final int kGrabberSouthBackCloseID = 0;
 
 		public static final int kLeftSwingerMotorID = 9;
 		public static final int kRightSwingerMotorID = 10;
@@ -177,14 +178,14 @@ public final class Constants {
 		///// End TalonFX
 
 		///// Begin Pneumatics Constants
-		public final static int kLTopA = 10;
-		public final static int kLBottomB = 13;
-		public final static int kRTopA = 11;
-		public final static int kRBottomB = 14;
-		public final static int kFTop = 12;
-		public final static int kFBottomB = 15;
-		public final static int kLaunchOn = 9;
-		public final static int kLaunchOff = 8;
+		public final static int kLTopA = 5;
+		public final static int kLBottomB = 6;
+		public final static int kRTopA = 7;
+		public final static int kRBottomB = 6;
+		public final static int kFTop = 4;
+		public final static int kFBottomB = 7;
+		public final static int kLaunchOn = 5;
+		public final static int kLaunchOff = 4;
 
 		// ltop = left intake top pneumatics: 13
 		// lbottom = left intake bottom pneumatics: 10

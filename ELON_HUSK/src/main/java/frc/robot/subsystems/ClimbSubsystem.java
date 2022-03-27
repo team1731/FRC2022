@@ -51,7 +51,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 	private final RelativeEncoder _encoderSlave;
 	private final SparkMaxPIDController _pidSlaveController;
 
-	private double _timer = System.currentTimeMillis();
+	private double _timer = Timer.getFPGATimestamp();
 	private int _sdCount = 0;
 	private boolean _sensorOverride = false;
 	private boolean _rewinding = false;
@@ -152,15 +152,15 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		}
 
 		// Initialize solenoids
-		_extender = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType,
+		_extender = new DoubleSolenoid(OpConstants.kPneumaticsCanID1, Constants.kPneumaticsType,
 				OpConstants.kExtenderUpID, OpConstants.kExtenderDownID);
-		_grabberNorthFront = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType,
+		_grabberNorthFront = new DoubleSolenoid(OpConstants.kPneumaticsCanID2, Constants.kPneumaticsType,
 				OpConstants.kGrabberNorthFrontCloseID, OpConstants.kGrabberNorthFrontOpenID);
-		_grabberNorthBack = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType,
+		_grabberNorthBack = new DoubleSolenoid(OpConstants.kPneumaticsCanID1, Constants.kPneumaticsType,
 				OpConstants.kGrabberNorthBackCloseID, OpConstants.kGrabberNorthBackOpenID);
-		_grabberSouthFront = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType,
+		_grabberSouthFront = new DoubleSolenoid(OpConstants.kPneumaticsCanID1, Constants.kPneumaticsType,
 				OpConstants.kGrabberSouthFrontCloseID, OpConstants.kGrabberSouthFrontOpenID);
-		_grabberSouthBack = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType,
+		_grabberSouthBack = new DoubleSolenoid(OpConstants.kPneumaticsCanID2, Constants.kPneumaticsType,
 				OpConstants.kGrabberSouthBackCloseID, OpConstants.kGrabberSouthBackOpenID);
 
 		//
@@ -177,10 +177,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerSlaveMotor.setSmartCurrentLimit(40,40, 0);
 		_swingerMasterMotor.setSecondaryCurrentLimit(40);
 		_swingerSlaveMotor.setSecondaryCurrentLimit(40);
-	//	_swingerMasterMotor.setClosedLoopRampRate(1);
-	//	_swingerSlaveMotor.setClosedLoopRampRate(1);
-	//	_swingerMasterMotor.setOpenLoopRampRate(1);
-	//	_swingerSlaveMotor.setOpenLoopRampRate(1);
+
 	
 
 
