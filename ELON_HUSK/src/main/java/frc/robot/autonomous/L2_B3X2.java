@@ -26,7 +26,7 @@ import frc.robot.subsystems.LaunchSubsystem;
  * Starts at B3, launches 2, goes to B4 then B5 then launches 2
  */
 
-public class L1_B3X2 extends _DelayableStrafingAutoMode {
+public class L2_B3X2 extends _DelayableStrafingAutoMode {
 
 
 
@@ -45,7 +45,7 @@ public class L1_B3X2 extends _DelayableStrafingAutoMode {
 
 
 
-	public L1_B3X2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
+	public L2_B3X2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
 
 		String trajectoryJSON0 = "paths/output/L4-1.wpilib.json";
 		String trajectoryJSON1 = "paths/output/L1-2.wpilib.json";

@@ -29,7 +29,7 @@ import frc.robot.subsystems.LaunchSubsystem;
  * Starts at B3, launches 2, goes to B4 then B5 then launches 2
  */
 
-public class C2_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
+public class R5_X2B2X1B4B5X2 extends _DelayableStrafingAutoMode {
 
 
 
@@ -48,17 +48,20 @@ public class C2_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
 
 
 
-	public C2_B2X2_B4B5X2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
+	public R5_X2B2X1B4B5X2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
 
-		String trajectoryJSON0 = "paths/output/C1-1.wpilib.json";
-        String trajectoryJSON1 = "paths/output/C2-1.wpilib.json";
-        String trajectoryJSON2 = "paths/output/C2-2.wpilib.json";
+		String trajectoryJSON0 = "paths/output/R5-1.wpilib.json";
+        String trajectoryJSON1 = "paths/output/R5-2.wpilib.json";
+        String trajectoryJSON2 = "paths/output/R5-3.wpilib.json";
+		String trajectoryJSON3 = "paths/output/R5-4.wpilib.json";
+
         this.m_intake = m_intake2;
 		this.m_launch = m_launch2;
 
         Trajectory trajectory0 = new Trajectory();
         Trajectory trajectory1 = new Trajectory();
         Trajectory trajectory2 = new Trajectory();
+		Trajectory trajectory3 = new Trajectory();
   
 
 
@@ -69,6 +72,8 @@ public class C2_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
             trajectory1 = TrajectoryUtil.fromPathweaverJson(traj1Path);
             Path traj2Path = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
             trajectory2 = TrajectoryUtil.fromPathweaverJson(traj2Path);
+			Path traj3Path = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON3);
+            trajectory3 = TrajectoryUtil.fromPathweaverJson(traj3Path);
 
 
         } catch (IOException ex) {
@@ -77,26 +82,30 @@ public class C2_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
 
 
 		Pose2d unrotInitPose = trajectory0.getInitialPose();
-		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(46));
+		this._initPose = new Pose2d(unrotInitPose.getX(), unrotInitPose.getY(), Rotation2d.fromDegrees(0));
 
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 			new WaitCommand(getInitialDelaySeconds()),
-			new LaunchCommandStart(m_launch,.54, false).raceWith(new LeftIntakeCommand(m_intake)), 
-			new LaunchCommandStart(m_launch,.54, false).raceWith(createSwerveCommand(m_robotDrive, "C1-1", 32, trajectory0, false)).andThen(() ->m_robotDrive.allStop()),
+			new LaunchCommandStart(m_launch,.54, false).raceWith(new RightIntakeCommand(m_intake)), 
+			new LaunchCommandStart(m_launch,.54, false).raceWith(createSwerveCommand(m_robotDrive, "C1-1", 0, trajectory0, false)).andThen(() ->m_robotDrive.allStop()),
+			new LaunchCommandStart(m_launch,.54, false).raceWith(createSwerveCommand(m_robotDrive, "C1-1", 40, trajectory1, false)).andThen(() ->m_robotDrive.allStop()),
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.54,false).withTimeout(2),
+			new LaunchCommandStart(m_launch,0.54,false).withTimeout(0.5),
+			new LaunchCommandStart(m_launch,.54, false).raceWith(new RightStopCommand(m_intake)),
+			new LaunchCommandStart(m_launch,.54, false).raceWith(new LeftIntakeCommand(m_intake)),
+			new LaunchCommandStart(m_launch,0.54,false).withTimeout(3),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStart(m_launch,.43, false).raceWith(new LeftStopCommand(m_intake)),
 			new LaunchCommandStart(m_launch,.43, false).raceWith(new RightIntakeCommand(m_intake)),
-			new LaunchCommandStart(m_launch,.43,false).raceWith(createSwerveCommand(m_robotDrive, "C2-1", -40, trajectory1, false)).andThen(() ->m_robotDrive.allStop()), // Drive to Second ball	
+			new LaunchCommandStart(m_launch,.43,false).raceWith(createSwerveCommand(m_robotDrive, "C2-1", -40, trajectory2, false)).andThen(() ->m_robotDrive.allStop()), // Drive to Second ball	
 			new LaunchCommandStart(m_launch,0.43,false).withTimeout(1.75),
 			new ParallelCommandGroup(
 				new SequentialCommandGroup (
 					new WaitCommand(2),
 					new RightStopCommand(m_intake)
 				),
-				new LaunchCommandStart(m_launch,.43,false).raceWith(createSwerveCommand(m_robotDrive, "C2-2", 45, trajectory2, false)).andThen(() ->m_robotDrive.allStop())
+				new LaunchCommandStart(m_launch,.43,false).raceWith(createSwerveCommand(m_robotDrive, "C2-2", 45, trajectory3, false)).andThen(() ->m_robotDrive.allStop())
 			),
 			
 			 // Drive to first ball	
@@ -104,6 +113,9 @@ public class C2_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
 			new LaunchCommandStart(m_launch,0.43,true).withTimeout(2),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStop(m_launch)
+
+
+
 		);
 
 

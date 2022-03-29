@@ -207,6 +207,8 @@ public class Robot extends TimedRobot {
 		 * if(m_ledstring != null){ m_ledstring.option(LedOption.TEAM); }
 		 */
 		m_drive.resetEncoders();
+		m_climb.doSD();
+		m_drive.doSD();
 		if (System.currentTimeMillis() % 100 == 0) {
 			// SmartDashboard.putBoolean("LowSensor", m_sequencer.lowSensorHasBall());
 			// SmartDashboard.putBoolean("MidSensor", m_sequencer.midSensorHasBall());
