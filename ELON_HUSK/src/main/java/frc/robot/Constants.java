@@ -69,7 +69,7 @@ public final class Constants {
 	}
 
 	public static final class AutoConstants {
-		public static final String kDEFAULT_AUTO_CODE = "C2";
+		public static final String kDEFAULT_AUTO_CODE = "C4";
 		public static final String kAUTO_CODE = "Auto Selector";
 		// DEFAULT AUTO MODE if Drive Team is unable to set the mode via Dashboard
 		// NOTE: also useful if trying to run in the simulator!
@@ -333,21 +333,21 @@ public final class Constants {
 		public static final double kD = 0; 
 		public static final double kIz = 0; 
 		public static final double kFF =0; 
-		public static final double kMaxOutput = 1;
-		public static final double kMinOutput = -1;
-		public static final double maxRPM = 5700;
+		// public static final double kMaxOutput = 1;
+		// public static final double kMinOutput = -1;
+		// public static final double maxRPM = 5700;
 
-		public static final double maxVel = 1500; //rpm
-		public static final double minVel = 0;
-		public static final double maxAcc = 1500;
-		public static final double allowedErr = 0;
+		// public static final double maxVel = 1500; //rpm
+		// public static final double minVel = 0;
+		// public static final double maxAcc = 1500;
+		// public static final double allowedErr = 0;
 
 
-		public static final double kBckSteps = 40*4;
+		public static final double kBckSteps = 40*4*2048;
 		public static final double kStartSteps = -5;
-		public static final double kSecondBarSteps = 56 *4;
-		public static final double kThirdBarSteps = 140*4;
-		public static final double kHangSteps = 140*4;
+		public static final double kSecondBarSteps = 56 *4*2048;
+		public static final double kThirdBarSteps = 140*4*2048;
+		public static final double kHangSteps = 140*4*2048;
 
 		public static final int smartMotionSlot = 0;
 	}
