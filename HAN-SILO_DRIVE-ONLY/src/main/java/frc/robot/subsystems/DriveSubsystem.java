@@ -51,8 +51,8 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean headingOverride = true;
 
 	// private final AnalogInput leftFrontAbsEncoder;
-	private final AnalogInput rightFrontAbsEncoder;
-	private final AnalogInput leftRearAbsEncoder;
+	// private final AnalogInput rightFrontAbsEncoder;
+	// private final AnalogInput leftRearAbsEncoder;
 	// private final AnalogInput rightRearAbsEncoder;
 
 	private double driveSpeedScaler = 1.0;
@@ -97,8 +97,8 @@ public class DriveSubsystem extends SubsystemBase {
 	public DriveSubsystem() {
 
 		// leftFrontAbsEncoder = new AnalogInput(0);
-		rightFrontAbsEncoder = new AnalogInput(1);
-		leftRearAbsEncoder = new AnalogInput(2);
+		// rightFrontAbsEncoder = new AnalogInput(1);
+		// leftRearAbsEncoder = new AnalogInput(2);
 		// rightRearAbsEncoder = new AnalogInput(3);
 
 		// if (RobotBase.isReal()) {
@@ -277,12 +277,12 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	public void resetEncoders() {
 		// m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage()); // leftFront, rightFront, leftRear, rightRear
-		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage());// nope! took it back out!// had taken out but it
+		// m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage());// nope! took it back out!// had taken out but it
 																		// started working again 7mar2020. // took this
 																		// one out -- bad hardware encoder!!!
 		// m_rightFront.resetEncoders(0);// had taken out but it started working again
 		// 7mar2020. // took this one out -- bad hardware encoder!!!
-		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage());
+		// m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage());
 		// m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage());
 	}
 
@@ -333,8 +333,8 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void displayEncoders() {
 		// SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-		SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-		SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		// SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		// SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
 		// SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
 		if (RobotBase.isReal()) {
 			SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningEncoder.getPosition());
