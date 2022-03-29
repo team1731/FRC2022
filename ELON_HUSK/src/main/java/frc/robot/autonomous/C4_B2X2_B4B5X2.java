@@ -83,7 +83,7 @@ public class C4_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
 
 			new WaitCommand(getInitialDelaySeconds()),
 			new LaunchCommandStart(m_launch,.54, false).raceWith(new LeftIntakeCommand(m_intake)), 
-			new LaunchCommandStart(m_launch,.54, false).raceWith(createSwerveCommand(m_robotDrive, "C1-1", 32, trajectory0, false)).andThen(() ->m_robotDrive.allStop()),
+			new LaunchCommandStart(m_launch,.54, false).raceWith(createSwerveCommand(m_robotDrive, "C1-1", 31, trajectory0, false)).andThen(() ->m_robotDrive.allStop()),
 			new LaunchBallCommandStart(m_launch),
 			new LaunchCommandStart(m_launch,0.54,false).withTimeout(2),
 			new LaunchBallCommandStop(m_launch),
