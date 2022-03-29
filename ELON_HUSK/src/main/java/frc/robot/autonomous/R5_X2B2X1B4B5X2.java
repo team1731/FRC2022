@@ -97,10 +97,10 @@ public class R5_X2B2X1B4B5X2 extends _DelayableStrafingAutoMode {
 								new LaunchCommandStart(m_launch, 0.56, false).withTimeout(0.75),
 								new LaunchBallCommandStart(m_launch),
 								new LaunchCommandStart(m_launch, .56, false).raceWith(new RightStopCommand(m_intake)),
-								new LaunchCommandStart(m_launch, .56, false).raceWith(new LeftIntakeCommand(m_intake)),
-								new LaunchCommandStart(m_launch, 0.56, false))),
+								new LaunchCommandStart(m_launch, .55, false).raceWith(new LeftIntakeCommand(m_intake)),
+								new LaunchCommandStart(m_launch, 0.55, false))),
 
-				new LaunchCommandStart(m_launch, 0.53, false).withTimeout(1.0),
+				new LaunchCommandStart(m_launch, 0.55, false).withTimeout(1.0),
 				new LaunchBallCommandStop(m_launch),
 				new LaunchCommandStart(m_launch, .4, false).raceWith(new LeftStopCommand(m_intake)),
 				new LaunchCommandStart(m_launch, .4, false).raceWith(new RightIntakeCommand(m_intake)),
