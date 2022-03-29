@@ -204,58 +204,59 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		// Update the odometry in the periodic block
 		// updateOdometry();
 
-		if (_sdCount++ > 50) {
-			SmartDashboard.putNumber("pose x", m_odometry.getPoseMeters().getTranslation().getX());
-			SmartDashboard.putNumber("pose y", m_odometry.getPoseMeters().getTranslation().getY());
-			SmartDashboard.putNumber("rot deg", m_odometry.getPoseMeters().getRotation().getDegrees());
-			// SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));
-			// SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
-			// SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
-			SmartDashboard.putNumber("Gyro", m_heading);
-			SmartDashboard.putNumber("TargetAngleFromVision", m_vision.getLastTarget().getY());
-			SmartDashboard.putNumber("TargetDistanceFromVision", m_vision.getLastTarget().getTargetDistance());
-			SmartDashboard.putNumber("ApproximateHubAngle", getApproximateHubAngle());
-			SmartDashboard.putNumber("ApproximateHubDistance", getApproximateHubDistance());
-			SmartDashboard.putBoolean("ApproximationStale", approximationStale());
-			SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-			SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26,
-																									// 180=1.63V
-			SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-			SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
-
-			SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
-
-			// SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
-			// SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
-			// SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
-			// SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
-
-			// SmartDashboard.putNumber("LF drive Position",
-			// m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
-			// SmartDashboard.putNumber("LF drive Velocity",
-			// m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
-			// SmartDashboard.putNumber("LF turn Position",
-			// m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
-			// SmartDashboard.putNumber("LF turn Velocity",
-			// m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
-			// SmartDashboard.putNumber("LF speed m/s",
-			// m_leftFront.getState().speedMetersPerSecond);
-			// SmartDashboard.putNumber("LF azimuth",
-			// m_leftFront.getState().angle.getDegrees());
-			// SmartDashboard.putNumber("RF turn Position",
-			// m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
-			// SmartDashboard.putNumber("LR turn Position",
-			// m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
-			// SmartDashboard.putNumber("RR turn Position",
-			// m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
-			_sdCount = 0;
-
-		}
 
 		// mCSVWriter2.add(new SwerveModuleDebug(m_timer.get(),
 		// m_leftFront.getDebugValues(),
 		// m_rightFront.getDebugValues(), m_leftRear.getDebugValues(),
 		// m_rightRear.getDebugValues()));
+	}
+public void doSD() {
+	if (_sdCount++ > 50) {
+		SmartDashboard.putNumber("pose x", m_odometry.getPoseMeters().getTranslation().getX());
+		SmartDashboard.putNumber("pose y", m_odometry.getPoseMeters().getTranslation().getY());
+		SmartDashboard.putNumber("rot deg", m_odometry.getPoseMeters().getRotation().getDegrees());
+		// SmartDashboard.putNumber("heading radians", Math.toRadians(getHeading()));
+		// SmartDashboard.putNumber("raw gyro", m_gyro.getAngle());
+		// SmartDashboard.putBoolean("gyro is calibrating", m_gyro.isCalibrating());
+		SmartDashboard.putNumber("Gyro", m_heading);
+		SmartDashboard.putNumber("TargetAngleFromVision", m_vision.getLastTarget().getY());
+		SmartDashboard.putNumber("TargetDistanceFromVision", m_vision.getLastTarget().getTargetDistance());
+		SmartDashboard.putNumber("ApproximateHubAngle", getApproximateHubAngle());
+		SmartDashboard.putNumber("ApproximateHubDistance", getApproximateHubDistance());
+		SmartDashboard.putBoolean("ApproximationStale", approximationStale());
+		SmartDashboard.putNumber("leftFrontAbsEncoder", leftFrontAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		SmartDashboard.putNumber("rightFrontAbsEncoder", rightFrontAbsEncoder.getVoltage()); // 0.0 to 3.26,
+																								// 180=1.63V
+		SmartDashboard.putNumber("leftRearAbsEncoder", leftRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+		SmartDashboard.putNumber("rightRearAbsEncoder", rightRearAbsEncoder.getVoltage()); // 0.0 to 3.26, 180=1.63V
+
+		SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
+
+		// SmartDashboard.putNumber("leftFrontRelEncoder", m_leftFront.m_turningMotor.getSelectedSensorPosition());
+		// SmartDashboard.putNumber("rightFrontRelEncoder", m_rightFront.m_turningMotor.getSelectedSensorPosition());
+		// SmartDashboard.putNumber("leftRearRelEncoder", m_leftRear.m_turningMotor.getSelectedSensorPosition());
+		// SmartDashboard.putNumber("rightRearRelEncoder", m_rightRear.m_turningMotor.getSelectedSensorPosition());
+
+		// SmartDashboard.putNumber("LF drive Position",
+		// m_leftFront.m_driveMotor.getSelectedSensorPosition(0));
+		// SmartDashboard.putNumber("LF drive Velocity",
+		// m_leftFront.m_driveMotor.getSelectedSensorVelocity(0));
+		// SmartDashboard.putNumber("LF turn Position",
+		// m_leftFront.m_turningMotor.getSelectedSensorPosition(0));
+		// SmartDashboard.putNumber("LF turn Velocity",
+		// m_leftFront.m_turningMotor.getSelectedSensorVelocity(0));
+		// SmartDashboard.putNumber("LF speed m/s",
+		// m_leftFront.getState().speedMetersPerSecond);
+		// SmartDashboard.putNumber("LF azimuth",
+		// m_leftFront.getState().angle.getDegrees());
+		// SmartDashboard.putNumber("RF turn Position",
+		// m_rightFront.m_turningMotor.getSelectedSensorPosition(0));
+		// SmartDashboard.putNumber("LR turn Position",
+		// m_leftRear.m_turningMotor.getSelectedSensorPosition(0));
+		// SmartDashboard.putNumber("RR turn Position",
+		// m_rightRear.m_turningMotor.getSelectedSensorPosition(0));
+		_sdCount = 0; 
+	   }
 	}
 
 	/**
@@ -439,16 +440,16 @@ public class DriveSubsystem extends ToggleableSubsystem {
 		if (isDisabled())
 			return;
 
-		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.32); // leftFront, rightFront, leftRear,
+		m_leftFront.resetEncoders(leftFrontAbsEncoder.getVoltage() / 3.3); // leftFront, rightFront, leftRear,
 																			// rightRear
-		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.27);// nope! took it back out!// had taken out
+		m_rightFront.resetEncoders(rightFrontAbsEncoder.getVoltage() / 3.3);// nope! took it back out!// had taken out
 																				// but it started working again
 																				// 7mar2020. // took this one out -- bad
 																				// hardware encoder!!!
 		// m_rightFront.resetEncoders(0);// had taken out but it started working again
 		// 7mar2020. // took this one out -- bad hardware encoder!!!
-		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.26);
-		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.32);
+		m_leftRear.resetEncoders(leftRearAbsEncoder.getVoltage() / 3.3);
+		m_rightRear.resetEncoders(rightRearAbsEncoder.getVoltage() / 3.3);
 		resetOdometry(new Pose2d());
 
 	}
