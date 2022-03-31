@@ -184,12 +184,14 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		_swingerMasterMotor.configFactoryDefault();
 		_swingerSlaveMotor.configFactoryDefault();
 
-		_swingerMasterMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 40, 45, 1.0));
-		_swingerSlaveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,40, 45, 1.0));
+		_swingerMasterMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 25, 30, 0.2));
+//		_swingerMasterMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,25, 30, 1.0));
+		_swingerSlaveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 25, 30, 0.2));
+//		_swingerSlaveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true,25, 30, 1.0));
 
 		/* setup a basic closed loop */
-		_swingerMasterMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override
-		_swingerSlaveMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override
+	//	_swingerMasterMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override
+	//	_swingerSlaveMotor.setNeutralMode(NeutralMode.Brake); // Netural Mode override
 
 		// Current limits
 		// _swingerMasterMotor.setSmartCurrentLimit(40, 40, 0);
@@ -478,7 +480,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 			setExtenders(true);
 			setSwingPosition(ClimbConstants.kThirdBarSteps);
 			setNorthGrabber(GrabberHalf.FRONT, false);
-			if (Timer.getFPGATimestamp() - _timer >= 3) {
+			if (Timer.getFPGATimestamp() - _timer >= 2) {
 				setNorthGrabber(GrabberHalf.BACK, true);
 				if (_sensorOverride || (_northSensor != null && _northSensor.isTriggered())) {
 					transition();
