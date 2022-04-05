@@ -67,6 +67,21 @@ public class SwerveModule {
 
 			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5,30);
 
+
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 170,30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 241, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 241, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 235, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc,190, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_9_MotProfBuffer,239, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer,257, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,168,30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer, 130, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 210, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_15_FirmwareApiStatus,178, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 50, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 247, 30);
+
 			m_turningMotor = new WPI_TalonFX(turningMotorChannel);
 			setCurrentLimits(false);
 
@@ -103,6 +118,20 @@ public class SwerveModule {
 			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 30);
 			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 10, 30);
 			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 30);
+			
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 159,30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 231, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 250, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 241, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc,150, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_9_MotProfBuffer,234, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer,247, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,10,30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer, 242, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 253, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_15_FirmwareApiStatus,254, 30);
+			
+		
 
 			// /* Set the peak and nominal outputs */
 			// m_turningMotor.configNominalOutputForward(0, 30);

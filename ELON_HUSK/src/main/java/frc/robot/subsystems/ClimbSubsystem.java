@@ -485,7 +485,7 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 					transition();
 				}
 			}
-			if ((Timer.getFPGATimestamp() - _timer >= 2.5) &&  (!_northBackCylinderSensor.get())) {
+			if ((Timer.getFPGATimestamp() - _timer >= 3.0) &&  (_northBackCylinderSensor.get())) {
 				stopSwing();
 			} else {
 				setSwingPosition(ClimbConstants.kThirdBarSteps);
