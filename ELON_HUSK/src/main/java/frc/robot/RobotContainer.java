@@ -11,15 +11,16 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.autonomous.C1_B2X2;
-import frc.robot.autonomous.C2_B2X2_B4B5X2;
+import frc.robot.autonomous.C2_B2X2;
+import frc.robot.autonomous.C4_B2X2_B4B5X2;
 import frc.robot.autonomous.F1_Move_Forward;
-import frc.robot.autonomous.L1_B3X2;
+import frc.robot.autonomous.L2_B3X2;
 import frc.robot.autonomous.L3_B3X2_B5X2;
 import frc.robot.autonomous.L4_B3L2_B5B4L2;
 import frc.robot.autonomous.L5_B3X2_B5B4X2_B2B1X1;
 import frc.robot.autonomous.L6_B3X2_B5B4X2_B2X1;
-import frc.robot.autonomous.R1_B1X2;
+import frc.robot.autonomous.R2_B1X2;
+import frc.robot.autonomous.R5_X2B2X1B4B5X2;
 import frc.robot.autonomous.X0_DoNothing;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.autonomous._NotImplementedProperlyException;
@@ -230,8 +231,8 @@ public class RobotContainer {
 		switch (autoModeName) {
 			case "F1":
 				return new _NamedAutoMode(new F1_Move_Forward(m_drive));
-			case "L1":
-			    return new _NamedAutoMode(new L1_B3X2(m_drive, m_intake, m_launch));
+			case "L2":
+			    return new _NamedAutoMode(new L2_B3X2(m_drive, m_intake, m_launch));
 			case "L3":
 			    return new _NamedAutoMode(new L3_B3X2_B5X2(m_drive, m_intake, m_launch));
 			case "L4":
@@ -240,16 +241,18 @@ public class RobotContainer {
 			    return new _NamedAutoMode(new L5_B3X2_B5B4X2_B2B1X1(m_drive, m_intake, m_launch));
 			case "L6":
 			    return new _NamedAutoMode(new L6_B3X2_B5B4X2_B2X1(m_drive, m_intake, m_launch));
-			case "R1":
-			    return new _NamedAutoMode(new R1_B1X2(m_drive, m_intake, m_launch));
-			case "C1":
-			    return new _NamedAutoMode(new C1_B2X2(m_drive, m_intake, m_launch));
+			case "R2":
+			    return new _NamedAutoMode(new R2_B1X2(m_drive, m_intake, m_launch));
+			case "R5":
+			    return new _NamedAutoMode(new R5_X2B2X1B4B5X2(m_drive, m_intake, m_launch));
+			case "C2":
+			    return new _NamedAutoMode(new C2_B2X2(m_drive, m_intake, m_launch));
 			case "X0":
 				return new _NamedAutoMode(new X0_DoNothing(m_drive, m_intake, m_launch));
 		
-			case "C2":
+			case "C4":
 			default:
-				return new _NamedAutoMode(new C2_B2X2_B4B5X2(m_drive, m_intake, m_launch));
+				return new _NamedAutoMode(new C4_B2X2_B4B5X2(m_drive, m_intake, m_launch));
 		}
 	}
 

@@ -44,34 +44,49 @@ public class SwerveModule {
 		if (RobotBase.isReal()) {
 
 			m_driveMotor = new WPI_TalonFX(driveMotorChannel);
-			m_driveMotor.configFactoryDefault();
+		//	m_driveMotor.configFactoryDefault();
 
 			m_driveMotor.setInverted(true);
 
 
+            
+			// m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 30);
+			// m_driveMotor.config_kP(0, 0.1, 30);
+			// m_driveMotor.config_kI(0, 0, 30);
+			// m_driveMotor.config_kD(0, 0, 30);
+			// m_driveMotor.config_kF(0, 1023.0 / 20660.0, 30);
 
-			m_driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 30);
-			m_driveMotor.config_kP(0, 0.1, 30);
-			m_driveMotor.config_kI(0, 0, 30);
-			m_driveMotor.config_kD(0, 0, 30);
-			m_driveMotor.config_kF(0, 1023.0 / 20660.0, 30);
+			// /* Config neutral deadband to be the smallest possible */
+			// m_driveMotor.configNeutralDeadband(0.001);
 
-			/* Config neutral deadband to be the smallest possible */
-			m_driveMotor.configNeutralDeadband(0.001);
-
-			/* Config the peak and nominal outputs */
-			m_driveMotor.configNominalOutputForward(0, 30);
-			m_driveMotor.configNominalOutputReverse(0, 30);
-			m_driveMotor.configPeakOutputForward(1, 30);
-			m_driveMotor.configPeakOutputReverse(-1, 30);
+			// /* Config the peak and nominal outputs */
+			// m_driveMotor.configNominalOutputForward(0, 30);
+			// m_driveMotor.configNominalOutputReverse(0, 30);
+			// m_driveMotor.configPeakOutputForward(1, 30);
+			// m_driveMotor.configPeakOutputReverse(-1, 30);
 
 			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5,30);
 
-			m_turningMotor = new WPI_TalonFX(turningMotorChannel);
 
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 170,30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 241, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 241, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 235, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc,190, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_9_MotProfBuffer,239, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer,257, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,168,30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer, 130, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 210, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_15_FirmwareApiStatus,178, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 50, 30);
+			m_driveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 247, 30);
+
+			m_turningMotor = new WPI_TalonFX(turningMotorChannel);
+			setCurrentLimits(false);
 
 			/* Factory default hardware to prevent unexpected behavior */
-			m_turningMotor.configFactoryDefault();
+			//m_turningMotor.configFactoryDefault();
 
 			/* Configure Sensor Source for Pirmary PID */
 			m_turningMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
@@ -103,28 +118,42 @@ public class SwerveModule {
 			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 30);
 			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_Targets, 10, 30);
 			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 5, 30);
+			
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 159,30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 231, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 250, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 241, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc,150, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_9_MotProfBuffer,234, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer,247, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,10,30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer, 242, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 253, 30);
+			m_turningMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_15_FirmwareApiStatus,254, 30);
+			
+		
 
-			/* Set the peak and nominal outputs */
-			m_turningMotor.configNominalOutputForward(0, 30);
-			m_turningMotor.configNominalOutputReverse(0, 30);
-			m_turningMotor.configPeakOutputForward(1, 30);
-			m_turningMotor.configPeakOutputReverse(-1, 30);
+			// /* Set the peak and nominal outputs */
+			// m_turningMotor.configNominalOutputForward(0, 30);
+			// m_turningMotor.configNominalOutputReverse(0, 30);
+			// m_turningMotor.configPeakOutputForward(1, 30);
+			// m_turningMotor.configPeakOutputReverse(-1, 30);
 
-			/* Set Motion Magic gains in slot0 - see documentation */
-			m_turningMotor.selectProfileSlot(0, 0);
-			m_turningMotor.config_kF(0, 0.2, 30);
-			m_turningMotor.config_kP(0, 0.2, 30);
-			m_turningMotor.config_kI(0, 0, 30);
-			m_turningMotor.config_kD(0, 0, 30);
+			// /* Set Motion Magic gains in slot0 - see documentation */
+			// m_turningMotor.selectProfileSlot(0, 0);
+			// m_turningMotor.config_kF(0, 0.2, 30);
+			// m_turningMotor.config_kP(0, 0.2, 30);
+			// m_turningMotor.config_kI(0, 0, 30);
+			// m_turningMotor.config_kD(0, 0, 30);
 
-			/* Set acceleration and vcruise velocity - see documentation */
-			m_turningMotor.configMotionCruiseVelocity(18000, 0);
-			m_turningMotor.configMotionAcceleration(18000, 0);
-			m_turningMotor.configMotionSCurveStrength(2);
+			// /* Set acceleration and vcruise velocity - see documentation */
+			// m_turningMotor.configMotionCruiseVelocity(18000, 0);
+			// m_turningMotor.configMotionAcceleration(18000, 0);
+			// m_turningMotor.configMotionSCurveStrength(2);
 
 			/* Zero the sensor once on robot boot up */
 			m_turningMotor.setSelectedSensorPosition(0, 0, 30);
-			setCurrentLimits(false);
+
 
 		} else {
 			m_driveMotor = null;
@@ -225,8 +254,8 @@ public class SwerveModule {
 		SupplyCurrentLimitConfiguration limit = new SupplyCurrentLimitConfiguration(enable, 40, 60, 5);
 		StatorCurrentLimitConfiguration statorLimit = new StatorCurrentLimitConfiguration(enable, 60, 50, 5);
 
-		m_driveMotor.configSupplyCurrentLimit(limit);
-		m_driveMotor.configStatorCurrentLimit(statorLimit);
+		m_driveMotor.configSupplyCurrentLimit(limit,0);
+		m_driveMotor.configStatorCurrentLimit(statorLimit,0);
 	}
 
 	/**
@@ -272,5 +301,10 @@ public class SwerveModule {
 			this.driveVelocity = driveVelocity;
 		}
 	}
+
+    public void allStop() {
+		m_driveMotor.set(TalonFXControlMode.PercentOutput, 0);
+		m_turningMotor.set(TalonFXControlMode.PercentOutput, 0);
+    }
 
 }

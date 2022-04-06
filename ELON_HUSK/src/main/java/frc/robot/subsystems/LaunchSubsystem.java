@@ -53,7 +53,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 
 		m_drive = drive;
-		_LaunchSolenoid = new DoubleSolenoid(OpConstants.kPneumaticsCanID, Constants.kPneumaticsType,
+		_LaunchSolenoid = new DoubleSolenoid(OpConstants.kPneumaticsCanID2, Constants.kPneumaticsType,
 				OpConstants.kLaunchOn, OpConstants.kLaunchOff);
 		_RangeMotor = new WPI_TalonFX(OpConstants.kMotorCANRange, Constants.kCAN_BUS_CANIVORE);
 		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch, Constants.kCAN_BUS_CANIVORE);
