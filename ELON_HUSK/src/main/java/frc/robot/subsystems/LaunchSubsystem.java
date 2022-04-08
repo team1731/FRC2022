@@ -38,6 +38,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private double _tempAutodistance;
 	private boolean _useVision = false;  // just for logging
 	private double _joystick;
+	private boolean _loggedMessage  = false;
 
 	/**
 	 * Creates a new LaunchSubsystem.
@@ -311,7 +312,12 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
-		//System.out.println("Launching-  use Vision:" + _useVision +  "have Lock:" + !m_drive.approximationStale() + "approx dist:" + m_drive.getApproximateHubDistance() + "joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
+		if (!_loggedMessage)
+		System.out.println("Launching-  use Vision:" + _useVision);
+		System.out.println("have Lock:" + !m_drive.approximationStale());
+		System.out.println("approx dist:" + m_drive.getApproximateHubDistance());
+		System.out.println("joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
+		_loggedMessage = true;
 	}
 
 	public void stopLaunchBall() {
@@ -319,6 +325,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kReverse);
+		_loggedMessage = false;
 	}
 
 	public void calibrateBasket() {
