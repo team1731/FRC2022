@@ -101,7 +101,7 @@ public class C4_B2X2_B4B5X2 extends _DelayableStrafingAutoMode {
 			
 			 // Drive to first ball	
 			new LaunchBallCommandStart(m_launch),
-			new LaunchCommandStart(m_launch,0.43,true).withTimeout(2),
+			new LaunchCommandStart(m_launch,0.41,true).withTimeout(2),
 			new LaunchBallCommandStop(m_launch),
 			new LaunchCommandStop(m_launch)
 		);
