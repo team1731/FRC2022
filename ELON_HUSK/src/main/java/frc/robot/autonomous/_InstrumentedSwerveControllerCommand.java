@@ -53,14 +53,14 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 	private PIDController m_yController;
 	private PIDController m_thetaController;
 	private Consumer<SwerveModuleState[]> m_outputModuleStates;
-	private ReflectingCSVWriter<AutoSwerveDebug> csvWriter;
 	private boolean m_trackTarget = false;
-	private Double endingHeading;
-	private Double defaultEndingHeading;
-	private Double lastXVelocity = 0.0;
-	private Double lastYVelocity = 0.0;
-	private Double lastXPosition = 0.0;
-	private Double lastYPosition = 0.0;
+	private Double _endingHeading;
+	private Double _defaultEndingHeading;
+	private ReflectingCSVWriter<AutoSwerveDebug> _csvWriter;
+	private Double _lastXVelocity = 0.0;
+	private Double _lastYVelocity = 0.0;
+	private Double _lastXPosition = 0.0;
+	private Double _lastYPosition = 0.0;
 
 	/**
 	 * Constructs a new SwerveControllerCommand that when executed will follow the
@@ -101,7 +101,7 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 			Consumer<SwerveModuleState[]> outputModuleStates, Subsystem... requirements) {
 		m_drive = drive;
 		m_trackTarget = trackTarget;
-		this.csvWriter = csvWriter;
+		_csvWriter = csvWriter;
 		m_trajectory = requireNonNullParam(trajectory, "trajectory", "SwerveControllerCommand");
 		m_pose = requireNonNullParam(pose, "pose", "SwerveControllerCommand");
 		m_kinematics = requireNonNullParam(kinematics, "kinematics", "SwerveControllerCommand");
@@ -122,10 +122,10 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 
 			Consumer<SwerveModuleState[]> outputModuleStates, Subsystem... requirements) {
 		m_drive = drive;
-		this.csvWriter = csvWriter;
-		this.endingHeading = endingHeading;
+		this._csvWriter = csvWriter;
+		this._endingHeading = endingHeading;
 		this.m_trackTarget = trackTarget;
-		this.defaultEndingHeading = endingHeading;
+		this._defaultEndingHeading = endingHeading;
 		m_trajectory = requireNonNullParam(trajectory, "trajectory", "SwerveControllerCommand");
 		m_pose = requireNonNullParam(pose, "pose", "SwerveControllerCommand");
 		m_kinematics = requireNonNullParam(kinematics, "kinematics", "SwerveControllerCommand");
@@ -186,14 +186,14 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 		if (m_trackTarget) {
 			m_drive.updateVisionOdometry();
 			if (!m_drive.approximationStale()) {
-				endingHeading = m_drive.getApproximateHubAngle();
+				_endingHeading = m_drive.getApproximateHubAngle();
 			} else {
-				endingHeading = defaultEndingHeading;
+				_endingHeading = _defaultEndingHeading;
 			}
 		}
 		double targetAngularVel = m_thetaController.calculate(m_pose.get().getRotation().getRadians(),
-				endingHeading == null ? m_finalPose.getRotation().getRadians()
-						: Rotation2d.fromDegrees(endingHeading).getRadians());
+				_endingHeading == null ? m_finalPose.getRotation().getRadians()
+						: Rotation2d.fromDegrees(_endingHeading).getRadians());
 						
 
 
@@ -211,15 +211,15 @@ public class _InstrumentedSwerveControllerCommand extends CommandBase {
 		// 		desiredPose.getTranslation().getY(), desiredPose.getRotation().getDegrees(),
 		// 		m_pose.get().getTranslation().getX(), m_pose.get().getTranslation().getY(),
 		// 		m_pose.get().getRotation().getDegrees(), m_drive.getAngle().getDegrees(), m_drive.getXaccel(),
-		// 		m_drive.getYaccel(), (targetXVel - lastXVelocity / 0.02), (targetYVel - lastYVelocity / 0.02),
-		// 		targetXVel, targetYVel, errorXvel, errorYvel, m_pose.get().getTranslation().getX() - lastXPosition,
-		// 		m_pose.get().getTranslation().getY() - lastYPosition)
+		// 		m_drive.getYaccel(), (targetXVel - _lastXVelocity / 0.02), (targetYVel - _lastYVelocity / 0.02),
+		// 		targetXVel, targetYVel, errorXvel, errorYvel, m_pose.get().getTranslation().getX() - _lastXPosition,
+		// 		m_pose.get().getTranslation().getY() - _lastYPosition)
 
 		// );
-		lastXVelocity = targetXVel;
-		lastYVelocity = targetYVel;
-		lastXPosition = m_pose.get().getTranslation().getX();
-		lastYPosition = m_pose.get().getTranslation().getY();
+		_lastXVelocity = targetXVel;
+		_lastYVelocity = targetYVel;
+		_lastXPosition = m_pose.get().getTranslation().getX();
+		_lastYPosition = m_pose.get().getTranslation().getY();
 
 		var targetChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(targetXVel, targetYVel, targetAngularVel,
 				m_pose.get().getRotation());
