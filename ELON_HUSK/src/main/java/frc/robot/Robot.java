@@ -27,6 +27,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.net.PortForwarder;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -107,6 +108,12 @@ public class Robot extends TimedRobot {
         LiveWindow.disableAllTelemetry();
 		// CameraServer camServer = CameraServer.getInstance();
 		// camServer.startAutomaticCapture();
+		PortForwarder.add(5800, "limelight.local", 5800);
+		PortForwarder.add(5801, "limelight.local", 5801);
+		PortForwarder.add(5802, "limelight.local", 5802);
+		PortForwarder.add(5803, "limelight.local", 5803);
+		PortForwarder.add(5804, "limelight.local", 5804);
+		PortForwarder.add(5805, "limelight.local", 5805);
 
 		m_vision = new VisionSubsystem();
 		m_drive = new DriveSubsystem(m_vision);
@@ -243,7 +250,7 @@ public class Robot extends TimedRobot {
 		} else {
 			System.out.println("Running actual autonomous mode --> " + namedAutoMode.name);
 
-			m_drive.zeroHeading();
+		//	m_drive.zeroHeading();
 
 			//m_drive.setAngleOffsetDegrees(namedAutoMode.getAngleOffset());
 		

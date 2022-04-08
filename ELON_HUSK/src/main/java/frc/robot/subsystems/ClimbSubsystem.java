@@ -304,7 +304,10 @@ public class ClimbSubsystem extends ToggleableSubsystem {
 		// _encoderMaster.setPosition(0);
 		// _encoderSlave.setPosition(0);
 
+		setExtenders(false);
 		setNorthGrabbers(false);
+		setSouthGrabbers(true);
+		// setNorthGrabbers(false);
 		// handleReady();
 	}
 

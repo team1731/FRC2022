@@ -92,9 +92,9 @@ public class R5_X2B2X1B4B5X2 extends _DelayableStrafingAutoMode {
 						.raceWith(createSwerveCommand(m_robotDrive, "C1-1", 0, trajectory0, false))
 						.andThen(() -> m_robotDrive.allStop()),
 
-				createSwerveCommand(m_robotDrive, "C1-1", 35, trajectory1, false).andThen(() -> m_robotDrive.allStop())
+				createSwerveCommand(m_robotDrive, "C1-1", 30, trajectory1, false).andThen(() -> m_robotDrive.allStop())
 						.raceWith(new SequentialCommandGroup(
-								new LaunchCommandStart(m_launch, 0.56, false).withTimeout(0.70),
+								new LaunchCommandStart(m_launch, 0.56, false).withTimeout(0.75),
 								new LaunchBallCommandStart(m_launch),
 								new LaunchCommandStart(m_launch, .56, false).raceWith(new RightStopCommand(m_intake)),
 								new LaunchCommandStart(m_launch, .55, false).raceWith(new LeftIntakeCommand(m_intake)),
@@ -116,7 +116,6 @@ public class R5_X2B2X1B4B5X2 extends _DelayableStrafingAutoMode {
 								createSwerveCommand(m_robotDrive, "C2-2", 40, trajectory3, false))
 								.andThen(() -> m_robotDrive.allStop())),
 
-				// Drive to first ball
 				new LaunchBallCommandStart(m_launch),
 				new LaunchCommandStart(m_launch, 0.4, true).withTimeout(2),
 				new LaunchBallCommandStop(m_launch),
