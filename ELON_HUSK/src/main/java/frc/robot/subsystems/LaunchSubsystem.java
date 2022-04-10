@@ -10,6 +10,8 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -164,6 +166,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 
 		if (_sdCount++ > 10) {
+			// SmartDashboard.putNumber("absPosition", _absoluteRange.getOutput());
+			// SmartDashboard.putNumber("launch_relPos", _RangeMotor.getSelectedSensorPosition());
 		//	SmartDashboard.putNumber("_Range%Out", _RangeMotor.getMotorOutputPercent());
 			// SmartDashboard.putNumber("_RangeStick", position_0to1);
 		//	SmartDashboard.putNumber("_Launch%Out", _LaunchMotor.getMotorOutputPercent());
@@ -205,6 +209,14 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 		calibrateBasket();
+	}
+
+	public void resetEncoderAbsolute() {
+		if (isDisabled()) {
+			return;
+		}
+
+		absoluteCalibrateBasket();
 	}
 
 	public void runLaunch(double joystick_0to1, double joystick1_0to1,boolean useVision) {
@@ -316,6 +328,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		System.out.println("Launching-  use Vision:" + _useVision);
 		System.out.println("have Lock:" + !m_drive.approximationStale());
 		System.out.println("approx dist:" + m_drive.getApproximateHubDistance());
+		System.out.println("Basket ticks: "+_RangeMotor.getSelectedSensorPosition()); // 3 meters is 15715 to 16215. Average 15965
 		System.out.println("joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
 		_loggedMessage = true;
 	}
@@ -328,11 +341,33 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_loggedMessage = false;
 	}
 
-	public void calibrateBasket() {
-		double _absPosition = _absoluteRange.getOutput();
-	//	_absPosition = normalize_input(_absPosition, OpConstants.MinAbsEncoder, OpConstants.MaxAbsEncoder);
-	//	_RangeMotor.setSelectedSensorPosition(_absPosition * OpConstants.MaxRange, OpConstants.kPIDLoopIdx, 0);
+	private void calibrateBasket() {
 		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, 0);
+	}
+	
+	private void absoluteCalibrateBasket() {
+		System.out.println("Absolute calibration");
+		double absPosition = _absoluteRange.getOutput();
+		absPosition = normalize_input(absPosition, OpConstants.MinAbsEncoder, OpConstants.MaxAbsEncoder);
+		_RangeMotor.setSelectedSensorPosition(absPosition * OpConstants.MaxRange, OpConstants.kPIDLoopIdx, 0);
+	}
+
+	public void addTicks() {
+		if(isDisabled()) return;
+
+		double tickIncrease = OpConstants.MaxRange * 0.1;
+		double currentTicks = _RangeMotor.getSelectedSensorPosition();
+		_RangeMotor.setSelectedSensorPosition(currentTicks + tickIncrease, OpConstants.kPIDLoopIdx, 0);
+		System.out.println("Adding "+tickIncrease+" ticks. Ticks: "+currentTicks + tickIncrease);
+	}
+
+	public void subtractTicks() {
+		if(isDisabled()) return;
+
+		double tickDecrease = OpConstants.MaxRange * -0.1;
+		double currentTicks = _RangeMotor.getSelectedSensorPosition();
+		_RangeMotor.setSelectedSensorPosition(currentTicks + tickDecrease, OpConstants.kPIDLoopIdx, 0);
+		System.out.println("Subtracting "+(-tickDecrease)+" ticks. Ticks: "+currentTicks + tickDecrease);
 	}
 
 	@Override

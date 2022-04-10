@@ -7,9 +7,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.C2_B2X2;
 import frc.robot.autonomous.C4_B2X2_B4B5X2;
@@ -130,6 +132,9 @@ public class RobotContainer {
 		//#region Drive Subsystem
 		new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
 		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
+		new JoystickButton(m_driverController, ButtonConstants.kResetBasketAbsEncoder).whenPressed(() -> m_launch.resetEncoderAbsolute());
+		new DPadButton(m_driverController, DPadDirection.UP).whenPressed(() -> m_launch.addTicks());
+		new DPadButton(m_driverController, DPadDirection.DOWN).whenPressed(() -> m_launch.subtractTicks());
 		//#endregion
 	
 		//#region Climb Subsystem
@@ -289,6 +294,33 @@ public class RobotContainer {
 					break;
 			}
 			return (Math.abs(triggerValue) > 0.5);
+		}
+	}
+
+	public enum DPadDirection {
+		UP(0), RIGHT(90), DOWN(180), LEFT(270);
+
+		public int value;
+
+		private DPadDirection(int value) {
+			this.value = value;
+		}
+	}
+
+	public class DPadButton extends Button {
+		private GenericHID _joystick;
+		private DPadDirection _direction;
+
+		public DPadButton(GenericHID joystick, DPadDirection direction) {
+			_joystick = joystick;
+			_direction = direction;
+		}
+
+		@Override
+		public boolean get() {
+			int dPadValue = _joystick.getPOV();
+			return (dPadValue == _direction.value) || (dPadValue == (_direction.value + 45) % 360)
+				|| (dPadValue == (_direction.value + 315) % 360);
 		}
 	}
 }
