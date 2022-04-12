@@ -7,8 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
@@ -247,10 +249,6 @@ public final class Constants {
 		// #endregion
 
 		public static final double kAverageKeepTime = 0.2;
-
-		// USB Camera ID
-		public static final USBCamera kCamera1;
-		public static final NetworkTableEntry cameraSelection;
 	}
 
 	public static final class XboxConstants {
