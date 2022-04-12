@@ -247,6 +247,10 @@ public final class Constants {
 		// #endregion
 
 		public static final double kAverageKeepTime = 0.2;
+
+		// USB Camera ID
+		public static final USBCamera kCamera1;
+		public static final NetworkTableEntry cameraSelection;
 	}
 
 	public static final class XboxConstants {

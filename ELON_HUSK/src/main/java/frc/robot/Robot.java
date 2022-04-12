@@ -120,6 +120,10 @@ public class Robot extends TimedRobot {
 		m_launch = new LaunchSubsystem(m_drive);
 		m_intake = new IntakeSubsystem();
 		m_climb = new ClimbSubsystem();
+		Joystick joy1 = new Joystick(0);
+		
+		VisionConstants.kCamera1.startAutomaticCapture(0);
+		VisionConstants.kCameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
 
 		//m_pdp.clearStickyFaults();
 		//m_pneu.clearAllStickyFaults();
