@@ -26,8 +26,14 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.autonomous._NamedAutoMode;
 import frc.robot.subsystems.VisionSubsystem;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.util.net.PortForwarder;
+import frc.robot.Constants.VisionConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -120,6 +126,13 @@ public class Robot extends TimedRobot {
 		m_launch = new LaunchSubsystem(m_drive);
 		m_intake = new IntakeSubsystem();
 		m_climb = new ClimbSubsystem();
+
+		// USB Camera ID
+		UsbCamera m_camera1;
+		NetworkTableEntry m_CameraSelection;
+		
+		m_camera1 = CameraServer.startAutomaticCapture(0);
+		m_CameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
 
 		//m_pdp.clearStickyFaults();
 		//m_pneu.clearAllStickyFaults();
