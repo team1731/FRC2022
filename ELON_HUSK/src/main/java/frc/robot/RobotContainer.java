@@ -135,6 +135,8 @@ public class RobotContainer {
 		new JoystickButton(m_driverController, ButtonConstants.kResetBasketAbsEncoder).whenPressed(() -> m_launch.resetEncoderAbsolute());
 		new DPadButton(m_driverController, DPadDirection.UP).whenPressed(() -> m_launch.addTicks());
 		new DPadButton(m_driverController, DPadDirection.DOWN).whenPressed(() -> m_launch.subtractTicks());
+
+		new JoystickButton(m_operatorController, ButtonConstants.kOverrideBallSensor).whenPressed(() -> m_intake.sensorOverride(true)).whenReleased(() -> m_intake.sensorOverride(false));
 		//#endregion
 	
 		//#region Climb Subsystem

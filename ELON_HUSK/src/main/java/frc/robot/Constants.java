@@ -292,6 +292,7 @@ public final class Constants {
 		 */
 		public static final int kIntakeLeftEject = 14;
 		public static final int kIntakeRightEject = 15;
+		public static final int kOverrideBallSensor = 4;
 
 		/**
 		 * Intake Control Buttons - Top Back Toggles(U/D): 1, 12
