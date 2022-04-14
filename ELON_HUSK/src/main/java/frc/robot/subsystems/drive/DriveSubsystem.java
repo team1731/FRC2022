@@ -87,6 +87,9 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	// Odometry class for tracking robot pose
 	private SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getAngle());
+	private double _xVelocity;
+	private double _yVelocity;
+
 
 	public void updateOdometry() {
 		if (isDisabled())
@@ -99,6 +102,15 @@ public class DriveSubsystem extends ToggleableSubsystem {
 																									// rightRear
 					m_rightFront.getState(), m_leftRear.getState(), m_rightRear.getState());
 		}
+
+		var chassisState = DriveConstants.kDriveKinematics.toChassisSpeeds(m_leftFront.getState(), 
+									m_rightFront.getState(), m_leftRear.getState(), m_rightRear.getState());
+
+									
+
+		_xVelocity = chassisState.vxMetersPerSecond;
+		_yVelocity = chassisState.vyMetersPerSecond;	
+
 	}
 
 	/**
@@ -415,6 +427,7 @@ public void doSD() {
 		m_rightFront.setDesiredState(swerveModuleStates[1]);
 		m_leftRear.setDesiredState(swerveModuleStates[2]);
 		m_rightRear.setDesiredState(swerveModuleStates[3]);
+
 	}
 
 	/**
@@ -604,9 +617,10 @@ public void doSD() {
 	}
 
 	public double getApproximateHubAngle() {
+		
 		double x = m_odometry.getPoseMeters().getX();
-		double angle = Math.toDegrees(Math.atan((4.155 - m_odometry.getPoseMeters().getY()) / (8.188 - x)));
-		if (x > 8.188) {
+		double angle = Math.toDegrees(Math.atan(((4.155 - _yVelocity*0.8 ) - m_odometry.getPoseMeters().getY()) / ((8.188 - _xVelocity*0.8) - x)));
+		if (x- _xVelocity*0.8 > 8.188) {
 			angle = angle - 180;
 		}
 		return angle;
