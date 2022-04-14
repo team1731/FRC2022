@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
         LiveWindow.disableAllTelemetry();
-		CameraServer.startAutomaticCapture();
+	//	CameraServer.startAutomaticCapture();
 		PortForwarder.add(5800, "limelight.local", 5800);
 		PortForwarder.add(5801, "limelight.local", 5801);
 		PortForwarder.add(5802, "limelight.local", 5802);
