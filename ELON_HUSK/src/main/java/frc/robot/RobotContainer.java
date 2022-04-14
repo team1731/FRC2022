@@ -132,7 +132,7 @@ public class RobotContainer {
 		//#region Drive Subsystem
 		new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
 		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
-		new JoystickButton(m_driverController, ButtonConstants.kResetBasketAbsEncoder).whenPressed(() -> m_launch.resetEncoderAbsolute());
+		new JoystickButton(m_driverController, ButtonConstants.kResetBasketAbsEncoder).whenPressed(() -> m_launch.resetEncoderAbsolute()).whenReleased(() -> m_launch.stopLaunch());
 		new DPadButton(m_driverController, DPadDirection.UP).whenPressed(() -> m_launch.addTicks());
 		new DPadButton(m_driverController, DPadDirection.DOWN).whenPressed(() -> m_launch.subtractTicks());
 
