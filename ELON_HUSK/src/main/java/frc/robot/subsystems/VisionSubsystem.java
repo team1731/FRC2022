@@ -202,7 +202,7 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 */
 	public void enableLED() {
 		if(isDisabled()) return;
-
+        _stream.setNumber(2);
 		_limeLED.setNumber(3);
 		_ledQueries++;
 	}
