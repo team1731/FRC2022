@@ -68,6 +68,8 @@ public class VisionSubsystem extends ToggleableSubsystem {
 	 */
 	private NetworkTableEntry _limeLED;
 
+	private NetworkTableEntry _stream;
+
 	private NetworkTableEntry[] _limeRawX = new NetworkTableEntry[3];
 	private NetworkTableEntry[] _limeRawY = new NetworkTableEntry[3];
 	private NetworkTableEntry[] _limeRawArea = new NetworkTableEntry[3];
@@ -101,6 +103,7 @@ public class VisionSubsystem extends ToggleableSubsystem {
 		_limeVert = _limeTable.getEntry("tvert");
 		_limeValidTargets = _limeTable.getEntry("tv");
 		_limeLED = _limeTable.getEntry("ledMode");
+		_stream = _limeTable.getEntry("stream");
 		for (int i = 0; i < 3; i++) {
 			_limeRawX[i] = _limeTable.getEntry("tx" + i);
 			_limeRawY[i] = _limeTable.getEntry("ty" + i);
@@ -109,6 +112,7 @@ public class VisionSubsystem extends ToggleableSubsystem {
 
 		// Keep the light off so we don't blind unfortunate spectators
 		disableLED(false);
+		_stream.setNumber(2);
 	}
 
 	@Override

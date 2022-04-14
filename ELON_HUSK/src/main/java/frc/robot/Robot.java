@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-// import edu.wpi.first.cameraserver.CameraServer;
+
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -112,8 +112,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
         LiveWindow.disableAllTelemetry();
-		// CameraServer camServer = CameraServer.getInstance();
-		// camServer.startAutomaticCapture();
+		CameraServer.startAutomaticCapture();
 		PortForwarder.add(5800, "limelight.local", 5800);
 		PortForwarder.add(5801, "limelight.local", 5801);
 		PortForwarder.add(5802, "limelight.local", 5802);
@@ -127,12 +126,7 @@ public class Robot extends TimedRobot {
 		m_intake = new IntakeSubsystem();
 		m_climb = new ClimbSubsystem();
 
-		// USB Camera ID
-		UsbCamera m_camera1;
-		NetworkTableEntry m_CameraSelection;
-		
-		m_camera1 = CameraServer.startAutomaticCapture(0);
-		m_CameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
+
 
 		//m_pdp.clearStickyFaults();
 		//m_pneu.clearAllStickyFaults();

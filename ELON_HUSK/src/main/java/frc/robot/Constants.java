@@ -7,10 +7,9 @@
 
 package frc.robot;
 
-import edu.wpi.first.cscore.UsbCamera;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**

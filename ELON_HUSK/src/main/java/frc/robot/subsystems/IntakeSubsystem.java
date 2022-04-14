@@ -32,6 +32,10 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 	private final DoubleSolenoid _LeftIntakeSolenoid;
 	private final DigitalInput _LeftBallSensor;
 	private final DigitalInput _RightBallSensor;
+	private  Boolean _LeftIntaking = false;
+	private  Boolean _RightIntaking = false;
+	private  Boolean _LeftEjecting = false;
+	private  Boolean _RightEjecting = false;
 	private boolean _SensorOverride;
 	
 
@@ -81,6 +85,42 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		if(isDisabled()){
 			return;
 		}
+		// LEFT INTAKE  - assumes sensor is true when ball is blocking sensor
+		if (_LeftIntaking) {
+			_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+			if ((_LeftBallSensor.get() && _RightBallSensor.get()) || _SensorOverride)  {
+				_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorLeftIntakeSpeed);
+			} else {
+				_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
+			}
+
+		} else if (_LeftEjecting) {
+			_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+			_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, -1 * OpConstants.kMotorLeftIntakeSpeed);
+		} else {
+			_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
+			_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		}
+
+		// RIGHT INTAKE
+		
+		if (_RightIntaking) {
+			_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+			if ((_LeftBallSensor.get() && _RightBallSensor.get()) || _SensorOverride)  {
+				_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorRightIntakeSpeed);
+			} else {
+				_RightMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
+			}
+
+		} else if (_RightEjecting) {
+			_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
+			_RightMotorIntake.set(TalonFXControlMode.PercentOutput, -1 * OpConstants.kMotorRightIntakeSpeed);
+
+		} else {
+			_RightMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
+			_RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		}
+
 
 		SmartDashboard.putBoolean("LeftBallSensor",_LeftBallSensor.get());
 		SmartDashboard.putBoolean("RightBallSensor",_RightBallSensor.get());
@@ -107,8 +147,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}	
 
-		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorRightIntakeSpeed);
+		_RightIntaking = true;
 	}
 
 	//Extends the Right intake and spins the motor to intake
@@ -117,8 +156,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}	
 
-		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, -1 * OpConstants.kMotorRightIntakeSpeed);
+		_RightEjecting = true;
+
 	}
 
 	//Retracts the Right intake and stops spinning the motor
@@ -127,8 +166,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_RightMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
-		_RightIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		_RightIntaking = false;
+		_RightEjecting = false;
 	}
 
 	//Extends the Left intake and spins the motor to intake
@@ -137,10 +176,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		if ((_LeftBallSensor.get() && _RightBallSensor.get()) || _SensorOverride)  {
-			_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, OpConstants.kMotorLeftIntakeSpeed);
-		}
+		_LeftIntaking = true;
 
 	}
 
@@ -150,8 +186,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kForward);
-		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, -1 * OpConstants.kMotorLeftIntakeSpeed);
+		_LeftEjecting = true;
 	}
 
 	//Retracts the Left intake and stops spinning the motor
@@ -160,8 +195,8 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 			return;
 		}
 
-		_LeftMotorIntake.set(TalonFXControlMode.PercentOutput, 0);
-		_LeftIntakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+		_LeftIntaking = false;
+		_LeftEjecting = false;
 	}
 
 	public void sensorOverride(boolean sensorOverride){
