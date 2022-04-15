@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -67,6 +68,8 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	private double driveSpeedScaler = 1.0;
 
+	private double flightTime = 1.2;
+
 	private Double lockedHeading = null;
 	private double m_heading;
 	private boolean m_drivePolar = false;
@@ -89,6 +92,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getAngle());
 	private double _xVelocity;
 	private double _yVelocity;
+	private final Pose2d goalPose = new Pose2d(new Translation2d(8.188, 4.155), new Rotation2d(0));
 
 
 	public void updateOdometry() {
@@ -611,21 +615,30 @@ public void doSD() {
 	// }
 
 	public double getApproximateHubDistance() {
-
-		return Math.sqrt(Math.pow(4.155 - m_odometry.getPoseMeters().getY(), 2)
-				+ Math.pow(8.188 - m_odometry.getPoseMeters().getX(), 2));
+		var newGoalPose = goalPose.exp(
+			new Twist2d(
+		   _xVelocity * flightTime * -1,
+		   _yVelocity * flightTime * -1,
+		   Math.toRadians(getHeading())));
+		return Math.sqrt(Math.pow(newGoalPose.getY() - m_odometry.getPoseMeters().getY(), 2)
+				+ Math.pow(newGoalPose.getX() - m_odometry.getPoseMeters().getX(), 2));
 	}
 
 	public double getApproximateHubAngle() {
 		
+		var newGoalPose = goalPose.exp(
+			 new Twist2d(
+			_xVelocity * flightTime * -1.0,
+			_yVelocity * flightTime * -1.0,
+			Math.toRadians(getHeading())));
+
+		
 		double x = m_odometry.getPoseMeters().getX();
-		double angle = Math.toDegrees(Math.atan(((4.155 - _yVelocity*0.8 ) - m_odometry.getPoseMeters().getY()) / ((8.188 - _xVelocity*0.8) - x)));
-		if (x- _xVelocity*0.8 > 8.188) {
+		double angle = Math.toDegrees(Math.atan(((newGoalPose.getY()) - m_odometry.getPoseMeters().getY()) / ((newGoalPose.getX()) - x)));
+		if (x  > newGoalPose.getX()) {
 			angle = angle - 180;
 		}
 		return angle;
-		// return Math.toDegrees(Math.asin(((4.155 -m_odometry.getPoseMeters().getY()) *
-		// (8.188 - m_odometry.getPoseMeters().getX()))/getApproximateHubDistance()));
 
 	}
 
