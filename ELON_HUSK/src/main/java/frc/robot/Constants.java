@@ -111,6 +111,9 @@ public final class Constants {
 		public static final int kMotorCANIntakeR = 8;
 		public static final int kMotorCANIntakeL = 7;
 
+		// Basket Intake Speed
+		public static final int kMotorBasketMaxSpeed = 1;
+
 		// CAN IDs for non-motor components (PDP/Pneumatics Controller)
 		// Power Distribution Pannel CAN IDs
 		public static final int kPDPCanID = 1;

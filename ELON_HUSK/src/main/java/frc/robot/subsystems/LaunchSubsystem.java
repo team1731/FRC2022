@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Timer;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -216,7 +218,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		absoluteCalibrateBasket();
+		reverseMotor();
 	}
 
 	public void runLaunch(double joystick_0to1, double joystick1_0to1,boolean useVision) {
@@ -345,11 +347,21 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, 0);
 	}
 	
-	private void absoluteCalibrateBasket() {
+	//Calibrates the basket (activated when A button is pressed on Xbox Controller)
+	/*private void absoluteCalibrateBasket() {
 		System.out.println("Absolute calibration");
+		// drive to limit switch with timeout
+		// loop, drive to switch while checking timeout
+		_RangeMotor.set(TalonFXControlMode.MotionMagic, -OpConstants.MaxAbsEncoder);
+		// set to full reverse position
 		double absPosition = _absoluteRange.getOutput();
 		absPosition = normalize_input(absPosition, OpConstants.MinAbsEncoder, OpConstants.MaxAbsEncoder);
 		_RangeMotor.setSelectedSensorPosition(absPosition * OpConstants.MaxRange, OpConstants.kPIDLoopIdx, 0);
+	}*/
+
+	//Drives the motor back at 0.3 times the max speed to reach the limit switch
+	private void reverseMotor(){
+		_RangeMotor.set(TalonFXControlMode.PercentOutput, -OpConstants.kMotorBasketMaxSpeed * 0.3);
 	}
 
 	public void addTicks() {
