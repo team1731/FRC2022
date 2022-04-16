@@ -26,7 +26,7 @@ import frc.robot.subsystems.LaunchSubsystem;
  * Starts at B3, launches 2, goes to B4 then B5 then launches 2
  */
 
-public class D2_B3X2 extends _DelayableStrafingAutoMode {
+public class D1_B3X2 extends _DelayableStrafingAutoMode {
 
 
 
@@ -45,19 +45,19 @@ public class D2_B3X2 extends _DelayableStrafingAutoMode {
 
 
 
-	public D2_B3X2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
+	public D1_B3X2(DriveSubsystem m_robotDrive, IntakeSubsystem m_intake2, LaunchSubsystem m_launch2) {
 
 		String trajectoryJSON0 = "paths/output/L4-1.wpilib.json";
 		String trajectoryJSON1 = "paths/output/L1-2.wpilib.json";
-		String trajectoryJSON2 = "paths/output/D2-2.wpilib.json";
-		String trajectoryJSON3 = "paths/output/D2-1.wpilib.json";
+		String trajectoryJSON2 = "paths/output/D1-1.wpilib.json";
+
         this.m_intake = m_intake2;
 		this.m_launch = m_launch2;
 
         Trajectory trajectory0 = new Trajectory();
 		Trajectory trajectory1 = new Trajectory();
 		Trajectory trajectory2 = new Trajectory();
-		Trajectory trajectory3 = new Trajectory();
+
 
 
         try {
@@ -70,8 +70,7 @@ public class D2_B3X2 extends _DelayableStrafingAutoMode {
 			Path traj2Path = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON2);
             trajectory2 = TrajectoryUtil.fromPathweaverJson(traj2Path);
 
-			Path traj3Path = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON3);
-            trajectory3 = TrajectoryUtil.fromPathweaverJson(traj3Path);
+
 
         } catch (IOException ex) {
             DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON0, ex.getStackTrace());
@@ -94,8 +93,7 @@ public class D2_B3X2 extends _DelayableStrafingAutoMode {
             new LaunchBallCommandStart(m_launch),
 			new LaunchCommandStart(m_launch,0.42,true).withTimeout(2),
 			new LaunchBallCommandStop(m_launch),
-			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", -40.0, trajectory2,false)), // Drive to first ball
-			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", 180.0, trajectory3,false)), // Drive to first ball
+			new LaunchCommandStart(m_launch,.4,true).raceWith(createSwerveCommand(m_robotDrive, "L4_B3L2_B5B4L2", 180.0, trajectory2,false)), // Drive to first ball
 			new LaunchBallCommandStart(m_launch),
 			new LaunchCommandStart(m_launch,0.4,true).withTimeout(2),
 			new LaunchCommandStop(m_launch),

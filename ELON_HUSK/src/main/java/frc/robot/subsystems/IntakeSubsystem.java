@@ -36,7 +36,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 	private  Boolean _RightIntaking = false;
 	private  Boolean _LeftEjecting = false;
 	private  Boolean _RightEjecting = false;
-	private boolean _SensorOverride = true;
+	private boolean _SensorOverride = false;
 	
 
 	/**
@@ -77,7 +77,7 @@ public class IntakeSubsystem extends ToggleableSubsystem{
 		_LeftMotorIntake.setInverted(false);
 		_LeftBallSensor = new DigitalInput(5);
 		_RightBallSensor = new DigitalInput(6);
-		_SensorOverride = true;
+		_SensorOverride = false;
 	}
 
 	@Override

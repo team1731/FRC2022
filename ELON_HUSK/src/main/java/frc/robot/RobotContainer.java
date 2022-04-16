@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.autonomous.C2_B2X2;
 import frc.robot.autonomous.C4_B2X2_B4B5X2;
+import frc.robot.autonomous.D1_B3X2;
 import frc.robot.autonomous.D2_B3X2;
 import frc.robot.autonomous.F1_Move_Forward;
 import frc.robot.autonomous.L2_B3X2;
@@ -259,6 +260,8 @@ public class RobotContainer {
 				return new _NamedAutoMode(new X0_DoNothing(m_drive, m_intake, m_launch));
 			case "D2":
 				return new _NamedAutoMode(new D2_B3X2(m_drive, m_intake, m_launch));
+			case "D1":
+				return new _NamedAutoMode(new D1_B3X2(m_drive, m_intake, m_launch));
 		
 			case "C4":
 			default:

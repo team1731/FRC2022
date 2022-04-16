@@ -64,8 +64,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		_LaunchMotor = new WPI_TalonFX(OpConstants.kMotorCANLaunch, Constants.kCAN_BUS_CANIVORE);
 
 		/* Factory Default Hardware to prevent unexpected behaviour */
-		_RangeMotor.configFactoryDefault();
-		_LaunchMotor.configFactoryDefault();
+	//	_RangeMotor.configFactoryDefault();
+	//	_LaunchMotor.configFactoryDefault();
 
 		/**
 		 * Configure the current limits that will be used
