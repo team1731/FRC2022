@@ -138,6 +138,7 @@ public class RobotContainer {
 		new DPadButton(m_driverController, DPadDirection.UP).whenPressed(() -> m_launch.addTicks());
 		new DPadButton(m_driverController, DPadDirection.DOWN).whenPressed(() -> m_launch.subtractTicks());
 
+		m_intake.sensorOverride(m_operatorController.getRawButton(ButtonConstants.kOverrideBallSensor));
 		new JoystickButton(m_operatorController, ButtonConstants.kOverrideBallSensor).whenPressed(() -> m_intake.sensorOverride(true)).whenReleased(() -> m_intake.sensorOverride(false));
 		//#endregion
 	
@@ -173,7 +174,9 @@ public class RobotContainer {
 		//#region Launch Subsystem
 
 
-
+		if (!m_operatorController.getRawButton(ButtonConstants.kRobotModeShoot)) {
+			m_launch.stopLaunch();
+		}
 		new JoystickButton(m_driverController, ButtonConstants.kLaunchBall).whenHeld(new LaunchBallCommand(m_launch));
 		new JoystickButton(m_operatorController, ButtonConstants.kRobotModeShoot)
 			.whileActiveContinuous(() -> m_launch.runLaunch(
