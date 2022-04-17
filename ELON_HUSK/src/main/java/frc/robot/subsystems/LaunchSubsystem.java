@@ -326,13 +326,14 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
-		if (!_loggedMessage)
-		System.out.println("Launching-  use Vision:" + _useVision);
-		System.out.println("have Lock:" + !m_drive.approximationStale());
-		System.out.println("approx dist:" + m_drive.getApproximateHubDistance());
-		System.out.println("Basket ticks: "+_RangeMotor.getSelectedSensorPosition()); // 3 meters is 15715 to 16215. Average 15965
-		System.out.println("joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
-		_loggedMessage = true;
+		if (!_loggedMessage) {
+			System.out.println("Launching-  use Vision:" + _useVision);
+			System.out.println("have Lock:" + !m_drive.approximationStale());
+			System.out.println("approx dist:" + m_drive.getApproximateHubDistance());
+			System.out.println("Basket ticks: "+_RangeMotor.getSelectedSensorPosition()); // 3 meters is 15715 to 16215. Average 15965
+			System.out.println("joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
+			_loggedMessage = true;
+		}
 	}
 
 	public void stopLaunchBall() {

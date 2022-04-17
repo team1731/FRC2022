@@ -87,20 +87,20 @@ public class R5_X2B2X1B4B5X2 extends _DelayableStrafingAutoMode {
 		SequentialCommandGroup commandGroup = new SequentialCommandGroup(
 
 				new WaitCommand(getInitialDelaySeconds()),
-				new LaunchCommandStart(m_launch, .56, false).raceWith(new RightIntakeCommand(m_intake)),
-				new LaunchCommandStart(m_launch, .56, false)
+				new LaunchCommandStart(m_launch, .55, false).raceWith(new RightIntakeCommand(m_intake)),
+				new LaunchCommandStart(m_launch, .55, false)
 						.raceWith(createSwerveCommand(m_robotDrive, "C1-1", 0, trajectory0, false))
 						.andThen(() -> m_robotDrive.allStop()),
 
-				createSwerveCommand(m_robotDrive, "C1-1", 30, trajectory1, false).andThen(() -> m_robotDrive.allStop())
+				createSwerveCommand(m_robotDrive, "C1-1", 35, trajectory1, false).andThen(() -> m_robotDrive.allStop())
 						.raceWith(new SequentialCommandGroup(
-								new LaunchCommandStart(m_launch, 0.56, false).withTimeout(0.78),
+								new LaunchCommandStart(m_launch, 0.55, false).withTimeout(0.78),
 								new LaunchBallCommandStart(m_launch),
-								new LaunchCommandStart(m_launch, .56, false).raceWith(new RightStopCommand(m_intake)),
-								new LaunchCommandStart(m_launch, .56, false).raceWith(new LeftIntakeCommand(m_intake)),
-								new LaunchCommandStart(m_launch, 0.56, false))),
+								new LaunchCommandStart(m_launch, .55, false).raceWith(new RightStopCommand(m_intake)),
+								new LaunchCommandStart(m_launch, .55, false).raceWith(new LeftIntakeCommand(m_intake)),
+								new LaunchCommandStart(m_launch, 0.55, false))),
 
-				new LaunchCommandStart(m_launch, 0.56, false).withTimeout(1.0),
+				new LaunchCommandStart(m_launch, 0.55, false).withTimeout(1.0),
 				new LaunchBallCommandStop(m_launch),
 				new LaunchCommandStart(m_launch, .4, false).raceWith(new LeftStopCommand(m_intake)),
 				new LaunchCommandStart(m_launch, .4, false).raceWith(new RightIntakeCommand(m_intake)),

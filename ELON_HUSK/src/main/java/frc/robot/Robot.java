@@ -283,6 +283,7 @@ public class Robot extends TimedRobot {
 		CommandScheduler.getInstance().cancelAll();
 		m_drive.setCurrentLimits(true);
 		m_drive.resumeCSVWriter();
+		m_launch.stopLaunchBall();
 
 		//initSubsystems();	
 

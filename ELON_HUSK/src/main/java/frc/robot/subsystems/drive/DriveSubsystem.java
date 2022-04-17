@@ -68,7 +68,7 @@ public class DriveSubsystem extends ToggleableSubsystem {
 
 	private double driveSpeedScaler = 1.0;
 
-	private double flightTime = 1.2;
+	private double flightTime = 1.3;
 
 	private Double lockedHeading = null;
 	private double m_heading;
