@@ -479,7 +479,13 @@ public void doSD() {
 			return;
 
 		m_gyro.reset(); // RDB2020 - I replace this call with the below 5 lines...
+	    m_gyro.setAngleAdjustment(0.0);
 	}
+
+	public void setAngleAdjustment(double angle) {
+		m_gyro.setAngleAdjustment(angle);
+	}
+    
 
 	/**
 	 * Returns the heading of the robot.
@@ -584,6 +590,7 @@ public void doSD() {
 			desiredHeading = 0;
 			lockedHeading = null;
 			m_gyro.reset();
+			m_gyro.setAngleAdjustment(0.0);
 		}
 	}
 
