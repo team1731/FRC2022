@@ -123,7 +123,8 @@ public class R5_X2B2X1B4B5X2 extends _DelayableStrafingAutoMode {
 
 		);
 
-        command = commandGroup.andThen(() ->m_robotDrive.allStop());
+        command = commandGroup.andThen(() ->m_robotDrive.allStop())
+			.andThen(() -> m_robotDrive.setAngleAdjustment(-1*this._initPose.getRotation().getDegrees()));
     }
 }
 

@@ -234,7 +234,6 @@ public class _DelayableStrafingAutoMode {
 			@Override
 			public void end(boolean interrupted) {
 				super.end(interrupted);
-				m_robotDrive.setAngleAdjustment(-1*getInitialPose().getRotation().getDegrees());
 				System.out.println("at end of swerve command, interrupted=" + interrupted);
 			}
 		};
@@ -259,7 +258,6 @@ public class _DelayableStrafingAutoMode {
 			@Override
 			public void end(boolean interrupted) {
 				super.end(interrupted);
-				m_robotDrive.setAngleAdjustment(-1*getInitialPose().getRotation().getDegrees());
 				System.out.println("at end of swerve command, interrupted=" + interrupted);
 			}
 		};

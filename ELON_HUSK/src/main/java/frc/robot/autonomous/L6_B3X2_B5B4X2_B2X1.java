@@ -117,7 +117,8 @@ public class L6_B3X2_B5B4X2_B2X1 extends _DelayableStrafingAutoMode {
 		);
 
 
-        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false));
+        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false))
+			.andThen(() -> m_robotDrive.setAngleAdjustment(-1*this._initPose.getRotation().getDegrees()));
     }
 }
 

@@ -92,7 +92,8 @@ public class C2_B2X2 extends _DelayableStrafingAutoMode {
 		);
 
 
-        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false));
+        command = commandGroup.andThen(() -> m_robotDrive.drive(0, 0, 0 ,0, false, false))
+			.andThen(() -> m_robotDrive.setAngleAdjustment(-1*this._initPose.getRotation().getDegrees()));
     }
 }
 

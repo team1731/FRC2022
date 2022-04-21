@@ -106,7 +106,8 @@ public class L4_B3L2_B5B4L2 extends _DelayableStrafingAutoMode {
 	
 
 
-        command = commandGroup.andThen(() ->m_robotDrive.allStop());
+        command = commandGroup.andThen(() ->m_robotDrive.allStop())
+			.andThen(() -> m_robotDrive.setAngleAdjustment(-1*this._initPose.getRotation().getDegrees()));
     }
 }
 
