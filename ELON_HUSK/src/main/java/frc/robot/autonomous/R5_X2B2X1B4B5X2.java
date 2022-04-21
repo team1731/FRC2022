@@ -94,7 +94,7 @@ public class R5_X2B2X1B4B5X2 extends _DelayableStrafingAutoMode {
 
 				createSwerveCommand(m_robotDrive, "C1-1", 35, trajectory1, false).andThen(() -> m_robotDrive.allStop())
 						.raceWith(new SequentialCommandGroup(
-								new LaunchCommandStart(m_launch, 0.55, false).withTimeout(0.78),
+								new LaunchCommandStart(m_launch, 0.55, false).withTimeout(0.9),
 								new LaunchBallCommandStart(m_launch),
 								new LaunchCommandStart(m_launch, .55, false).raceWith(new RightStopCommand(m_intake)),
 								new LaunchCommandStart(m_launch, .55, false).raceWith(new LeftIntakeCommand(m_intake)),
