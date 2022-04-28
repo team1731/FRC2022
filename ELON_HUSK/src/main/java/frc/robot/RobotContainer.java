@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.autonomous.C1_B2X2;
 import frc.robot.autonomous.C2_B2X2;
 import frc.robot.autonomous.C4_B2X2_B4B5X2;
 import frc.robot.autonomous.D1_B3X2;
@@ -135,8 +136,8 @@ public class RobotContainer {
 		new JoystickButton(m_driverController, ButtonConstants.kResetGyro).whenPressed(new ResetGyroCommand(m_drive));
 		new JoystickButton(m_driverController, ButtonConstants.kResetEncoders).whenPressed(new ResetEncodersCommand(m_drive));
 		new JoystickButton(m_driverController, ButtonConstants.kResetBasketAbsEncoder).whenPressed(() -> m_launch.resetEncoderAbsolute()).whenReleased(() -> m_launch.stopLaunch());
-		new DPadButton(m_driverController, DPadDirection.UP).whenPressed(() -> m_launch.addTicks());
-		new DPadButton(m_driverController, DPadDirection.DOWN).whenPressed(() -> m_launch.subtractTicks());
+		new DPadButton(m_driverController, DPadDirection.UP).whenPressed(() -> m_launch.subtractTicks());
+		new DPadButton(m_driverController, DPadDirection.DOWN).whenPressed(() -> m_launch.addTicks());
 
 		m_intake.sensorOverride(m_operatorController.getRawButton(ButtonConstants.kOverrideBallSensor));
 		new JoystickButton(m_operatorController, ButtonConstants.kOverrideBallSensor).whenPressed(() -> m_intake.sensorOverride(true)).whenReleased(() -> m_intake.sensorOverride(false));
@@ -259,6 +260,8 @@ public class RobotContainer {
 			    return new _NamedAutoMode(new R5_X2B2X1B4B5X2(m_drive, m_intake, m_launch));
 			case "C2":
 			    return new _NamedAutoMode(new C2_B2X2(m_drive, m_intake, m_launch));
+			case "C1":
+			    return new _NamedAutoMode(new C1_B2X2(m_drive, m_intake, m_launch));
 			case "X0":
 				return new _NamedAutoMode(new X0_DoNothing(m_drive, m_intake, m_launch));
 			case "D2":
