@@ -198,7 +198,7 @@ public final class Constants {
 		// ftop = top climber pneumatics: 15
 		// fbottom = bottom climber pneumatics: 12
 
-		// Range table for shooting values:Index 2 = Velocity, Index 3 = Position
+		// Range table for shooting values:Index 1 = Velocity, Index 2 = Position
 
 		// Motor velocity in RPM/100ms
 		public static final double kVelocity = 2048 / 600;
@@ -206,7 +206,7 @@ public final class Constants {
 		public static final double kRangeArray[][] = { // position ticks, velUnitsPer100ms
 				{ 30000.0, 4760.0 }, // 0 meters - eject
 				{ 27039.0, 6440.0 }, // 1 meter    21709   8120
-				{ 21709.0, 8120.0 }, // 2 meters // 16379   9800
+				{ 21709.0, 8120.0 }, // 2 meters 16379   9800
 				{ 16379.0, 9800.0 }, // 3 meter 11351 11228
 				{ 11351.0, 11236.0 }, // 4 meters  11351 11236
 				{  8622.0, 12650.0 }, // 5 meters 8622 12650
