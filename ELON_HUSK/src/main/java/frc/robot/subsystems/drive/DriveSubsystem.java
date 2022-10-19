@@ -93,6 +93,10 @@ public class DriveSubsystem extends ToggleableSubsystem {
 	private double _xVelocity;
 	private double _yVelocity;
 	private final Pose2d goalPose = new Pose2d(new Translation2d(8.188, 4.155), new Rotation2d(0));
+	private boolean m_cowtracker;
+	private boolean _velocityLocked = false;
+	private double _storedXSpeedAdjusted = 0; // 0 = receiving input from joystick
+	private double _storedYSpeedAdjusted = 0;
 
 
 	public void updateOdometry() {
@@ -335,7 +339,8 @@ public void doSD() {
 			return;
 		}
 		// System.out.println("drivepolar" + m_drivePolar);
-		m_drivePolar = fieldPolar;
+		m_drivePolar = fieldPolar || m_cowtracker;
+
 		// SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
 
 		if ((fieldPolar)) {
@@ -367,8 +372,15 @@ public void doSD() {
 		/*
 		 * if(Math.abs(rotAdjusted) < 0.3){ rotAdjusted = 0; }
 		 */
-		xSpeedAdjusted *= this.driveSpeedScaler;
-		ySpeedAdjusted *= this.driveSpeedScaler;
+		if (_velocityLocked) {
+			xSpeedAdjusted = _storedXSpeedAdjusted;
+			ySpeedAdjusted = _storedYSpeedAdjusted;
+		} else {
+			xSpeedAdjusted *= this.driveSpeedScaler;
+			ySpeedAdjusted *= this.driveSpeedScaler;
+			_storedXSpeedAdjusted = xSpeedAdjusted;
+			_storedYSpeedAdjusted = ySpeedAdjusted;
+		}
 
 	   // xSpeedAdjusted = xfilter.calculate(xSpeedAdjusted);
 		//ySpeedAdjusted = yfilter.calculate(ySpeedAdjusted);
@@ -553,6 +565,18 @@ public void doSD() {
 		}
 	}
 
+	public void setVelocityLocked(boolean isLocked) {
+		_velocityLocked = isLocked;
+	}
+	  
+	public boolean getIsMoving() {
+		return  (_storedXSpeedAdjusted > 0 || _storedYSpeedAdjusted > 0);
+	}
+	  
+	public boolean getTargetLocked() {
+		return m_vision.hasTarget();
+	}
+
 	/**
 	 * Determines if the right thumbstick on the driver controller can control the
 	 * robot's orientation. Set to false if you want another subsystem to control
@@ -667,5 +691,9 @@ public void doSD() {
 		m_leftRear.allStop();
 		m_rightRear.allStop();
 	}
+
+    public void setCowtracker(boolean cowtracker) {
+		m_cowtracker = cowtracker;
+    }
 
 }

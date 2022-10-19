@@ -44,6 +44,10 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private double _joystick;
 	private boolean _loggedMessage  = false;
 
+	private boolean _waitingForTargetLock = false;
+	private double _movementStabilizationThreshold = 500; // milliseconds 
+	private long _startedWaitingForStabilization = 0; // 0 = waiting; any other value = not waiting
+
 	/**
 	 * Creates a new LaunchSubsystem.
 	 * 
@@ -165,6 +169,19 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		// This method will be called once per scheduler run
 		if (isDisabled()) {
 			return;
+		}
+
+		long currentTime = System.currentTimeMillis(); 
+		if (_startedWaitingForStabilization != 0 && 
+			currentTime - _startedWaitingForStabilization >= _movementStabilizationThreshold) {
+			_waitingForTargetLock = false;
+			_startedWaitingForStabilization = 0;
+		}
+		if (_waitingForTargetLock) {
+			if (m_drive.getTargetLocked()) {
+				_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
+				resetLaunchStatus();
+			}
 		}
 
 		if (_sdCount++ > 10) {
@@ -325,7 +342,14 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if (isDisabled()) {
 			return;
 		}
-		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
+		m_drive.setCowtracker(true);
+		m_drive.setVelocityLocked(true);
+		if (!m_drive.getIsMoving()) { 
+			_waitingForTargetLock = false;
+		} else {
+			_startedWaitingForStabilization = System.currentTimeMillis(); 
+		}
+		
 		if (!_loggedMessage) {
 			System.out.println("Launching-  use Vision:" + _useVision);
 			System.out.println("have Lock:" + !m_drive.approximationStale());
@@ -340,9 +364,18 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if (isDisabled()) {
 			return;
 		}
+		resetLaunchStatus();
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kReverse);
 		_loggedMessage = false;
+
 	}
+
+	private void resetLaunchStatus() {
+		_startedWaitingForStabilization = 0;
+		_waitingForTargetLock = false;
+		m_drive.setVelocityLocked(false);
+		m_drive.setCowtracker(false);
+	  }
 
 	private void calibrateBasket() {
 		_RangeMotor.setSelectedSensorPosition(0, OpConstants.kPIDLoopIdx, 0);
