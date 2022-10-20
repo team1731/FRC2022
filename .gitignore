@@ -32,3 +32,6 @@ hs_err_pid*
 
 # Branch information file. This is generated during deployment.
 **/deploy/DeployedBranchInfo.txt
+
+# Ignoring MacOS files
+.DS_Store
