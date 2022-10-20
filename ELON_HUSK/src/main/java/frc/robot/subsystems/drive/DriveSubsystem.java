@@ -574,7 +574,7 @@ public void doSD() {
 	}
 	  
 	public boolean getTargetLocked() {
-		return m_vision.hasTarget();
+		return headingController.atGoal();
 	}
 
 	/**

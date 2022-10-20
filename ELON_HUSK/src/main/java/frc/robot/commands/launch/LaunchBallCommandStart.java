@@ -12,7 +12,7 @@ public class LaunchBallCommandStart extends CommandBase {
 
     @Override
     public void initialize() {
-        _launch.runLaunchBall();
+        _launch.runLaunchBallAuto();
     }
 
 	@Override

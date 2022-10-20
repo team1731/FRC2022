@@ -171,18 +171,26 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 
-		long currentTime = System.currentTimeMillis(); 
-		if (_startedWaitingForStabilization != 0 && 
-			currentTime - _startedWaitingForStabilization >= _movementStabilizationThreshold) {
-			_waitingForTargetLock = false;
-			_startedWaitingForStabilization = 0;
-		}
+		long currentTime = System.currentTimeMillis();
 		if (_waitingForTargetLock) {
 			if (m_drive.getTargetLocked()) {
-				_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
-				resetLaunchStatus();
-			}
+				_waitingForTargetLock = false;
+				if (m_drive.getIsMoving()) {
+					_startedWaitingForStabilization = currentTime;
+				} else {
+					_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
+					resetLaunchStatus();
+				}	
+			}		
 		}
+
+		if (_startedWaitingForStabilization != 0 && 
+			currentTime - _startedWaitingForStabilization >= _movementStabilizationThreshold) {
+			_startedWaitingForStabilization = 0;
+			_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
+			resetLaunchStatus();
+		}
+		
 
 		if (_sdCount++ > 10) {
 			// SmartDashboard.putNumber("absPosition", _absoluteRange.getOutput());
@@ -344,11 +352,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 		m_drive.setCowtracker(true);
 		m_drive.setVelocityLocked(true);
-		if (!m_drive.getIsMoving()) { 
-			_waitingForTargetLock = false;
-		} else {
-			_startedWaitingForStabilization = System.currentTimeMillis(); 
-		}
+		_waitingForTargetLock = true;
 		
 		if (!_loggedMessage) {
 			System.out.println("Launching-  use Vision:" + _useVision);
@@ -365,6 +369,30 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			return;
 		}
 		resetLaunchStatus();
+		_LaunchSolenoid.set(DoubleSolenoid.Value.kReverse);
+		_loggedMessage = false;
+
+	}
+
+	public void runLaunchBallAuto() {
+		if (isDisabled()) {
+			return;
+		}
+		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
+		if (!_loggedMessage) {
+			System.out.println("Launching-  use Vision:" + _useVision);
+			System.out.println("have Lock:" + !m_drive.approximationStale());
+			System.out.println("approx dist:" + m_drive.getApproximateHubDistance());
+			System.out.println("Basket ticks: "+_RangeMotor.getSelectedSensorPosition()); // 3 meters is 15715 to 16215. Average 15965
+			System.out.println("joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
+			_loggedMessage = true;
+		}
+	}
+
+	public void stopLaunchBallAuto() {
+		if (isDisabled()) {
+			return;
+		}
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kReverse);
 		_loggedMessage = false;
 

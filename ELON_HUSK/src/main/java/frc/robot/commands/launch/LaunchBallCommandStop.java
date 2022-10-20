@@ -12,12 +12,12 @@ public class LaunchBallCommandStop extends CommandBase {
 
     @Override
     public void initialize() {
-        _launch.stopLaunchBall();
+        _launch.stopLaunchBallAuto();
     }
 
     @Override
     public void execute() {
-        _launch.stopLaunchBall();
+        _launch.stopLaunchBallAuto();
     }
 
 	@Override
