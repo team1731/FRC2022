@@ -45,7 +45,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 	private boolean _loggedMessage  = false;
 
 	private boolean _waitingForTargetLock = false;
-	private double _movementStabilizationThreshold = 500; // milliseconds 
+	private double _movementStabilizationThreshold = 2000; // milliseconds 
 	private long _startedWaitingForStabilization = 0; // 0 = waiting; any other value = not waiting
 
 	/**
@@ -179,7 +179,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 					_startedWaitingForStabilization = currentTime;
 				} else {
 					_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
-					resetLaunchStatus();
+					_startedWaitingForStabilization = 0;
+					_waitingForTargetLock = false;
 				}	
 			}		
 		}
@@ -188,7 +189,8 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			currentTime - _startedWaitingForStabilization >= _movementStabilizationThreshold) {
 			_startedWaitingForStabilization = 0;
 			_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
-			resetLaunchStatus();
+			_startedWaitingForStabilization = 0;
+			_waitingForTargetLock = false;
 		}
 		
 
