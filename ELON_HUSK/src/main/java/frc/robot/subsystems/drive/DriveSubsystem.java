@@ -340,10 +340,11 @@ public void doSD() {
 		}
 		// System.out.println("drivepolar" + m_drivePolar);
 		m_drivePolar = fieldPolar || m_cowtracker;
+		
 
 		// SmartDashboard.putBoolean("DrivePolar", m_drivePolar);
 
-		if ((fieldPolar)) {
+		if ((m_drivePolar)) {
 			updateVisionOdometry();
 
 			if (!approximationStale()) {
@@ -574,7 +575,7 @@ public void doSD() {
 	}
 	  
 	public boolean getTargetLocked() {
-		return headingController.atGoal();
+		return (headingController.atGoal() && visionHeadingOverride);
 	}
 
 	/**
@@ -695,5 +696,9 @@ public void doSD() {
     public void setCowtracker(boolean cowtracker) {
 		m_cowtracker = cowtracker;
     }
+
+	public boolean getCowtracker() {
+		return m_cowtracker;
+	}
 
 }

@@ -172,7 +172,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		}
 
 		long currentTime = System.currentTimeMillis();
-		if (_waitingForTargetLock) {
+		if (_waitingForTargetLock) {;
 			if (m_drive.getTargetLocked()) {
 				_waitingForTargetLock = false;
 				if (m_drive.getIsMoving()) {
@@ -188,6 +188,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if (_startedWaitingForStabilization != 0 && 
 			currentTime - _startedWaitingForStabilization >= _movementStabilizationThreshold) {
 			_startedWaitingForStabilization = 0;
+			System.out.println("ready to launch2");
 			_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
 			_startedWaitingForStabilization = 0;
 			_waitingForTargetLock = false;
@@ -252,7 +253,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if (isDisabled()) {
 			return;
 		}
-		_useVision = useVision;
+		_useVision = useVision || m_drive.getCowtracker();
 		_joystick = joystick_0to1;
 		// SmartDashboard.putNumber("_LaunchJoyPos", position_0to1);
 		// SmartDashboard.putNumber("_LaunchJoySpd", speed_0to1);
@@ -267,7 +268,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		int index = 0;
 		double fraction = 0;
 
-		if (useVision && !m_drive.approximationStale()) { // this method also checks to see if we we are not manually shooting
+		if (_useVision && !m_drive.approximationStale()) { // this method also checks to see if we we are not manually shooting
 			// speed_0to1 = getVisionSpeed();
 			// position_0to1 = getVisionPosition();
 			// position = position_0to1 * OpConstants.MaxRange;
@@ -362,6 +363,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 			System.out.println("approx dist:" + m_drive.getApproximateHubDistance());
 			System.out.println("Basket ticks: "+_RangeMotor.getSelectedSensorPosition()); // 3 meters is 15715 to 16215. Average 15965
 			System.out.println("joystick:" + normalize_input(_joystick, 0.226, 0.826) * 7.62);
+			System.out.println("waiting for target lock");
 			_loggedMessage = true;
 		}
 	}
@@ -380,6 +382,7 @@ public class LaunchSubsystem extends ToggleableSubsystem {
 		if (isDisabled()) {
 			return;
 		}
+		System.out.println("ready to launch auto");
 		_LaunchSolenoid.set(DoubleSolenoid.Value.kForward);
 		if (!_loggedMessage) {
 			System.out.println("Launching-  use Vision:" + _useVision);
