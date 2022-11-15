@@ -34,7 +34,9 @@ public class RobotContainer {
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
 
   /* Subsystems */
+
   private final Swerve s_Swerve = new Swerve();
+  private final PoseEstimatorSubsystem s_poseEstimatorSubsystem = new PoseEstimatorSubsystem(s_Swerve);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -65,6 +67,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new exampleAuto(s_Swerve);
+    return new exampleAuto(s_Swerve,s_poseEstimatorSubsystem);
   }
 }
