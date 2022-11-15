@@ -33,7 +33,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   // Physical location of the camera on the robot, relative to the center of the
   // robot.
   private static final Transform2d CAMERA_TO_ROBOT = 
-      new Transform2d(new Translation2d(Units.inchesToMeters(12.75), 0.0), new Rotation2d(0.0));
+      new Transform2d(new Translation2d(Units.inchesToMeters(15.5), Units.inchesToMeters(-5.0)), new Rotation2d(0.0));
 
   // Ordered list of target poses by ID (WPILib is adding some functionality for
   // this)
@@ -94,7 +94,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
           
           var transform = new Transform2d(
               camToTarget.getTranslation().toTranslation2d(),
-              camToTarget.getRotation().toRotation2d().minus(Rotation2d.fromDegrees(90)));
+              camToTarget.getRotation().toRotation2d());
 
           Pose2d camPose = targetPose.transformBy(transform.inverse());
 
