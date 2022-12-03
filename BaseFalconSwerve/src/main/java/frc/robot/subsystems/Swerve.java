@@ -40,6 +40,7 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(2, Constants.Swerve.Mod2.constants),
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
+        adjustWheelEncoders();
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -83,6 +84,14 @@ public class Swerve extends SubsystemBase {
     public void zeroGyro(){
 
         m_gyro.zeroYaw();
+ 
+    }
+
+    public void adjustWheelEncoders(){
+              for(SwerveModule mod : mSwerveMods){
+            mod.resetToAbsolute();
+            System.out.println("Adjusting Wheel Encoders!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }  
     }
 
     public Rotation2d getYaw() {

@@ -32,6 +32,7 @@ public class RobotContainer {
 
   /* Driver Buttons */
   private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+  private final JoystickButton adjustWheelEncoders = new JoystickButton(driver, XboxController.Button.kX.value);
 
   /* Subsystems */
 
@@ -58,6 +59,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
     zeroGyro.whenPressed(new InstantCommand(() -> s_Swerve.zeroGyro()));
+    adjustWheelEncoders.whenPressed(new InstantCommand(() -> s_Swerve.adjustWheelEncoders()));
+
   }
 
   /**

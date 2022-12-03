@@ -28,16 +28,16 @@ public class SwerveModule {
         angleOffset = moduleConstants.angleOffset;
         
         /* Angle Encoder Config */
-        angleEncoder = new CANCoder(moduleConstants.cancoderID);
+        angleEncoder = new CANCoder(moduleConstants.cancoderID,"canivore1");
         configAngleEncoder();
     
 
         /* Angle Motor Config */
-        mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
+        mAngleMotor = new TalonFX(moduleConstants.angleMotorID,"canivore1");
         configAngleMotor();
 
         /* Drive Motor Config */
-        mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
+        mDriveMotor = new TalonFX(moduleConstants.driveMotorID,"canivore1");
         configDriveMotor();
 
         lastAngle = getState().angle.getDegrees();
@@ -60,8 +60,11 @@ public class SwerveModule {
         lastAngle = angle;
     }
 
-    private void resetToAbsolute(){
+    public void resetToAbsolute(){
         double absolutePosition = Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffset, Constants.Swerve.angleGearRatio);
+        System.err.println("Cancoder degrees" + getCanCoder().getDegrees());
+        System.err.println("angleoffset" + angleOffset);
+        System.err.println("absolutePosition" + absolutePosition);
         mAngleMotor.setSelectedSensorPosition(absolutePosition);
     }
 
