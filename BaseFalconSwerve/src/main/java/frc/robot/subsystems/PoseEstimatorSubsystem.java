@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
@@ -28,6 +29,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+class CameraTransform {
+    PhotonCamera camera;
+    Transform3d transform;
+
+    public CameraTransform(PhotonCamera cam, Transform3d trsfrm){
+      camera = cam;
+      transform = trsfrm;
+    }
+}
 public class PoseEstimatorSubsystem extends SubsystemBase {
 
 
@@ -35,8 +45,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
   // Physical location of the camera on the robot, relative to the center of the
   // robot.
-  private static final Transform3d CAMERA_TO_ROBOT = 
+  private static final Transform3d CAMERA_TO_ROBOT_1 = 
       new Transform3d(new Translation3d(Units.inchesToMeters(15.5), Units.inchesToMeters(-5.0),0.5), new Rotation3d(0.0,0.0,0.0));
+  private static final Transform3d CAMERA_TO_ROBOT_2 = 
+      new Transform3d(new Translation3d(Units.inchesToMeters(15.5), Units.inchesToMeters(-5.0),0.5), new Rotation3d(Units.degreesToRadians(270),0.0,Units.degreesToRadians(180)));
 
   // Ordered list of target poses by ID (WPILib is adding some functionality for
   // this)
@@ -57,12 +69,18 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   private static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01));
   private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
   private final SwerveDrivePoseEstimator poseEstimator;
-  private final PhotonCamera photonCamera = new PhotonCamera("Global_Shutter_Camera");
+  private HashMap<String, CameraTransform> cameraMap = new HashMap<String, CameraTransform>();
+  public static final String CAM1 = "Global_Shutter_Camera";
+  public static final String CAM2 = "Microsoft_LifeCam_HD-3000";
+  private final PhotonCamera photonCamera1 = new PhotonCamera(CAM1);
+  private final PhotonCamera photonCamera2 = new PhotonCamera(CAM2);
+
 
   private final Field2d field2d = new Field2d();
 
   public PoseEstimatorSubsystem( Swerve m_swerve) {
-
+    this.cameraMap.put(CAM1, new CameraTransform(photonCamera1, CAMERA_TO_ROBOT_1));
+    this.cameraMap.put(CAM2, new CameraTransform(photonCamera2, CAMERA_TO_ROBOT_2));
     this.m_swerve = m_swerve;
 
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
@@ -81,45 +99,49 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Update pose estimator with visible targets
-    var res = photonCamera.getLatestResult();
+    for(String cameraName : this.cameraMap.keySet()){
+      // Update pose estimator with visible targets
 
+      var res = this.cameraMap.get(cameraName).camera.getLatestResult();
+
+      
+      if (res.hasTargets()) {
     
-    if (res.hasTargets()) {
+        double imageCaptureTime = Timer.getFPGATimestamp() - (res.getLatencyMillis() / 1000d);
   
-      double imageCaptureTime = Timer.getFPGATimestamp() - (res.getLatencyMillis() / 1000d);
- 
-      for (PhotonTrackedTarget target : res.getTargets()) {
-     
-        var fiducialId = target.getFiducialId();
+        for (PhotonTrackedTarget target : res.getTargets()) {
+      
+          var fiducialId = target.getFiducialId();
 
-        if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
-        
-          var targetPose = targetPoses.get(fiducialId);
-
-          Transform3d camToTarget = target.getBestCameraToTarget();
+          if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
           
-         // var transform = new Transform2d(
-         //     camToTarget.getTranslation().toTranslation2d(),
-         //     camToTarget.getRotation().toRotation2d());
+            var targetPose = targetPoses.get(fiducialId);
 
-          Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+            Transform3d camToTarget = target.getBestCameraToTarget();
+            
+          // var transform = new Transform2d(
+          //     camToTarget.getTranslation().toTranslation2d(),
+          //     camToTarget.getRotation().toRotation2d());
 
-          var visionMeasurement = camPose.transformBy(CAMERA_TO_ROBOT);
-          var twoDVisionMeasurement = visionMeasurement.toPose2d();
-          field2d.getObject("MyRobot" + fiducialId).setPose(twoDVisionMeasurement);
-           SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
-             twoDVisionMeasurement.getTranslation().getX(),
-             twoDVisionMeasurement.getTranslation().getY(),
-             twoDVisionMeasurement.getRotation().getDegrees()));
-          poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), imageCaptureTime);
+            Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+
+            var visionMeasurement = camPose.transformBy(this.cameraMap.get(cameraName).transform);
+            var twoDVisionMeasurement = visionMeasurement.toPose2d();
+            field2d.getObject("MyRobot" + fiducialId + cameraName).setPose(twoDVisionMeasurement);
+            SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
+              twoDVisionMeasurement.getTranslation().getX(),
+              twoDVisionMeasurement.getTranslation().getY(),
+              twoDVisionMeasurement.getRotation().getDegrees()));
+            poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), imageCaptureTime);
+          }
         }
+            // Update pose estimator with drivetrain sensors
       }
-          // Update pose estimator with drivetrain sensors
-    }
-    poseEstimator.updateWithTime(Timer.getFPGATimestamp(), m_swerve.getYaw(), m_swerve.getStates());
+      poseEstimator.updateWithTime(Timer.getFPGATimestamp(), m_swerve.getYaw(), m_swerve.getStates());
 
-    field2d.setRobotPose(getCurrentPose());
+      field2d.setRobotPose(getCurrentPose());
+
+    }
   }
 
   private String getFomattedPose() {
