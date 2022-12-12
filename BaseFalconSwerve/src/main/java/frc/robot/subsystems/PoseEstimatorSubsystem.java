@@ -41,12 +41,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   // Ordered list of target poses by ID (WPILib is adding some functionality for
   // this)
   private static final List<Pose3d> targetPoses = Collections.unmodifiableList(List.of(
-      new Pose3d(7.642, 4.139,0.595, new Rotation3d(0.0, 0.0,Units.degreesToRadians(180))),
-      new Pose3d(8.162, 3.619,0.595, new Rotation3d(0.0, 0.0,Units.degreesToRadians(270))),
-      new Pose3d(8.502, 4.139,0.595, new Rotation3d(0.0, 0.0,Units.degreesToRadians(0))),
-      new Pose3d(7.982, 4.659,0.595, new Rotation3d(0.0, 0.0,Units.degreesToRadians(90))),
-      new Pose3d(13.540, 2.281,0.885, new Rotation3d(0.0, 0.0,Units.degreesToRadians(180))),
-      new Pose3d(0.0, 1.850,0.885,new Rotation3d(0.0, 0.0,Units.degreesToRadians(0)))));
+      new Pose3d(7.642, 4.139,1.515, new Rotation3d(0.0, 0.0,Units.degreesToRadians(180))),
+      new Pose3d(8.162, 3.619,1.515, new Rotation3d(0.0, 0.0,Units.degreesToRadians(270))),
+      new Pose3d(8.502, 4.139,1.515, new Rotation3d(0.0, 0.0,Units.degreesToRadians(0))),
+      new Pose3d(7.982, 4.659,1.515, new Rotation3d(0.0, 0.0,Units.degreesToRadians(90))),
+      new Pose3d(13.540, 2.281,1.410, new Rotation3d(0.0, 0.0,Units.degreesToRadians(180))),
+      new Pose3d(0.0, 1.850,1.075,new Rotation3d(0.0, 0.0,Units.degreesToRadians(0)))));
   
   // Kalman Filter Configuration. These can be "tuned-to-taste" based on how much
   // you trust your various sensors. Smaller numbers will cause the filter to
@@ -93,7 +93,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
      
         var fiducialId = target.getFiducialId();
 
-        if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
+        if (target.getPoseAmbiguity() < 0.2 && fiducialId >= 0 && fiducialId < targetPoses.size()) {
         
           var targetPose = targetPoses.get(fiducialId);
 
