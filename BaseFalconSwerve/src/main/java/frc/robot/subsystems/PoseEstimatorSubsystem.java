@@ -65,9 +65,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
   // "trust" the estimate from that particular component more than the others. 
   // This in turn means the particualr component will have a stronger influence
   // on the final pose estimate.
-  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(180)); // was 5
   private static final Matrix<N1, N1> localMeasurementStdDevs = VecBuilder.fill(Units.degreesToRadians(0.01));
-  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5));
+  private static final Matrix<N3, N1> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(180)); // was 5
   private final SwerveDrivePoseEstimator poseEstimator;
   private HashMap<String, CameraTransform> cameraMap = new HashMap<String, CameraTransform>();
   public static final String CAM1 = "Global_Shutter_Camera";
@@ -113,26 +113,39 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
       
           var fiducialId = target.getFiducialId();
 
-          if (fiducialId >= 0 && fiducialId < targetPoses.size()) {
+          if ( target.getPoseAmbiguity() < 0.2 && fiducialId >= 0 && fiducialId < targetPoses.size()) {
           
             var targetPose = targetPoses.get(fiducialId);
 
-            Transform3d camToTarget = target.getBestCameraToTarget();
+            Transform3d camToTargetBest = target.getBestCameraToTarget();
+            Transform3d camToTargetAlt = target.getAlternateCameraToTarget();
             
-          // var transform = new Transform2d(
-          //     camToTarget.getTranslation().toTranslation2d(),
-          //     camToTarget.getRotation().toRotation2d());
 
-            Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+            Pose3d camPoseBest = targetPose.transformBy(camToTargetBest.inverse());
+            Pose3d camPoseAlt = targetPose.transformBy(camToTargetAlt.inverse());
 
-            var visionMeasurement = camPose.transformBy(this.cameraMap.get(cameraName).transform);
-            var twoDVisionMeasurement = visionMeasurement.toPose2d();
-            field2d.getObject("MyRobot" + fiducialId + cameraName).setPose(twoDVisionMeasurement);
+            var visionMeasurementBest = camPoseBest.transformBy(this.cameraMap.get(cameraName).transform).toPose2d();
+            var visionMeasurementAlt = camPoseAlt.transformBy(this.cameraMap.get(cameraName).transform).toPose2d();
+
+            var distanceBest = visionMeasurementBest.getTranslation().getDistance(getCurrentPose().getTranslation());
+            var distanceAlt = visionMeasurementAlt.getTranslation().getDistance(getCurrentPose().getTranslation());
+            
+            var angleBest = visionMeasurementBest.getRotation().getRadians() - getCurrentPose().getRotation().getRadians();
+            var angleAlt = visionMeasurementAlt.getRotation().getRadians() - getCurrentPose().getRotation().getRadians();
+
+
+           // uncomment the line below and comment out the line below that one to use distance
+           // Pose2d visionMeasurement = (distanceBest > distanceAlt) ?  visionMeasurementAlt.toPose2d():  visionMeasurementBest.toPose2d();
+           Pose2d visionMeasurement = (angleBest > angleAlt) ?  visionMeasurementAlt:  visionMeasurementBest;
+
+            field2d.getObject("MyRobotBest" + fiducialId + cameraName).setPose(visionMeasurementBest);
+            field2d.getObject("MyRobotAlt" + fiducialId + cameraName).setPose(visionMeasurementAlt);
+
             SmartDashboard.putString("Vision pose", String.format("(%.2f, %.2f) %.2f",
-              twoDVisionMeasurement.getTranslation().getX(),
-              twoDVisionMeasurement.getTranslation().getY(),
-              twoDVisionMeasurement.getRotation().getDegrees()));
-            poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), imageCaptureTime);
+              visionMeasurement.getTranslation().getX(),
+              visionMeasurement.getTranslation().getY(),
+              visionMeasurement.getRotation().getDegrees()));
+            poseEstimator.addVisionMeasurement(visionMeasurement, imageCaptureTime);
           }
         }
             // Update pose estimator with drivetrain sensors
